@@ -1,0 +1,33 @@
+﻿<Application x:Class="DocumentsGenerator.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:DocumentsGenerator"
+             xmlns:viewModel ="clr-namespace:DocumentsGenerator.MVVM.ViewModel"
+             xmlns:view = "clr-namespace:DocumentsGenerator.MVVM.View"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/MenuButtonTheme.xaml"/>
+                <ResourceDictionary Source="/Themes/NavbarButtonTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type viewModel:HomeViewModel}">
+                <view:HomeView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:TemplateViewModel}">
+                <view:TemplateView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:SheetViewModel}">
+                <view:SheetView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:DocumentViewModel}">
+                <view:DocumentView/>
+            </DataTemplate>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
