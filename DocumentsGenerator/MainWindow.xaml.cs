@@ -56,6 +56,7 @@ namespace DocumentsGenerator
             TemplateMenuBtn.IsChecked = false;
             SheetMenuBtn.IsChecked = false;
             DokumentMenuBtn.IsChecked = false;
+            SettingsMenuBtn.IsChecked = false;
         }
     }
 }

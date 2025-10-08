@@ -8,8 +8,12 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Themes/MenuButtonTheme.xaml"/>
+                <ResourceDictionary Source="/Themes/MenuButtonTheme.xaml"/>
                 <ResourceDictionary Source="/Themes/NavbarButtonTheme.xaml"/>
+                <ResourceDictionary Source="/Themes/DoubleIconButtonTheme.xaml"/>
+                <ResourceDictionary Source="/Themes/DefaultIconButtonTheme.xaml"/> <!--KOLEJNOŚĆ MA ZNACZENIE BO LOADEDFILENAMECARD UŻYWA DEAFULTICONBUTTONTHEME AAAHH I POSZŁY 2H SIĘ JEBAĆ-->
+                <ResourceDictionary Source="/Themes/LoadedFileNameCard.xaml"/>
+                <ResourceDictionary Source="/Themes/ButtonTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type viewModel:HomeViewModel}">
@@ -26,6 +30,10 @@
 
             <DataTemplate DataType="{x:Type viewModel:DocumentViewModel}">
                 <view:DocumentView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:SettingsViewModel}">
+                <view:SettingsView/>
             </DataTemplate>
 
         </ResourceDictionary>

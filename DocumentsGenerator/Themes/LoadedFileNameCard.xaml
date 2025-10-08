@@ -1,0 +1,38 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:DocumentsGenerator.Controls">
+                    
+    <Style TargetType="ListViewItem" x:Key="LoadedFileNameCard">
+        <Style.Setters>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Grid VerticalAlignment="Stretch"
+                              HorizontalAlignment="Stretch"
+                              Background="Transparent">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="10*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="{Binding FileName}"
+                                       Foreground="White"
+                                       FontSize="12"/>
+
+                            <local:IconButton IconImage="/Images/close-icon.png"
+                                              Height="20"
+                                              Width="20"
+                                              Grid.Column="1"
+                                              IconHeight="15"
+                                              IconWidth="15"
+                                              Style="{StaticResource DefaultIconButtonTheme}"/>
+                            
+                            
+
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+    </Style>
+</ResourceDictionary>

@@ -1,10 +1,15 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace DocumentsGenerator.Controls
 {
-    class IconButton : RadioButton
+    class IconButton : Button
     {
         // Icon
         public static readonly DependencyProperty IconImageProperty =
@@ -20,18 +25,33 @@ namespace DocumentsGenerator.Controls
             set => SetValue(IconImageProperty, value);
         }
 
-        // Selected Color
-        public static readonly DependencyProperty SelectedColorProperty = 
+        // Icon width
+        public static readonly DependencyProperty IconWidthProperty = 
             DependencyProperty.Register(
-                nameof(SelectedColor),
-                typeof(Brush),
+                nameof(IconWidth),
+                typeof(double),
                 typeof(IconButton),
-                new PropertyMetadata(new SolidColorBrush(Color.FromRgb(34, 32, 47))));
-        
-        public Brush SelectedColor
+                new PropertyMetadata(null));
+
+        public double IconWidth
         {
-            get => (Brush)GetValue(SelectedColorProperty);
-            set => SetValue(SelectedColorProperty, value);
+            get => (double)GetValue(IconWidthProperty);
+            set => SetValue(IconWidthProperty, value);
+        }
+       
+        
+        // Icon height
+        public static readonly DependencyProperty IconHeightProperty =
+            DependencyProperty.Register(
+                nameof(IconHeight),
+                typeof(double),
+                typeof(IconButton),
+                new PropertyMetadata(null));
+
+        public double IconHeight
+        {
+            get => (double)GetValue(IconWidthProperty);
+            set => SetValue(IconWidthProperty, value);
         }
 
         static IconButton()
@@ -40,6 +60,5 @@ namespace DocumentsGenerator.Controls
                 typeof(IconButton),
                 new FrameworkPropertyMetadata(typeof(IconButton)));
         }
-
     }
 }

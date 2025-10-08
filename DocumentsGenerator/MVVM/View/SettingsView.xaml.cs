@@ -1,5 +1,4 @@
-﻿using DocumentsGenerator.MVVM.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,18 +16,13 @@ using System.Windows.Shapes;
 namespace DocumentsGenerator.MVVM.View
 {
     /// <summary>
-    /// Logika interakcji dla klasy TemplateView.xaml
+    /// Logika interakcji dla klasy SettingsView.xaml
     /// </summary>
-    public partial class TemplateView : UserControl
+    public partial class SettingsView : UserControl
     {
-        public TemplateView()
+        public SettingsView()
         {
             InitializeComponent();
-        }
-
-        private void FileKeyFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
         }
     }
 }

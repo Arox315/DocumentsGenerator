@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DocumentsGenerator.Controls"
         xmlns:viewModel="clr-namespace:DocumentsGenerator.MVVM.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="920"
+        Title="MainWindow" Height="600" Width="980"
         WindowStyle="None"
         ResizeMode="NoResize"
         Background="Transparent"
@@ -39,7 +39,7 @@
             <Border x:Name="LogoBar"
                     Background="{Binding MainMenuColor}"
                     Grid.Row="1">
-                <local:IconButton x:Name="HomeMenuBtn"
+                <local:IconRadioButton x:Name="HomeMenuBtn"
                       Content="Generator dokumentów"
                       IconImage="/Images/app-logo.png"
                       SelectedColor="Transparent"
@@ -60,41 +60,52 @@
                     CornerRadius="0 0 0 5">
 
                 <StackPanel>
-                    <local:IconButton x:Name="TemplateMenuBtn"
-                      Content="Szablony"
-                      IconImage="/Images/template-icon.png"
-                      SelectedColor="#40A7AE"
-                      Height="50"
-                      Foreground="White"
-                      FontSize="16"
-                      FontWeight="Medium"
-                      Style="{StaticResource MenuButtonTheme}"
-                      Command="{Binding TemplateViewCommand}"/>
+                    <local:IconRadioButton x:Name="TemplateMenuBtn"
+                        Content="Szablony"
+                        IconImage="/Images/template-icon.png"
+                        SelectedColor="#40A7AE"
+                        Height="50"
+                        Foreground="White"
+                        FontSize="16"
+                        FontWeight="Medium"
+                        Style="{StaticResource MenuButtonTheme}"
+                        Command="{Binding TemplateViewCommand}"/>
 
 
 
-                    <local:IconButton x:Name="SheetMenuBtn"
-                      Content="Arkusze danych"
-                      IconImage="/Images/sheet-icon.png"
-                      SelectedColor="#88AC4C"
-                      Height="50"
-                      Foreground="White"
-                      FontSize="16"
-                      FontWeight="Medium"
-                      Style="{StaticResource MenuButtonTheme}"
-                      Command="{Binding SheetViewCommand}"/>
+                    <local:IconRadioButton x:Name="SheetMenuBtn"
+                        Content="Arkusze danych"
+                        IconImage="/Images/sheet-icon.png"
+                        SelectedColor="#88AC4C"
+                        Height="50"
+                        Foreground="White"
+                        FontSize="16"
+                        FontWeight="Medium"
+                        Style="{StaticResource MenuButtonTheme}"
+                        Command="{Binding SheetViewCommand}"/>
 
 
-                    <local:IconButton x:Name="DokumentMenuBtn"
-                      Content="Dokumenty"
-                      IconImage="/Images/document-icon.png"
-                      SelectedColor="#7C438E"
-                      Height="50"
-                      Foreground="White"
-                      FontSize="16"
-                      FontWeight="Medium"
-                      Style="{StaticResource MenuButtonTheme}"
-                      Command="{Binding DocumentViewCommand}"/>
+                    <local:IconRadioButton x:Name="DokumentMenuBtn"
+                        Content="Dokumenty"
+                        IconImage="/Images/document-icon.png"
+                        SelectedColor="#7C438E"
+                        Height="50"
+                        Foreground="White"
+                        FontSize="16"
+                        FontWeight="Medium"
+                        Style="{StaticResource MenuButtonTheme}"
+                        Command="{Binding DocumentViewCommand}"/>
+
+                    <local:IconRadioButton x:Name="SettingsMenuBtn"
+                        Content="Ustawienia"
+                        IconImage="/Images/settings-icon.png"
+                        SelectedColor="#7C7C7C"
+                        Height="50"
+                        Foreground="White"
+                        FontSize="16"
+                        FontWeight="Medium"
+                        Style="{StaticResource MenuButtonTheme}"
+                        Command="{Binding SettingsViewCommand}"/>
                 </StackPanel>
 
             </Border>
@@ -104,7 +115,6 @@
             <ContentControl x:Name="MainView"
                             Grid.Column="1"
                             Grid.Row="2"
-                            Margin="10"
                             Content="{Binding CurrentView}"/>
 
             <Border x:Name="Navbar"

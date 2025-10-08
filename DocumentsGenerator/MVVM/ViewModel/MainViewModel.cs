@@ -8,30 +8,24 @@ using DocumentsGenerator.Core;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Color = System.Windows.Media.Color;
+using System.Collections.ObjectModel;
+using DocumentsGenerator.MVVM.Model;
 
 namespace DocumentsGenerator.MVVM.ViewModel
 {
-	class MainViewModel : ObservableObject
+    class MainViewModel : ObservableObject
     {
-        private Color _mainColor = Color.FromRgb(31, 29, 56);
-        private Color _mainColorDark = Color.FromRgb(19, 18, 35);
-        private Color _templateColor = Color.FromRgb(64, 167, 174);
-        private Color _templateColorDark = Color.FromRgb(32, 84, 88);
-        private Color _sheetColor = Color.FromRgb(136, 172, 76);
-        private Color _sheetColorDark = Color.FromRgb(69, 87, 38);
-        private Color _documentColor = Color.FromRgb(124, 67, 142);
-        private Color _documentColorDark = Color.FromRgb(62, 34, 71);
-
         public RelayCommand HomeViewCommand { get; set; }
-        public RelayCommand TemplateViewCommand {  get; set; }
+        public RelayCommand TemplateViewCommand { get; set; }
         public RelayCommand SheetViewCommand { get; set; }
         public RelayCommand DocumentViewCommand { get; set; }
-
+        public RelayCommand SettingsViewCommand { get; set; }
 
         public HomeViewModel HomeVm { get; set; }
         public TemplateViewModel TemplateVm { get; set; }
         public SheetViewModel SheetVm { get; set; }
         public DocumentViewModel DocumentVm { get; set; }
+        public SettingsViewModel SettingsVm { get; set; }
 
         public SolidColorBrush NavbarColor { get; set; }
         public SolidColorBrush MainMenuColor { get; set; }
@@ -41,50 +35,59 @@ namespace DocumentsGenerator.MVVM.ViewModel
         public object CurrentView
         {
             get { return _currentView!; }
-            set {
+            set
+            {
                 _currentView = value;
                 OnPropertyChanged();
             }
-           
+
         }
-        public MainViewModel() 
+
+        private readonly Constants constants = new();
+
+        public MainViewModel()
         {
             HomeVm = new HomeViewModel();
             TemplateVm = new TemplateViewModel();
             SheetVm = new SheetViewModel();
             DocumentVm = new DocumentViewModel();
-
-            NavbarColor = new SolidColorBrush(_mainColor);
-            MainMenuColor = new SolidColorBrush(_mainColorDark);
+            SettingsVm = new SettingsViewModel();
 
             CurrentView = HomeVm;
 
+            NavbarColor = new SolidColorBrush(constants._mainColor);
+            MainMenuColor = new SolidColorBrush(constants._mainColorDark);
+
             HomeViewCommand = new RelayCommand(_ => {
                 CurrentView = HomeVm;
-                NavbarColor.Color = _mainColor;
-                MainMenuColor.Color = _mainColorDark;
+                NavbarColor.Color = constants._mainColor;
+                MainMenuColor.Color = constants._mainColorDark;
             });
 
-            TemplateViewCommand = new RelayCommand(_ => { 
+            TemplateViewCommand = new RelayCommand(_ => {
                 CurrentView = TemplateVm;
-                NavbarColor.Color = _templateColor;
-                MainMenuColor.Color = _templateColorDark;
+                NavbarColor.Color = constants._templateColor;
+                MainMenuColor.Color = constants._templateColorDark;
             });
 
             SheetViewCommand = new RelayCommand(_ =>
             {
                 CurrentView = SheetVm;
-                NavbarColor.Color = _sheetColor;
-                MainMenuColor.Color = _sheetColorDark;
+                NavbarColor.Color = constants._sheetColor;
+                MainMenuColor.Color = constants._sheetColorDark;
             });
 
             DocumentViewCommand = new RelayCommand(_ => {
                 CurrentView = DocumentVm;
-                NavbarColor.Color = _documentColor;
-                MainMenuColor.Color = _documentColorDark;
+                NavbarColor.Color = constants._documentColor;
+                MainMenuColor.Color = constants._documentColorDark;
             });
 
-                
+            SettingsViewCommand = new RelayCommand(_ => {
+                CurrentView = SettingsVm;
+                NavbarColor.Color = constants._settingsColor;
+                MainMenuColor.Color = constants._settingsColorDark;
+            });
         }
     }
 }
