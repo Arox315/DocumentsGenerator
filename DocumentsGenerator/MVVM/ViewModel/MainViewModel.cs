@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DocumentsGenerator.Core;
+﻿using DocumentsGenerator.Core;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Color = System.Windows.Media.Color;
 using System.Collections.ObjectModel;
 using DocumentsGenerator.MVVM.Model;
 
@@ -15,11 +8,11 @@ namespace DocumentsGenerator.MVVM.ViewModel
 {
     class MainViewModel : ObservableObject
     {
-        public RelayCommand HomeViewCommand { get; set; }
-        public RelayCommand TemplateViewCommand { get; set; }
-        public RelayCommand SheetViewCommand { get; set; }
-        public RelayCommand DocumentViewCommand { get; set; }
-        public RelayCommand SettingsViewCommand { get; set; }
+        public RelayCommand<object> HomeViewCommand { get; set; }
+        public RelayCommand<object> TemplateViewCommand { get; set; }
+        public RelayCommand<object> SheetViewCommand { get; set; }
+        public RelayCommand<object> DocumentViewCommand { get; set; }
+        public RelayCommand<object> SettingsViewCommand { get; set; }
 
         public HomeViewModel HomeVm { get; set; }
         public TemplateViewModel TemplateVm { get; set; }
@@ -58,32 +51,32 @@ namespace DocumentsGenerator.MVVM.ViewModel
             NavbarColor = new SolidColorBrush(constants._mainColor);
             MainMenuColor = new SolidColorBrush(constants._mainColorDark);
 
-            HomeViewCommand = new RelayCommand(_ => {
+            HomeViewCommand = new RelayCommand<object>(_ => {
                 CurrentView = HomeVm;
                 NavbarColor.Color = constants._mainColor;
                 MainMenuColor.Color = constants._mainColorDark;
             });
 
-            TemplateViewCommand = new RelayCommand(_ => {
+            TemplateViewCommand = new RelayCommand<object>(_ => {
                 CurrentView = TemplateVm;
                 NavbarColor.Color = constants._templateColor;
                 MainMenuColor.Color = constants._templateColorDark;
             });
 
-            SheetViewCommand = new RelayCommand(_ =>
+            SheetViewCommand = new RelayCommand<object>(_ =>
             {
                 CurrentView = SheetVm;
                 NavbarColor.Color = constants._sheetColor;
                 MainMenuColor.Color = constants._sheetColorDark;
             });
 
-            DocumentViewCommand = new RelayCommand(_ => {
+            DocumentViewCommand = new RelayCommand<object>(_ => {
                 CurrentView = DocumentVm;
                 NavbarColor.Color = constants._documentColor;
                 MainMenuColor.Color = constants._documentColorDark;
             });
 
-            SettingsViewCommand = new RelayCommand(_ => {
+            SettingsViewCommand = new RelayCommand<object>(_ => {
                 CurrentView = SettingsVm;
                 NavbarColor.Color = constants._settingsColor;
                 MainMenuColor.Color = constants._settingsColorDark;

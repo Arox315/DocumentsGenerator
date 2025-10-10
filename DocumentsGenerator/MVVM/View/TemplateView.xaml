@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:DocumentsGenerator.Controls"
              xmlns:view="clr-namespace:DocumentsGenerator.MVVM.View"
              xmlns:viewModel="clr-namespace:DocumentsGenerator.MVVM.ViewModel"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="780">
 
@@ -44,7 +45,17 @@
                                         IconImage2="/Images/file-icon.png"
                                         Foreground="White"
                                         Grid.Column="1"
-                                        Style="{StaticResource DoubleIconButtonTheme}"/>
+                                        Style="{StaticResource DoubleIconButtonTheme}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:CallMethodAction MethodName="Execute" />
+                                <i:InvokeCommandAction
+                                  Command="{Binding LoadFileName}"
+                                  CommandParameter="{Binding}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+
+                    </local:DoubleIconButton>
 
 
                 </Grid>
@@ -72,7 +83,7 @@
                 <Border Background="#4B4789"
                         MaxHeight="30"
                         Height="30">
-                    <TextBlock Text="Wczytaj pliki z folderu"
+                    <TextBlock Text="{Binding FolderSelectHelperText}"
                                Foreground="White"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
@@ -86,7 +97,16 @@
                                   IconWidth="25"
                                   Background="{Binding MainColor}"
                                   Grid.Column="1"
-                                  Style="{StaticResource DefaultIconButtonTheme}"/>
+                                  Style="{StaticResource DefaultIconButtonTheme}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:CallMethodAction MethodName="Execute" />
+                            <i:InvokeCommandAction
+                              Command="{Binding LoadFolderName}"
+                              CommandParameter="{Binding}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </local:IconButton>
 
             </Grid>
 
@@ -115,29 +135,32 @@
                            VerticalAlignment="Center"/>
                 </Border>
 
-                <TextBox Background="#4B4789"
+                <TextBox x:Name="CustomFilterKey"
+                         Background="#4B4789"
                          Grid.Column="1"
                          Foreground="White"
                          Padding="4 0 0 0"
                          VerticalContentAlignment="Center"
                          FontSize="12"
+                         Text="{Binding CustomFilterKeyName,
+                                    Mode=TwoWay,
+                                    UpdateSourceTrigger=PropertyChanged}"
                          local:TextBoxHelper.Placeholder="np.: _wzór"/>
             </Grid>
 
             <ComboBox x:Name="FileKeyFilter"
                       ItemsSource="{Binding FileKeyFilters}"
-                      SelectedItem="{Binding SelectedKeyFilter}"
+                      SelectedItem="{Binding SelectedKeyFilter, Mode=TwoWay}"
                       Height="30"
                       MaxHeight="30"
                       VerticalContentAlignment="Center"
-                      SelectionChanged="FileKeyFilter_SelectionChanged"
                       Margin="0 15 0 0"
                       />
 
             <CheckBox Content="Wczytaj pliki z domyślnym kluczem"
                       Foreground="White"
                       FontSize="12"
-                      IsChecked="True"
+                      IsChecked="{Binding LoadFilesWithDefaultKey}"
                       Margin="0 15 0 0"/>
 
             <Grid Height="30"
@@ -157,7 +180,7 @@
 
                 <Border Background="#4B4789"
                         Grid.Column="1">
-                    <Label Content="__wzór"
+                    <Label Content="{Binding DefaultDisplayFilterKeyName}"
                            Foreground="White"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"/>
@@ -171,6 +194,8 @@
                     Background="{Binding MainColor}"
                     Height="40"
                     Margin="0 68 0 0"
+                    Command="{Binding LoadFilesFromFolder}"
+                    CommandParameter="{Binding}"
                     Style="{StaticResource MainButtonTheme}"/>
 
         </StackPanel>
@@ -187,7 +212,7 @@
                 <Border Background="#4B4789"
                         MaxHeight="30"
                         Height="30">
-                    <TextBlock Text="Wybierz folder docelowy"
+                    <TextBlock Text="{Binding SaveFolderSelectHelperText}"
                                Foreground="White"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
@@ -201,7 +226,16 @@
                                   IconWidth="25"
                                   Background="{Binding MainColor}"
                                   Grid.Column="1"
-                                  Style="{StaticResource DefaultIconButtonTheme}"/>
+                                  Style="{StaticResource DefaultIconButtonTheme}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:CallMethodAction MethodName="Execute" />
+                            <i:InvokeCommandAction
+                              Command="{Binding SetSaveFolder}"
+                              CommandParameter="{Binding}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </local:IconButton>
 
             </Grid>
 
@@ -210,6 +244,8 @@
                     FontSize="16"
                     FontWeight="Bold"
                     Background="{Binding MainColor}"
+                    Command="{Binding GenerateTemplates}"
+                    CommandParameter="{Binding}"
                     Height="40"
                     Style="{StaticResource MainButtonTheme}"/>
 

@@ -58,5 +58,11 @@ namespace DocumentsGenerator
             DokumentMenuBtn.IsChecked = false;
             SettingsMenuBtn.IsChecked = false;
         }
+
+        private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Keyboard.FocusedElement is TextBox)
+                Keyboard.ClearFocus();
+        }
     }
 }

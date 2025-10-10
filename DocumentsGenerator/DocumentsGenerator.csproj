@@ -12,15 +12,19 @@
     <None Remove="Images\app-logo.png" />
     <None Remove="Images\close-icon.png" />
     <None Remove="Images\document-icon.png" />
+    <None Remove="Images\error-icon.png" />
     <None Remove="Images\file-icon.png" />
     <None Remove="Images\folder-icon.png" />
+    <None Remove="Images\info-icon.png" />
     <None Remove="Images\main-view-icon.png" />
     <None Remove="Images\maximise-icon.png" />
     <None Remove="Images\minimise-icon.png" />
     <None Remove="Images\plus-icon.png" />
+    <None Remove="Images\question-icon.png" />
     <None Remove="Images\settings-icon.png" />
     <None Remove="Images\sheet-icon.png" />
     <None Remove="Images\template-icon.png" />
+    <None Remove="Images\warning-icon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,18 +32,36 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
+    <PackageReference Include="DocumentFormat.OpenXml.Features" Version="3.3.0" />
+    <PackageReference Include="DocumentFormat.OpenXml.Framework" Version="3.3.0" />
+    <PackageReference Include="DocumentFormat.OpenXml.Linq" Version="3.3.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Images\app-logo.png" />
     <Resource Include="Images\close-icon.png" />
     <Resource Include="Images\document-icon.png" />
+    <Resource Include="Images\error-icon.png" />
     <Resource Include="Images\file-icon.png" />
     <Resource Include="Images\folder-icon.png" />
+    <Resource Include="Images\info-icon.png" />
     <Resource Include="Images\main-view-icon.png" />
     <Resource Include="Images\maximise-icon.png" />
     <Resource Include="Images\minimise-icon.png" />
     <Resource Include="Images\plus-icon.png" />
+    <Resource Include="Images\question-icon.png" />
     <Resource Include="Images\settings-icon.png" />
     <Resource Include="Images\sheet-icon.png" />
     <Resource Include="Images\template-icon.png" />
+    <Resource Include="Images\warning-icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="App.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

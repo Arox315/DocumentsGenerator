@@ -8,6 +8,9 @@ namespace DocumentsGenerator.MVVM.Model
 {
     class LoadedFileNameModel
     {
+        public string? FilePath { get; set; }
         public string? FileName { get; set; }
+
+        public string? FileKey { get; set; }
     }
 }

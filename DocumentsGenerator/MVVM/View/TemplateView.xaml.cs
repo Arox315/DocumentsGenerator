@@ -25,10 +25,5 @@ namespace DocumentsGenerator.MVVM.View
         {
             InitializeComponent();
         }
-
-        private void FileKeyFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
     }
 }
