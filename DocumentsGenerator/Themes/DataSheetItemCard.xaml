@@ -1,0 +1,90 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:DocumentsGenerator.Controls"
+                    xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
+
+    <Style TargetType="ListViewItem" x:Key="DataSheetItemCard">
+        <Style.Setters>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Grid Background="Transparent"
+                                    Height="30"
+                                    MaxHeight="30"
+                                    Margin="0 0 0 10"
+                                    Width="600">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="300"/>
+                                <ColumnDefinition Width="30"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=ListView}}">
+                                <Label Content="{Binding Key}"
+                                       Foreground="White"
+                                       FontWeight="Medium"
+                                       FontSize="12"
+                                       VerticalAlignment="Center"/>
+                            </Border>
+
+                            <Border Grid.Column="1">
+                                <Grid>
+                                    <!--<Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="30"/>
+                                    </Grid.ColumnDefinitions>-->
+
+                                    <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             Background="#4B4789"
+                                             Foreground="White"
+                                             VerticalContentAlignment="Center"
+                                             FontSize="12"
+                                             Grid.ColumnSpan="2"
+                                             TextWrapping="WrapWithOverflow"
+                                             Padding="4 0 34 0"/>
+                                    <!--<local:IconButton IconImage="/Images/close-icon.png"
+                                                      Height="30"
+                                                      Width="30"
+                                                      Grid.Column="1"
+                                                      IconHeight="20"
+                                                      IconWidth="20"
+                                                      Style="{StaticResource DefaultIconButtonTheme}"
+                                                      >
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Click">
+                                                <i:CallMethodAction MethodName="Execute" />
+                                                <i:InvokeCommandAction
+                                                  Command="{Binding DataContext.ClearValueCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                  CommandParameter="{Binding}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </local:IconButton>-->
+                                </Grid>
+                            </Border>
+                            <!--Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=ListView}}"-->
+                            <local:IconButton IconImage="/Images/delete-icon.png"
+                                              Height="30"
+                                              Width="30"
+                                              Grid.Column="2"
+                                              IconHeight="25"
+                                              IconWidth="25"
+                                              Background="#88AC4C"
+                                              Style="{StaticResource DefaultIconButtonTheme}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <i:CallMethodAction MethodName="Execute" />
+                                        <i:InvokeCommandAction
+                                      Command="{Binding DataContext.ClearValueCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                      CommandParameter="{Binding}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </local:IconButton>
+
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+    </Style>
+</ResourceDictionary>

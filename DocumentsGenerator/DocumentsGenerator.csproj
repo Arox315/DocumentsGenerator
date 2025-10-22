@@ -11,6 +11,7 @@
   <ItemGroup>
     <None Remove="Images\app-logo.png" />
     <None Remove="Images\close-icon.png" />
+    <None Remove="Images\delete-icon.png" />
     <None Remove="Images\document-icon.png" />
     <None Remove="Images\error-icon.png" />
     <None Remove="Images\file-icon.png" />
@@ -42,6 +43,7 @@
   <ItemGroup>
     <Resource Include="Images\app-logo.png" />
     <Resource Include="Images\close-icon.png" />
+    <Resource Include="Images\delete-icon.png" />
     <Resource Include="Images\document-icon.png" />
     <Resource Include="Images\error-icon.png" />
     <Resource Include="Images\file-icon.png" />

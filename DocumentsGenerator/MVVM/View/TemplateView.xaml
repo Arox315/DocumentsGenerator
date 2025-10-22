@@ -143,8 +143,8 @@
                          VerticalContentAlignment="Center"
                          FontSize="12"
                          Text="{Binding CustomFilterKeyName,
-                                    Mode=TwoWay,
-                                    UpdateSourceTrigger=PropertyChanged}"
+                                        Mode=TwoWay,
+                                        UpdateSourceTrigger=PropertyChanged}"
                          local:TextBoxHelper.Placeholder="np.: _wzór"/>
             </Grid>
 

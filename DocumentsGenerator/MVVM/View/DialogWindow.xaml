@@ -65,10 +65,10 @@
 
             <!-- Buttons -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" >
-                <Button x:Name="BtnYes" Content="Yes" Width="96" Margin="6" Click="BtnYes_Click" Visibility="Collapsed" Foreground="White" Background="{Binding ButtonColor}" Style="{StaticResource MainButtonTheme}"/>
-                <Button x:Name="BtnNo" Content="No" Width="96" Margin="6" Click="BtnNo_Click" Visibility="Collapsed" Foreground="White" Background="{Binding ButtonColor}" Style="{StaticResource MainButtonTheme}"/>
-                <Button x:Name="BtnOk" Content="OK" Width="96" Margin="6" IsDefault="True" Click="BtnOk_Click" Visibility="Collapsed" Foreground="White" Background="{Binding ButtonColor}" Style="{StaticResource MainButtonTheme}"/>
-                <Button x:Name="BtnCancel" Content="Cancel" Width="96" Margin="6" IsCancel="True" Click="BtnCancel_Click" Visibility="Collapsed" Foreground="White" Background="{Binding ButtonColor}" Style="{StaticResource MainButtonTheme}"/>
+                <Button x:Name="BtnYes" Content="Tak" Width="96" Margin="6" Click="BtnYes_Click" Visibility="Collapsed" Foreground="White" Background="{Binding ButtonColor}" Style="{StaticResource MainButtonTheme}"/>
+                <Button x:Name="BtnNo" Content="Nie" Width="96" Margin="6" Click="BtnNo_Click" Visibility="Collapsed" Foreground="White" Background="{Binding ButtonColor}" Style="{StaticResource MainButtonTheme}"/>
+                <Button x:Name="BtnOk" Content="Ok" Width="96" Margin="6" IsDefault="True" Click="BtnOk_Click" Visibility="Collapsed" Foreground="White" Background="{Binding ButtonColor}" Style="{StaticResource MainButtonTheme}"/>
+                <Button x:Name="BtnCancel" Content="Anuluj" Width="96" Margin="6" IsCancel="True" Click="BtnCancel_Click" Visibility="Collapsed" Foreground="White" Background="{Binding ButtonColor}" Style="{StaticResource MainButtonTheme}"/>
             </StackPanel>
         </Grid>
     </Border>
