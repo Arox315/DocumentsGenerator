@@ -25,19 +25,19 @@ namespace DocumentsGenerator.MVVM.Model
         public void GenerateTemplates(string inFolder, string outFolder)
         {
             Debug.WriteLine("Generowanie dokumentów...");
-            foreach(LoadedFileNameModel file in LoadedFileNames!) {
+            string generationDate = DateTime.Now.ToString("dd'-'MM'-'yyyy'T'HH'-'mm'-'ss");
+            string templateSubfolderName = outFolder + $@"\szablony_{generationDate}\";
+            string sheetSubfolderName = outFolder + $@"\arkusze_{generationDate}\";
+
+            Directory.CreateDirectory(templateSubfolderName);
+            Directory.CreateDirectory(sheetSubfolderName);
+
+            foreach (LoadedFileNameModel file in LoadedFileNames!) {
                 string fileName = Path.GetFileNameWithoutExtension(file.FilePath!);
                 fileName = fileName.Replace(file.FileKey!, "");
 
                 string templateFileName = fileName + "_szablon.docx";
                 string dataSheetFileName = fileName + "_arkusz.xml";
-
-                string generationDate = DateTime.Now.ToString("dd'-'MM'-'yyyy'T'HH'-'mm'-'ss");
-                string templateSubfolderName = outFolder + $@"\szablony_{generationDate}\";
-                string sheetSubfolderName = outFolder + $@"\arkusze_{generationDate}\";
-
-                Directory.CreateDirectory(templateSubfolderName);
-                Directory.CreateDirectory(sheetSubfolderName);
 
                 string outputPath = templateSubfolderName + templateFileName;
                 string xmlPath = sheetSubfolderName + dataSheetFileName;
@@ -56,9 +56,22 @@ namespace DocumentsGenerator.MVVM.Model
 
                     ReplaceTagsWithBoundContentControls(doc, storeItemId, tagMap);
                 }
-
-                //Debug.WriteLine($"Gotowe.\n - Szablon DOCX: {outputPath}\n - Arkusz danych XML: {xmlPath}");
             }
+
+            // Generate merged Data Sheet
+            DataSheetModel dataSheetModel = new DataSheetModel();
+            dataSheetModel.LoadedFileNames = new ObservableCollection<LoadedFileNameModel>();
+
+            string[] dataSheets = Directory.GetFiles(sheetSubfolderName);
+            foreach (string dataSheet in dataSheets) {
+                dataSheetModel.LoadedFileNames!.Add(new LoadedFileNameModel
+                {
+                    FilePath = dataSheet,
+                    FileName = Path.GetFileName(dataSheet),
+                    FileKey = "_arkusz"
+                });
+            }
+            dataSheetModel.MergeDataSheets(outFolder);
         }
 
         public TemplateModel() {}

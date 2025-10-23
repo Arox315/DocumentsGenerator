@@ -3,10 +3,92 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DocumentsGenerator.MVVM.View"
+             xmlns:local="clr-namespace:DocumentsGenerator.Controls"
+             xmlns:view="clr-namespace:DocumentsGenerator.MVVM.View"
+             xmlns:viewModel="clr-namespace:DocumentsGenerator.MVVM.ViewModel"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    
+    <UserControl.DataContext>
+        <viewModel:SettingsViewModel/>
+    </UserControl.DataContext>
+
     <Grid>
-            
+        <ListView Background="Transparent"
+                  Margin="10">
+            <ListViewItem HorizontalContentAlignment="Center">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Label Content="Generacja szablonów"
+                           Foreground="White"
+                           FontSize="14"/>
+
+                    <StackPanel Grid.Row="1">
+                        <Grid Background="Transparent"
+            Height="30"
+            MaxHeight="30"
+            Margin="0 0 0 10"
+            Width="600">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="300"/>
+                                <ColumnDefinition Width="30"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=ListView}}">
+                                <Label Content="{Binding DisplayKey}"
+               Foreground="White"
+               FontWeight="Medium"
+               FontSize="12"
+               VerticalAlignment="Center"/>
+                            </Border>
+
+                            <Border Grid.Column="1">
+                                <Grid>
+                                    <!--<Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="30"/>
+            </Grid.ColumnDefinitions>-->
+
+                                    <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Background="#4B4789"
+                     Foreground="White"
+                     VerticalContentAlignment="Center"
+                     FontSize="12"
+                     Grid.ColumnSpan="2"
+                     TextWrapping="WrapWithOverflow"
+                     Padding="4 0 34 0"/>
+                                </Grid>
+                            </Border>
+                           
+                            <local:IconButton IconImage="/Images/delete-icon.png"
+                      Height="30"
+                      Width="30"
+                      Grid.Column="2"
+                      IconHeight="25"
+                      IconWidth="25"
+                      Background="{Binding MainColor}"
+                      Style="{StaticResource DefaultIconButtonTheme}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <i:CallMethodAction MethodName="Execute" />
+                                        <i:InvokeCommandAction
+                                          Command="{Binding DataContext.ClearValueCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                          CommandParameter="{Binding}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </local:IconButton>
+                        </Grid>
+                    </StackPanel>
+
+                </Grid>
+            </ListViewItem>
+        </ListView>
     </Grid>
 </UserControl>

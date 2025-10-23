@@ -3,10 +3,287 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DocumentsGenerator.MVVM.View"
+             xmlns:local="clr-namespace:DocumentsGenerator.Controls"
+             xmlns:viewModel="clr-namespace:DocumentsGenerator.MVVM.ViewModel"
+             xmlns:view="clr-namespace:DocumentsGenerator.MVVM.View"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="480" d:DesignWidth="780">
+    
+    <UserControl.DataContext>
+        <viewModel:DocumentViewModel/>
+    </UserControl.DataContext>
+
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" MaxWidth="300"/>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+
+        <!--Loaded files panel-->
+        <StackPanel Background="{Binding LoadedFilesItems}">
+            <Border Background="{Binding LoadedFilesHeader}"
+            Height="50">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Wybrane pliki"
+                               Foreground="White"
+                               VerticalAlignment="Center"
+                               FontSize="18"
+                               Margin="10 0 0 0"/>
+
+                    <local:DoubleIconButton x:Name="AddNewFileBtn"
+                                Height="50"
+                                Width="50"
+                                HorizontalAlignment="Right"
+                                IconImage1="/Images/plus-icon.png"
+                                IconImage2="/Images/file-icon.png"
+                                Foreground="White"
+                                Grid.Column="1"
+                                Style="{StaticResource DoubleIconButtonTheme}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:CallMethodAction MethodName="Execute" />
+                                <i:InvokeCommandAction
+                                   Command="{Binding LoadFileNameCommand}"
+                                   CommandParameter="{Binding}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+
+                    </local:DoubleIconButton>
+
+
+                </Grid>
+            </Border>
+
+            <ListView ItemsSource="{Binding LoadedFileNames}"
+                      Margin="10 5 0 0"
+                      Background="Transparent"
+                      BorderThickness="0"
+                      ItemContainerStyle="{StaticResource LoadedFileNameCard}"/>
+
+        </StackPanel>
+
+        <!--Folder loading settings panel-->
+        <StackPanel Background="Transparent"
+                    Margin="10 50 10 50"
+                    Grid.Column="1">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="30"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Background="#4B4789"
+                        MaxHeight="30"
+                        Height="30">
+                    <TextBlock Text="{Binding FolderSelectHelperText}"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="12"/>
+                </Border>
+
+                <local:IconButton IconImage="/Images/folder-icon.png"
+                                  Width="30"
+                                  Height="30"
+                                  IconHeight="25"
+                                  IconWidth="25"
+                                  Background="{Binding MainColor}"
+                                  Grid.Column="1"
+                                  Style="{StaticResource DefaultIconButtonTheme}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:CallMethodAction MethodName="Execute" />
+                            <i:InvokeCommandAction
+                               Command="{Binding LoadFolderNameCommand}"
+                               CommandParameter="{Binding}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </local:IconButton>
+
+            </Grid>
+
+            <TextBlock Text="Dodatkowe opcje:"
+                       Foreground="White"
+                       FontSize="16"
+                       Margin="0 30 0 0"/>
+
+            <TextBlock Text="Filtruj pliki poprzez klucz w ich nazwie"
+                       Foreground="White"
+                       FontSize="12"
+                       Margin="0 20 0 0"/>
+
+            <Grid Height="30"
+                  MaxHeight="30"
+                  Margin="0 5 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Background="{Binding MainColor}">
+                    <Label Content="Nazwa klucza"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+                </Border>
+
+                <TextBox x:Name="CustomFilterKey"
+                         Background="#4B4789"
+                         Grid.Column="1"
+                         Foreground="White"
+                         Padding="4 0 0 0"
+                         VerticalContentAlignment="Center"
+                         FontSize="12"
+                         Text="{Binding CustomFilterKeyName,
+                                        Mode=TwoWay,
+                                        UpdateSourceTrigger=PropertyChanged}"
+                         local:TextBoxHelper.Placeholder="np.: _szablon"/>
+            </Grid>
+
+            <ComboBox x:Name="FileKeyFilter"
+                      ItemsSource="{Binding FileKeyFilters}"
+                      SelectedItem="{Binding SelectedKeyFilter, Mode=TwoWay}"
+                      Height="30"
+                      MaxHeight="30"
+                      VerticalContentAlignment="Center"
+                      Margin="0 15 0 0"/>
+
+            <CheckBox Content="Wczytaj pliki z domyślnym kluczem"
+                      Foreground="White"
+                      FontSize="12"
+                      IsChecked="{Binding LoadFilesWithDefaultKey}"
+                      Margin="0 15 0 0"/>
+
+            <Grid Height="30"
+                  MaxHeight="30"
+                  Margin="0 15 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="5*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Background="{Binding MainColor}">
+                    <Label Content="Domyślny klucz"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+                </Border>
+
+                <Border Background="#4B4789"
+                        Grid.Column="1">
+                    <Label Content="{Binding DefaultDisplayFilterKeyName}"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+                </Border>
+            </Grid>
+
+            <Button Content="Wczytaj"
+                    Foreground="White"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Background="{Binding MainColor}"
+                    Height="40"
+                    Margin="0 68 0 0"
+                    Command="{Binding LoadFilesFromFolderCommand}"
+                    CommandParameter="{Binding}"
+                    Style="{StaticResource MainButtonTheme}"/>
+
+        </StackPanel>
+
+        <!--Generate Section-->
+        <StackPanel Grid.Column="2"
+                    Margin="10 300 10 50">
             
+            <Grid Margin="0 0 0 15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="30"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Background="#4B4789"
+                        MaxHeight="30"
+                        Height="30">
+                    <TextBlock Text="{Binding DataSheetSelectHelperText}"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="12"/>
+                </Border>
+
+                <local:IconButton IconImage="/Images/file-icon.png"
+                                  Width="30"
+                                  Height="30"
+                                  IconHeight="25"
+                                  IconWidth="25"
+                                  Background="{Binding MainColor}"
+                                  Grid.Column="1"
+                                  Style="{StaticResource DefaultIconButtonTheme}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:CallMethodAction MethodName="Execute" />
+                            <i:InvokeCommandAction
+                                  Command="{Binding LoadDataSheetCommand}"
+                                  CommandParameter="{Binding}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </local:IconButton>
+            </Grid>
+
+            <Grid Margin="0 0 0 15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="30"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Background="#4B4789"
+                        MaxHeight="30"
+                        Height="30">
+                    <TextBlock Text="{Binding SaveFolderSelectHelperText}"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="12"/>
+                </Border>
+
+                <local:IconButton IconImage="/Images/folder-icon.png"
+                                  Width="30"
+                                  Height="30"
+                                  IconHeight="25"
+                                  IconWidth="25"
+                                  Background="{Binding MainColor}"
+                                  Grid.Column="1"
+                                  Style="{StaticResource DefaultIconButtonTheme}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <i:CallMethodAction MethodName="Execute" />
+                            <i:InvokeCommandAction
+                              Command="{Binding SetSaveFolderCommand}"
+                              CommandParameter="{Binding}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </local:IconButton>
+
+            </Grid>
+
+            <Button Content="Generuj"
+                    Foreground="White"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Background="{Binding MainColor}"
+                    Command="{Binding GenerateDocumentsCommand}"
+                    CommandParameter="{Binding}"
+                    Height="40"
+                    Style="{StaticResource MainButtonTheme}"/>
+
+        </StackPanel>
     </Grid>
 </UserControl>

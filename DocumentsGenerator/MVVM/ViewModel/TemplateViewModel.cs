@@ -345,6 +345,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             }
 
             FolderSelectHelperText = "Wczytaj pliki z folderu";
+            _selectedReadFolder = null;
         }
     }
 }

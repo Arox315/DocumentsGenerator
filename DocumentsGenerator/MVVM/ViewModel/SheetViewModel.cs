@@ -182,8 +182,9 @@ namespace DocumentsGenerator.MVVM.ViewModel
                     {
                         Items.Add(new DataSheetItemModel
                         {
-                            Key=element.Name.LocalName.Replace("_","__"),
-                            Value=element.Value
+                            DisplayKey=element.Name.LocalName.Replace("_","__"),
+                            Key=element.Name.LocalName,
+                            Value =element.Value
                         });
                     }
                 }
@@ -209,8 +210,6 @@ namespace DocumentsGenerator.MVVM.ViewModel
                 doc.Save(_currentDataSheet);
                 DialogWindow.ShowInfo("Pomyślnie zapisano zmiany.","Zapis pliku");
             });
-
-
             DeleteItemCommand = new RelayCommand<LoadedFileNameModel>(
                item => LoadedFileNames.Remove(item),
                item => item != null);
@@ -415,6 +414,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             }
 
             FolderSelectHelperText = "Wczytaj pliki z folderu";
+            _selectedReadFolder = null;
         }
 
     }

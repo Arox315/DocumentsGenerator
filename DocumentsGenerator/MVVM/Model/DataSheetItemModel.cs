@@ -11,12 +11,19 @@ namespace DocumentsGenerator.MVVM.Model
     class DataSheetItemModel : INotifyPropertyChanged
     {
         private string? _key;
+        private string? _displayKey;
         private string? _value;
 
         public string? Key
         {
             get => _key;
             set { if (_key != value) { _key = value; OnPropertyChanged(); } }
+        }
+
+        public string? DisplayKey
+        {
+            get => _displayKey;
+            set { if (_displayKey != value) { _displayKey = value; OnPropertyChanged(); } }
         }
 
         public string? Value

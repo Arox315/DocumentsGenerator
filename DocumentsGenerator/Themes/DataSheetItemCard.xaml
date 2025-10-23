@@ -21,7 +21,7 @@
                             </Grid.ColumnDefinitions>
 
                             <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=ListView}}">
-                                <Label Content="{Binding Key}"
+                                <Label Content="{Binding DisplayKey}"
                                        Foreground="White"
                                        FontWeight="Medium"
                                        FontSize="12"
@@ -80,7 +80,6 @@
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </local:IconButton>
-
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
