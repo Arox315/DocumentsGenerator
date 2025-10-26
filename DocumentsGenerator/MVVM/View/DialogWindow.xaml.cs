@@ -50,7 +50,6 @@ namespace DocumentsGenerator.MVVM.View
 
         private void ConfigureButtons()
         {
-            // Show/hide and set defaults based on DialogType
             switch (Type)
             {
                 case DialogType.Ok:
@@ -104,7 +103,7 @@ namespace DocumentsGenerator.MVVM.View
         private void BtnYes_Click(object sender, RoutedEventArgs e) { Result = DialogResultEx.Yes; Close(); }
         private void BtnNo_Click(object sender, RoutedEventArgs e) { Result = DialogResultEx.No; Close(); }
 
-        // Static helpers (nice API)
+        // Static helpers
         public static void ShowInfo(string message, string title = "Info", Window? owner = null)
             => ShowInternal(message, title, DialogType.Ok, DialogIcon.Info, owner!);
 

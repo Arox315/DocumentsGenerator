@@ -129,6 +129,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
         public RelayCommand<object> SetSaveFolderCommand { get; }
         public RelayCommand<object> LoadDataSheetCommand { get; }
         public RelayCommand<object> GenerateDocumentsCommand { get; }
+        public RelayCommand<object> ClearLoadedFilesCommand { get; }
 
         protected DocumentModel documentModel;
 
@@ -148,6 +149,8 @@ namespace DocumentsGenerator.MVVM.ViewModel
             SelectedKeyFilter = FileKeyFilters.First();
 
             LoadedFileNames = new ObservableCollection<LoadedFileNameModel>();
+
+            ClearLoadedFilesCommand = new RelayCommand<object>(_ => { LoadedFileNames.Clear(); });
             DeleteItemCommand = new RelayCommand<LoadedFileNameModel>(
               item => LoadedFileNames.Remove(item),
               item => item != null);
@@ -237,6 +240,12 @@ namespace DocumentsGenerator.MVVM.ViewModel
                 if (_currentDataSheet == null)
                 {
                     DialogWindow.ShowError("Nie wczytano żadnego arkusza danych!", "Błąd!");
+                    return;
+                }
+
+                if (_selectedWriteFolder == null && ConfigManager.GetSetting("DocumentSaveFolderDirectory") == "")
+                {
+                    DialogWindow.ShowError("Nie wybrano folderu docelowego!", "Błąd!");
                     return;
                 }
 

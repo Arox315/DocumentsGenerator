@@ -43,7 +43,9 @@
   <ItemGroup>
     <Resource Include="Images\app-logo.png" />
     <Resource Include="Images\close-icon.png" />
-    <Resource Include="Images\delete-icon.png" />
+    <Resource Include="Images\delete-icon.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\document-icon.png" />
     <Resource Include="Images\error-icon.png" />
     <Resource Include="Images\file-icon.png" />

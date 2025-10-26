@@ -121,7 +121,6 @@ namespace DocumentsGenerator.MVVM.ViewModel
                     _selectedKeyFilter = value;
                     OnPropertyChanged(nameof(SelectedKeyFilter));
                     _selectedKeyFilterMode = FileKeyFilters!.IndexOf(SelectedKeyFilter);
-                    //OnSelectedItemChanged();
                 }
             }
         }
@@ -130,6 +129,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
         public RelayCommand<LoadedFileNameModel> DeleteItemCommand { get; }
         public RelayCommand<object> LoadFileDataCommand { get; }
         public RelayCommand<object> SaveDataSheetCommand { get; }
+        public RelayCommand<object> ClearLoadedFilesCommand { get; }
 
 
         public RelayCommand<object> LoadFileNameCommand { get; }
@@ -158,7 +158,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
 
             Items = new ObservableCollection<DataSheetItemModel>();
             LoadedFileNames = new ObservableCollection<LoadedFileNameModel>();
-
+            ClearLoadedFilesCommand = new RelayCommand<object>(_ => { LoadedFileNames.Clear(); });
             ClearValueCommand = new RelayCommand<DataSheetItemModel>(item =>
             {
                 ClearValue(item);
@@ -281,6 +281,12 @@ namespace DocumentsGenerator.MVVM.ViewModel
                 if (LoadedFileNames.Count == 0)
                 {
                     DialogWindow.ShowError("Nie wybrano żadnych arkuszy!", "Błąd!");
+                    return;
+                }
+
+                if (_selectedWriteFolder == null && ConfigManager.GetSetting("DataSheetSaveFolderDirectory") == "")
+                {
+                    DialogWindow.ShowError("Nie wybrano folderu docelowego!", "Błąd!");
                     return;
                 }
 

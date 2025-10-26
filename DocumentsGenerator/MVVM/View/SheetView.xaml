@@ -8,7 +8,7 @@
              xmlns:local="clr-namespace:DocumentsGenerator.Controls"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
-             d:DesignHeight="480" d:DesignWidth="780">
+             d:DesignHeight="525" d:DesignWidth="780">
 
     <UserControl.DataContext>
         <viewModel:SheetViewModel/>
@@ -102,58 +102,72 @@
 
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*" MaxWidth="300"/>
-                    <ColumnDefinition Width="4*"/>
-                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="4*" MaxWidth="350"/>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="5*"/>
                 </Grid.ColumnDefinitions>
 
                 <!--Loaded files panel-->
-                <StackPanel Background="{Binding LoadedFilesItems}">
-                    <Border Background="{Binding LoadedFilesHeader}"
-                            Height="50">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                <Grid Background="{Binding LoadedFilesItems}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="75"/>
+                    </Grid.RowDefinitions>
+                    
+                    <StackPanel Background="{Binding LoadedFilesItems}">
+                        <Border Background="{Binding LoadedFilesHeader}"
+                                Height="50">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="Wybrane pliki"
-                                       Foreground="White"
-                                       VerticalAlignment="Center"
-                                       FontSize="18"
-                                       Margin="10 0 0 0"/>
+                                <TextBlock Text="Wybrane pliki"
+                                           Foreground="White"
+                                           VerticalAlignment="Center"
+                                           FontSize="18"
+                                           Margin="10 0 0 0"/>
 
-                            <local:DoubleIconButton x:Name="AddNewFileBtn"
-                                     Height="50"
-                                     Width="50"
-                                     HorizontalAlignment="Right"
-                                     IconImage1="/Images/plus-icon.png"
-                                     IconImage2="/Images/file-icon.png"
-                                     Foreground="White"
-                                     Grid.Column="1"
-                                     Style="{StaticResource DoubleIconButtonTheme}">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="Click">
-                                        <i:CallMethodAction MethodName="Execute" />
-                                        <i:InvokeCommandAction
-                                            Command="{Binding LoadFileNameCommand}"
-                                            CommandParameter="{Binding}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
+                                <local:DoubleIconButton x:Name="AddNewFileBtn"
+                                                        Height="50"
+                                                        Width="50"
+                                                        HorizontalAlignment="Right"
+                                                        IconImage1="/Images/plus-icon.png"
+                                                        IconImage2="/Images/file-icon.png"
+                                                        Foreground="White"
+                                                        Grid.Column="1"
+                                                        Style="{StaticResource DoubleIconButtonTheme}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Click">
+                                            <i:CallMethodAction MethodName="Execute" />
+                                            <i:InvokeCommandAction
+                                                  Command="{Binding LoadFileNameCommand}"
+                                                  CommandParameter="{Binding}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </local:DoubleIconButton>
+                            </Grid>
+                        </Border>
 
-                            </local:DoubleIconButton>
-
-
-                        </Grid>
-                    </Border>
-
-                    <ListView ItemsSource="{Binding LoadedFileNames}"
-                              Margin="10 5 0 0"
-                              Background="Transparent"
-                              BorderThickness="0"
-                              ItemContainerStyle="{StaticResource LoadedFileNameCard}"/>
-
-                </StackPanel>
+                        <ListView ItemsSource="{Binding LoadedFileNames}"
+                                  Margin="10 5 0 0"
+                                  Background="Transparent"
+                                  BorderThickness="0"
+                                  Height="350"
+                                  ItemContainerStyle="{StaticResource LoadedFileNameCard}"/>
+                    </StackPanel>
+                    <Button Height="40"
+                            Foreground="White"
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Content="Wyczyść"
+                            Background="{Binding MainColor}"
+                            Style="{StaticResource MainButtonTheme}"
+                            Grid.Row="1"
+                            Margin="5 0 5 0"
+                            Command="{Binding ClearLoadedFilesCommand}"/>
+                </Grid>
 
                 <!--Folder loading settings panel-->
                 <StackPanel Background="Transparent"
@@ -240,7 +254,8 @@
                               Height="30"
                               MaxHeight="30"
                               VerticalContentAlignment="Center"
-                              Margin="0 15 0 0"/>
+                              Margin="0 15 0 0"
+                              Style="{StaticResource CustomComboBox}"/>
 
                     <CheckBox Content="Wczytaj pliki z domyślnym kluczem"
                               Foreground="White"

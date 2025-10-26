@@ -16,6 +16,8 @@
                 <ResourceDictionary Source="/Themes/ButtonTheme.xaml"/>
                 <ResourceDictionary Source="/Themes/DataSheetItemCard.xaml"/>
                 <ResourceDictionary Source="/Themes/CustomTabItem.xaml"/>
+                <ResourceDictionary Source="/Themes/CustomScrollBarTheme.xaml"/>
+                <ResourceDictionary Source="/Themes/CustomComboBoxTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type viewModel:HomeViewModel}">
@@ -39,5 +41,6 @@
             </DataTemplate>
 
         </ResourceDictionary>
+        
     </Application.Resources>
 </Application>

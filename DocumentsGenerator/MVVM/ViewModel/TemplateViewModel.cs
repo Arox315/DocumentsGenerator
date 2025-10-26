@@ -124,12 +124,13 @@ namespace DocumentsGenerator.MVVM.ViewModel
         }
 
         public RelayCommand<LoadedFileNameModel> DeleteItemCommand { get; }
-        public RelayCommand<object> LoadFileName { get; }
-        public RelayCommand<object> LoadFolderName { get; }
-        public RelayCommand<object> LoadFilesFromFolder { get; }
-        public RelayCommand<object> SetSaveFolder {  get; }
-        public RelayCommand<object> GenerateTemplates {  get; }
+        public RelayCommand<object> LoadFileNameCommand { get; }
+        public RelayCommand<object> LoadFolderNameCommand { get; }
+        public RelayCommand<object> LoadFilesFromFolderCommand { get; }
+        public RelayCommand<object> SetSaveFolderCommand {  get; }
+        public RelayCommand<object> GenerateTemplatesCommand {  get; }
 
+        public RelayCommand<object> ClearLoadedFilesCommand { get; }
 
         protected TemplateModel templateModel;
 
@@ -146,12 +147,14 @@ namespace DocumentsGenerator.MVVM.ViewModel
             LoadedFileNames = new ObservableCollection<LoadedFileNameModel>();
            
             SelectedKeyFilter = FileKeyFilters.First();
-            
+
+            ClearLoadedFilesCommand = new RelayCommand<object>(_ => { LoadedFileNames.Clear(); });
+
             DeleteItemCommand = new RelayCommand<LoadedFileNameModel>(
                 item => LoadedFileNames.Remove(item),
                 item => item != null);
 
-            LoadFileName = new RelayCommand<object>(_ =>
+            LoadFileNameCommand = new RelayCommand<object>(_ =>
             {
                 OpenFileDialog ofd = new OpenFileDialog();
                 ofd.Filter = "Dokumenty | *.docx";
@@ -174,7 +177,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
                 }
             });
 
-            LoadFolderName = new RelayCommand<object>(_ => { 
+            LoadFolderNameCommand = new RelayCommand<object>(_ => { 
                 OpenFolderDialog ofd = new OpenFolderDialog();
                 ofd.InitialDirectory = ConfigManager.GetSetting("TemplateFolderSelectorInitialDirectory");
                 ofd.Title = "Wybierz folder...";
@@ -190,7 +193,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
 
             });
 
-            LoadFilesFromFolder = new RelayCommand<object>(_ => {
+            LoadFilesFromFolderCommand = new RelayCommand<object>(_ => {
 
                 if(_selectedReadFolder == null)
                 {
@@ -203,7 +206,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
 
             });
 
-            SetSaveFolder = new RelayCommand<object>(_ => {
+            SetSaveFolderCommand = new RelayCommand<object>(_ => {
                 OpenFolderDialog ofd = new OpenFolderDialog();
                 ofd.InitialDirectory = ConfigManager.GetSetting("TemplateSaveFolderSelectInitialDirectory");
                 ofd.Title = "Wybierz folder...";
@@ -218,10 +221,16 @@ namespace DocumentsGenerator.MVVM.ViewModel
                 }
             });
 
-            GenerateTemplates = new RelayCommand<object>(_ => {
+            GenerateTemplatesCommand = new RelayCommand<object>(_ => {
                 if(LoadedFileNames.Count == 0)
                 {
                     DialogWindow.ShowError("Nie wybrano żadnych dokumentów wzorcowych!", "Błąd!");
+                    return;
+                }
+
+                if(_selectedWriteFolder == null && ConfigManager.GetSetting("TemplateSaveFolderDirectory") == "")
+                {
+                    DialogWindow.ShowError("Nie wybrano folderu docelowego!", "Błąd!");
                     return;
                 }
                 
