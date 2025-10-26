@@ -200,7 +200,8 @@
             <Border x:Name="Navbar"
                     Grid.Column="1"
                     Grid.Row="1"
-                    Background="{Binding NavbarColor}">
+                    Background="{Binding NavbarColor}"
+                    MouseDown="DragBar_MouseDown">
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top">

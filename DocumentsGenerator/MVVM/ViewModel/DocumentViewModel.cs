@@ -33,7 +33,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             "Kończy się"
         };
         
-        public string DefaultDisplayFilterKeyName { get; } = "_" + ConfigManager.GetSetting("DocumentDefaultFileKeyName");
+        public string DefaultDisplayFilterKeyName { get; set; } = ConfigManager.GetSetting("DocumentDefaultFileKeyName");
         private string _defaultFilterKeyName { get; } = ConfigManager.GetSetting("DocumentDefaultFileKeyName");
 
         private string _folderSelectHelperText = "Wczytaj pliki z folderu";
@@ -140,6 +140,10 @@ namespace DocumentsGenerator.MVVM.ViewModel
 
         public DocumentViewModel() 
         {
+            if (DefaultDisplayFilterKeyName.StartsWith('_'))
+            {
+                DefaultDisplayFilterKeyName = "_" + DefaultDisplayFilterKeyName;
+            }
             documentModel = new DocumentModel();
             MainColor = new SolidColorBrush(constants._documentColor);
             MainColorDark = new SolidColorBrush(constants._documentColorDark);

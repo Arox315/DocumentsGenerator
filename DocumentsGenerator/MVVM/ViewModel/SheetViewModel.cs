@@ -36,7 +36,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             "Kończy się"
         };
 
-        public string DefaultDisplayFilterKeyName { get; } = "_" + ConfigManager.GetSetting("DataSheetDefaultFileKeyName");
+        public string DefaultDisplayFilterKeyName { get; set; } = ConfigManager.GetSetting("DataSheetDefaultFileKeyName");
         private string _defaultFilterKeyName { get; } = ConfigManager.GetSetting("DataSheetDefaultFileKeyName");
 
         private string _fileSelectHelperText = "Wybierz plik";
@@ -148,6 +148,10 @@ namespace DocumentsGenerator.MVVM.ViewModel
         protected DataSheetModel dataSheetModel;
         public SheetViewModel() 
         {
+            if (DefaultDisplayFilterKeyName.StartsWith('_'))
+            {
+                DefaultDisplayFilterKeyName = "_" + DefaultDisplayFilterKeyName;
+            }
             dataSheetModel = new DataSheetModel();
             MainColor = new SolidColorBrush(constants._sheetColor);
             MainColorDark = new SolidColorBrush(constants._sheetColorDark);

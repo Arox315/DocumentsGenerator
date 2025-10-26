@@ -37,18 +37,60 @@ namespace DocumentsGenerator.Controls
                 textBoxControl.TextChanged -= TextBoxControl_TextChanged;
                 textBoxControl.TextChanged += TextBoxControl_TextChanged;
 
+                textBoxControl.IsVisibleChanged -= TextBoxControl_IsVisibleChanged;
+                textBoxControl.IsVisibleChanged += TextBoxControl_IsVisibleChanged;
+
+                textBoxControl.SizeChanged -= TextBoxControl_SizeOrLayoutChanged;
+                textBoxControl.SizeChanged += TextBoxControl_SizeOrLayoutChanged;
+
+
                 // If the adorner exists, invalidate it to draw the current text
                 if (GetOrCreateAdorner(textBoxControl, out PlaceholderAdorner? adorner))
                     adorner!.InvalidateVisual();
             }
         }
 
+        private static void TextBoxControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is TextBox textBoxControl && textBoxControl.IsVisible)
+            {
+                if (GetOrCreateAdorner(textBoxControl, out PlaceholderAdorner? adorner))
+                {
+                    adorner!.Visibility = string.IsNullOrEmpty(textBoxControl.Text)
+                                          ? Visibility.Visible
+                                          : Visibility.Hidden;
+
+                    adorner.InvalidateVisual();
+                }
+            }
+        }
+
+        private static void TextBoxControl_SizeOrLayoutChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (sender is TextBox textBoxControl)
+            {
+                if (GetOrCreateAdorner(textBoxControl, out PlaceholderAdorner? adorner))
+                {
+                    adorner!.InvalidateVisual();
+                }
+            }
+        }
+
+
         private static void TextBoxControl_Loaded(object sender, RoutedEventArgs e)
         {
             if (sender is TextBox textBoxControl)
             {
-                textBoxControl.Loaded -= TextBoxControl_Loaded;
-                GetOrCreateAdorner(textBoxControl, out _);
+                if (GetOrCreateAdorner(textBoxControl, out _))
+                {
+                    textBoxControl.Loaded -= TextBoxControl_Loaded;
+                }
+                else
+                {
+                    textBoxControl.Loaded -= TextBoxControl_Loaded;
+                    GetOrCreateAdorner(textBoxControl, out _);
+                }
+                    
             }
         }
 
