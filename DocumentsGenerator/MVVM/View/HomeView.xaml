@@ -8,115 +8,9 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
-
-        <StackPanel Grid.Row="1">
-            <TextBlock Text="Dostępne narzędzia"
-                       Foreground="White"
-                       FontSize="18"
-                       Margin="10 0 0 0"
-                       FontWeight="Medium"/>
-
-            <Grid Margin="10">
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                
-                
-                <Border Background="#40A7AE"
-                        Height="130"
-                        Width="115"
-                        CornerRadius="8">
-                    <Grid VerticalAlignment="Stretch">
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="3*"/>
-                            <RowDefinition Height="2*"/>
-                        </Grid.RowDefinitions>
-                        
-                        <Image Source="/Images/template-icon.png"
-                               RenderOptions.BitmapScalingMode="HighQuality"
-                               Width="50"
-                               Height="50"
-                               Stretch="UniformToFill"
-                               Grid.Row="1"/>
-                        <TextBlock Text="Generator szablonów"
-                                   Margin="5"
-                                   Width="80"
-                                   Foreground="White"
-                                   Grid.Row="2"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Center"/>
-                    </Grid>
-                    
-                </Border>
-
-                <Border Background="#88AC4C"
-                        Height="130"
-                        Width="115"
-                        CornerRadius="8"
-                        Grid.Column="1">
-                    <Grid VerticalAlignment="Stretch">
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="3*"/>
-                            <RowDefinition Height="2*"/>
-                        </Grid.RowDefinitions>
-
-                        <Image Source="/Images/sheet-icon.png"
-                               RenderOptions.BitmapScalingMode="HighQuality"
-                               Width="50"
-                               Height="50"
-                               Stretch="UniformToFill"
-                               Grid.Row="1"/>
-                        <TextBlock Text="Generator arkuszy danych"
-                                   Margin="5"
-                                   Foreground="White"
-                                   Grid.Row="2"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Center"/>
-                    </Grid>
-
-                </Border>
-
-                <Border Background="#7C438E"
-                        Height="130"
-                        Width="115"
-                        CornerRadius="8"
-                        Grid.Column="2">
-                    <Grid VerticalAlignment="Stretch">
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="3*"/>
-                            <RowDefinition Height="2*"/>
-                        </Grid.RowDefinitions>
-
-                        <Image Source="/Images/document-icon.png"
-                               RenderOptions.BitmapScalingMode="HighQuality"
-                               Width="50"
-                               Height="50"
-                               Stretch="UniformToFill"
-                               Grid.Row="1"/>
-                        <TextBlock Text="Generator dokumentów"
-                                   Margin="5"
-                                   Foreground="White"
-                                   Grid.Row="2"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Center"/>
-                    </Grid>
-                </Border>
-            </Grid>
-            
-        </StackPanel>
-
 
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Center">
@@ -133,8 +27,14 @@
                        FontWeight="Medium"
                        VerticalAlignment="Center"/>
         </StackPanel>
-        
-        
+
+        <TextBlock Text="© Artur Życzyński 2025"
+                   Grid.Row="1"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   Foreground="White"
+                   FontSize="16"
+                   FontWeight="Bold"/>
 
     </Grid>
 </UserControl>
