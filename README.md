@@ -12,4 +12,4 @@ This component takes one or more generated templates and a data sheet. The XML d
 ## Author
 Artur Życzyński
 ## License
-MIT
+GPL-3.0
