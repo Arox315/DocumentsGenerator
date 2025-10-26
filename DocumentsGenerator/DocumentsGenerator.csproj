@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>app-logo-icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +27,10 @@
     <None Remove="Images\sheet-icon.png" />
     <None Remove="Images\template-icon.png" />
     <None Remove="Images\warning-icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="app-logo-icon.ico" />
   </ItemGroup>
 
   <ItemGroup>

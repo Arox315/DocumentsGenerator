@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -174,7 +175,7 @@ namespace DocumentsGenerator.Controls
                     renderingOffset.Y += partPosition.Y;
 
                     text.MaxTextWidth = System.Math.Max(part.ActualWidth - renderingOffset.X, 10);
-                    text.MaxTextHeight = System.Math.Max(part.ActualHeight, 0);
+                    text.MaxTextHeight = System.Math.Max(part.ActualHeight, 1.0);
                 }
 
                 // Draw the text
