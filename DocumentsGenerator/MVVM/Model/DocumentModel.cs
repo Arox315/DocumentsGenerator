@@ -1,6 +1,8 @@
 ﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using DocumentsGenerator.MVVM.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -93,12 +95,20 @@ namespace DocumentsGenerator.MVVM.Model
             main.Document?.Save();
         }
 
-        public void GenerateDocuments(string saveDirectoryPath, string dataSheetPath)
+        public void GenerateDocuments(string saveDirectoryPath, string dataSheetPath, ref bool isError)
         {
             foreach(var file in LoadedFileNames!) {
                 string outputDoc = $@"{saveDirectoryPath}\{file.FileName!.Replace(file.FileKey!, "")}";
-                File.Copy(file.FilePath!, outputDoc, true);
-                ReplaceCustomXml(outputDoc, dataSheetPath);
+                try
+                {
+                    File.Copy(file.FilePath!, outputDoc, true);
+                    ReplaceCustomXml(outputDoc, dataSheetPath);
+                }
+                catch (IOException ex)
+                {
+                    isError = true;
+                    DialogWindow.ShowError($"Błąd podczas generowania dokumentu: {file.FileName}\n Błąd: {ex.Message}", "Błąd!");
+                } 
             }
         }
 

@@ -227,6 +227,8 @@ namespace DocumentsGenerator.MVVM.ViewModel
             });
 
             GenerateTemplatesCommand = new RelayCommand<object>(_ => {
+                bool isError = false;
+
                 if(LoadedFileNames.Count == 0)
                 {
                     DialogWindow.ShowError("Nie wybrano żadnych dokumentów wzorcowych!", "Błąd!");
@@ -251,10 +253,16 @@ namespace DocumentsGenerator.MVVM.ViewModel
 
                 string _outFolder = _selectedWriteFolder ?? ConfigManager.GetSetting("TemplateSaveFolderDirectory");
                 templateModel.LoadedFileNames = LoadedFileNames;
-                templateModel.GenerateTemplates(_selectedReadFolder!, _outFolder);
+                templateModel.GenerateTemplates(_selectedReadFolder!, _outFolder, ref isError);
 
-                DialogWindow.ShowInfo($"Szablony zostały wygenerowane w:\n{_outFolder}", "Generowanie zakończone");
-
+                if (isError)
+                {
+                    DialogWindow.Show($"Generowanie zakończone z błędami. Szablony zostały wygenerowane w:\n{_outFolder}", "Generowanie zakończone", DialogType.Ok, DialogIcon.Warning);
+                }
+                else
+                {
+                    DialogWindow.ShowInfo($"Generowanie zakończone pomyślnie. Szablony zostały wygenerowane w:\n{_outFolder}", "Generowanie zakończone");
+                }
             });
 
         }

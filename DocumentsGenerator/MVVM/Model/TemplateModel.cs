@@ -9,6 +9,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentsGenerator.Config;
+using DocumentsGenerator.MVVM.View;
 
 
 namespace DocumentsGenerator.MVVM.Model
@@ -22,7 +23,7 @@ namespace DocumentsGenerator.MVVM.Model
 
         private const string DataNs = "template-data";
 
-        public void GenerateTemplates(string inFolder, string outFolder)
+        public void GenerateTemplates(string inFolder, string outFolder, ref bool isError)
         {
             Debug.WriteLine("Generowanie dokumentów...");
             string generationDate = DateTime.Now.ToString("dd'-'MM'-'yyyy'T'HH'-'mm'-'ss");
@@ -33,29 +34,37 @@ namespace DocumentsGenerator.MVVM.Model
             Directory.CreateDirectory(sheetSubfolderName);
 
             foreach (LoadedFileNameModel file in LoadedFileNames!) {
-                string fileName = Path.GetFileNameWithoutExtension(file.FilePath!);
-                fileName = fileName.Replace(file.FileKey!, "");
-
-                string templateFileName = GetTemplateFileNameWithKey(fileName);
-                string dataSheetFileName = GetDataSheetFileNameWithKey(fileName);
-
-                string outputPath = templateSubfolderName + templateFileName;
-                string xmlPath = sheetSubfolderName + dataSheetFileName;
-
-                File.Copy(file.FilePath!, outputPath, overwrite: true);
-
-                using (var doc = WordprocessingDocument.Open(outputPath, true))
+                try
                 {
-                    var orderedRaw = CollectTagsInDocumentOrder(doc);
-                    var tagMap = BuildTagMap(orderedRaw);
+                    string fileName = Path.GetFileNameWithoutExtension(file.FilePath!);
+                    fileName = fileName.Replace(file.FileKey!, "");
 
-                    var xml = BuildDataXmlInOrder(orderedRaw, tagMap);
-                    xml.Save(xmlPath);
+                    string templateFileName = GetTemplateFileNameWithKey(fileName);
+                    string dataSheetFileName = GetDataSheetFileNameWithKey(fileName);
 
-                    var (part, storeItemId) = AddOrReplaceCustomXmlPart(doc, xml);
+                    string outputPath = templateSubfolderName + templateFileName;
+                    string xmlPath = sheetSubfolderName + dataSheetFileName;
 
-                    ReplaceTagsWithBoundContentControls(doc, storeItemId, tagMap);
+                    File.Copy(file.FilePath!, outputPath, overwrite: true);
+
+                    using (var doc = WordprocessingDocument.Open(outputPath, true))
+                    {
+                        var orderedRaw = CollectTagsInDocumentOrder(doc);
+                        var tagMap = BuildTagMap(orderedRaw);
+
+                        var xml = BuildDataXmlInOrder(orderedRaw, tagMap);
+                        xml.Save(xmlPath);
+
+                        var (part, storeItemId) = AddOrReplaceCustomXmlPart(doc, xml);
+
+                        ReplaceTagsWithBoundContentControls(doc, storeItemId, tagMap);
+                    }
                 }
+                catch (Exception ex) {
+                    isError = true;
+                    DialogWindow.ShowError($"Błąd podczas generacji szablonu: {file.FileName}\n Błąd: {ex}", "Błąd!");
+                }
+                
             }
 
             // Generate merged Data Sheet
@@ -71,7 +80,7 @@ namespace DocumentsGenerator.MVVM.Model
                     FileKey = ""
                 });
             }
-            dataSheetModel.MergeDataSheets(outFolder);
+            dataSheetModel.MergeDataSheets(outFolder, ref isError);
         }
 
         public TemplateModel() {}

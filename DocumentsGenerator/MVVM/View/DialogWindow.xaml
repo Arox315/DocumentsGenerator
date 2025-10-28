@@ -8,8 +8,88 @@
         ResizeMode="NoResize"
         Background="Transparent"
         AllowsTransparency="True"
-        Width="320"
+        Width="325"
         Height="180">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent"/>
+        <Style TargetType="ScrollBar">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Vertical">
+                    <Setter Property="Width" Value="20"/>
+                    <Setter Property="Template" Value="{DynamicResource VerticalScrollBar}"/>
+                </Trigger>
+
+                <Trigger Property="Orientation" Value="Horizontal">
+                    <Setter Property="Height" Value="20"/>
+                    <Setter Property="Template" Value="{DynamicResource HorizontalScrollBar}"/>
+                </Trigger>
+
+            </Style.Triggers>
+        </Style>
+
+        <ControlTemplate x:Key="VerticalScrollBar" TargetType="{x:Type ScrollBar}">
+            <Grid>
+
+                <Border Background="#0E0E1B" Width="10"/>
+
+                <Track x:Name="PART_Track" IsDirectionReversed="True">
+                    <Track.DecreaseRepeatButton>
+
+                        <RepeatButton
+                    Margin="3"
+                    Command="ScrollBar.PageUpCommand"
+                    Style="{StaticResource ScrollBarTrackVertical}"/>
+                    </Track.DecreaseRepeatButton>
+
+                    <Track.Thumb>
+                        <Thumb Style="{StaticResource ScrollBarThumbVertical}"/>
+                    </Track.Thumb>
+
+                    <Track.IncreaseRepeatButton>
+
+                        <RepeatButton
+                    Margin="3"
+                    Command="ScrollBar.PageDownCommand"
+                    Style="{StaticResource ScrollBarTrackVertical}"/>
+                    </Track.IncreaseRepeatButton>
+                </Track>
+            </Grid>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="HorizontalScrollBar" TargetType="{x:Type ScrollBar}">
+            <Grid>
+
+                <Border Background="#0E0E1B" Height="10"/>
+
+                <Track x:Name="PART_Track" IsDirectionReversed="False" Orientation="Horizontal">
+                    <Track.DecreaseRepeatButton>
+
+                        <RepeatButton
+                    Margin="3"
+                    Command="ScrollBar.PageLeftCommand"
+                    Style="{StaticResource ScrollBarTrackHorizontal}"/>
+                    </Track.DecreaseRepeatButton>
+
+                    <Track.Thumb>
+                        <Thumb Style="{StaticResource ScrollBarThumbHorizontal}"/>
+                    </Track.Thumb>
+
+                    <Track.IncreaseRepeatButton>
+
+                        <RepeatButton
+                    Margin="3"
+                    Command="ScrollBar.PageRightCommand"
+                    Style="{StaticResource ScrollBarTrackHorizontal}"/>
+                    </Track.IncreaseRepeatButton>
+                </Track>
+            </Grid>
+        </ControlTemplate>
+    </Window.Resources>
+
     <Border x:Name="Navbar" Background="#272547" CornerRadius="5">
         <Grid>
             <Grid.RowDefinitions>
@@ -54,12 +134,19 @@
                 <Image x:Name="IconQuestion" Source="/Images/question-icon.png" Width="50" Height="50" Visibility="Collapsed"/>
 
                 <!-- Message -->
-                <TextBlock Grid.Column="1"
-                           Text="{Binding Message}"
-                           Foreground="White"
-                           VerticalAlignment="Center"
-                           Margin="5 0 10 0"
-                           TextWrapping="Wrap" FontSize="14" />
+
+
+                <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                    <TextBlock Width="220"
+                               VerticalAlignment="Center"
+                               Text="{Binding Message}"
+                               Foreground="White"
+                               TextWrapping="Wrap"
+                               FontSize="14"/>
+                </ScrollViewer>
+                
+
+
             </Grid>
             
 

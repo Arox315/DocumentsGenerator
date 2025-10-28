@@ -202,17 +202,25 @@ namespace DocumentsGenerator.MVVM.ViewModel
                     return;
                 }
 
-                XDocument doc = XDocument.Load(_currentDataSheet);
-                foreach (var item in Items)
+                try
                 {
-                    var element = doc.Root!.Element("{template-data}" + item.Key!);
-                    if (element != null)
+                    XDocument doc = XDocument.Load(_currentDataSheet);
+                    foreach (var item in Items)
                     {
-                        element.SetValue(item.Value!);
+                        var element = doc.Root!.Element("{template-data}" + item.Key!);
+                        if (element != null)
+                        {
+                            element.SetValue(item.Value!);
+                        }
                     }
+                    doc.Save(_currentDataSheet);
+                    DialogWindow.ShowInfo("Pomyślnie zapisano zmiany.", "Zapis pliku");
                 }
-                doc.Save(_currentDataSheet);
-                DialogWindow.ShowInfo("Pomyślnie zapisano zmiany.","Zapis pliku");
+                catch (Exception ex) {
+                    DialogWindow.ShowError($"Błąd podczas zapisu arkusza.\nBłąd: {ex}", "Błąd!");
+                }
+
+                
             });
             DeleteItemCommand = new RelayCommand<LoadedFileNameModel>(
                item => LoadedFileNames.Remove(item),
@@ -282,6 +290,8 @@ namespace DocumentsGenerator.MVVM.ViewModel
                 }
             });
             MergeDataSheetsCommand = new RelayCommand<object>(_ => {
+                bool isError = false;
+
                 if (LoadedFileNames.Count == 0)
                 {
                     DialogWindow.ShowError("Nie wybrano żadnych arkuszy!", "Błąd!");
@@ -307,9 +317,17 @@ namespace DocumentsGenerator.MVVM.ViewModel
 
                 string _outFolder = _selectedWriteFolder ?? ConfigManager.GetSetting("DataSheetSaveFolderDirectory");
                 dataSheetModel.LoadedFileNames = LoadedFileNames;
-                dataSheetModel.MergeDataSheets(_outFolder);
+                dataSheetModel.MergeDataSheets(_outFolder, ref isError);
 
-                DialogWindow.ShowInfo($"Arkusz danych został wygenerowany w:\n{_outFolder}", "Generowanie zakończone");
+                if (isError)
+                {
+                    DialogWindow.ShowError($"Generowanie arkusza nie powiodło się!", "Błąd!");
+                }
+                else
+                {
+                    DialogWindow.ShowInfo($"Generowanie zakończone pomyślnie. Arkusz został wygenerowany w:\n{_outFolder}", "Generowanie zakończone");
+                }
+
             });
         }
 
