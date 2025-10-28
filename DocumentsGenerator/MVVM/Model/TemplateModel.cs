@@ -67,20 +67,24 @@ namespace DocumentsGenerator.MVVM.Model
                 
             }
 
-            // Generate merged Data Sheet
-            DataSheetModel dataSheetModel = new DataSheetModel();
-            dataSheetModel.LoadedFileNames = new ObservableCollection<LoadedFileNameModel>();
+            // Generate merged Data Sheet, if more than 1 template generated
+            if(LoadedFileNames.Count > 1)
+            {
+                DataSheetModel dataSheetModel = new DataSheetModel();
+                dataSheetModel.LoadedFileNames = new ObservableCollection<LoadedFileNameModel>();
 
-            string[] dataSheets = Directory.GetFiles(sheetSubfolderName);
-            foreach (string dataSheet in dataSheets) {
-                dataSheetModel.LoadedFileNames!.Add(new LoadedFileNameModel
+                string[] dataSheets = Directory.GetFiles(sheetSubfolderName);
+                foreach (string dataSheet in dataSheets)
                 {
-                    FilePath = dataSheet,
-                    FileName = Path.GetFileName(dataSheet),
-                    FileKey = ""
-                });
+                    dataSheetModel.LoadedFileNames!.Add(new LoadedFileNameModel
+                    {
+                        FilePath = dataSheet,
+                        FileName = Path.GetFileName(dataSheet),
+                        FileKey = ""
+                    });
+                }
+                dataSheetModel.MergeDataSheets(outFolder, ref isError);
             }
-            dataSheetModel.MergeDataSheets(outFolder, ref isError);
         }
 
         public TemplateModel() {}
