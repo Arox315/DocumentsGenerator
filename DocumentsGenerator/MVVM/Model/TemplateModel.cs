@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using DocumentsGenerator.Config;
 
 
 namespace DocumentsGenerator.MVVM.Model
@@ -19,7 +20,6 @@ namespace DocumentsGenerator.MVVM.Model
         // Match {tag_name} where tag can contain letters, digits, underscore, dash, colon
         private static readonly Regex TagRegex = new(@"\{([^{}]+)\}", RegexOptions.Compiled);
 
-        // XML namespace
         private const string DataNs = "template-data";
 
         public void GenerateTemplates(string inFolder, string outFolder)
@@ -36,8 +36,8 @@ namespace DocumentsGenerator.MVVM.Model
                 string fileName = Path.GetFileNameWithoutExtension(file.FilePath!);
                 fileName = fileName.Replace(file.FileKey!, "");
 
-                string templateFileName = fileName + "_szablon.docx";
-                string dataSheetFileName = fileName + "_arkusz.xml";
+                string templateFileName = GetTemplateFileNameWithKey(fileName);
+                string dataSheetFileName = GetDataSheetFileNameWithKey(fileName);
 
                 string outputPath = templateSubfolderName + templateFileName;
                 string xmlPath = sheetSubfolderName + dataSheetFileName;
@@ -68,7 +68,7 @@ namespace DocumentsGenerator.MVVM.Model
                 {
                     FilePath = dataSheet,
                     FileName = Path.GetFileName(dataSheet),
-                    FileKey = "_arkusz"
+                    FileKey = ""
                 });
             }
             dataSheetModel.MergeDataSheets(outFolder);
@@ -408,6 +408,30 @@ namespace DocumentsGenerator.MVVM.Model
             return map.Where(s => !(s.End <= start || s.Start >= end))
                       .OrderBy(s => s.Start)
                       .ToList();
+        }
+
+        private string GetTemplateFileNameWithKey(string initialFileName)
+        {
+            string keyFilterType = ConfigManager.GetSetting("DocumentDefaultFileKeyFilter");
+            string keyFilterName = ConfigManager.GetSetting("DocumentDefaultFileKeyName");
+
+            if (keyFilterType == "0") return initialFileName + keyFilterName + ".docx";
+            if (keyFilterType == "1") return keyFilterName + initialFileName + ".docx";
+            if (keyFilterType == "2") return initialFileName + keyFilterName + ".docx";
+
+            return initialFileName + ".docx";
+        }
+
+        private string GetDataSheetFileNameWithKey(string initialFileName)
+        {
+            string keyFilterType = ConfigManager.GetSetting("DataSheetDefaultFileKeyFilter");
+            string keyFilterName = ConfigManager.GetSetting("DataSheetDefaultFileKeyName");
+
+            if (keyFilterType == "0") return initialFileName + keyFilterName + ".xml";
+            if (keyFilterType == "1") return keyFilterName + initialFileName + ".xml";
+            if (keyFilterType == "2") return initialFileName + keyFilterName + ".xml";
+
+            return initialFileName + ".xml";
         }
     }
 }
