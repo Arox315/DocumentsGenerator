@@ -387,8 +387,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
 
             LoadFromJson();
             AddKeyCommand = new RelayCommand<object>(_ =>{
-                Keys.Add(new KeyItem { Name = "NewKey" });
-                Debug.WriteLine("Added key");
+                Keys.Add(new KeyItem { Name = "Nowy Klucz" });
             });
             RemoveKeyCommand = new RelayCommand<object>(keyObj => {
                 if (keyObj is KeyItem key) Keys.Remove(key);
@@ -396,7 +395,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             }, keyObj => keyObj is KeyItem );
             AddValueCommand = new RelayCommand<object>(keyObj => {
                 if (keyObj is KeyItem k)
-                    k.Values.Add(new ValueItem { Name = "NewValue" });
+                    k.Values.Add(new ValueItem { Name = "Nowa Wartość" });
             }, keyObj => keyObj is KeyItem );
             RemoveValueCommand = new RelayCommand<object>(valueObj => {
                 if (valueObj is ValueItem value)
@@ -413,7 +412,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             }, valueObj => valueObj is ValueItem );
             AddSubPairCommand = new RelayCommand<object>(valueObj => {
                 if (valueObj is ValueItem v)
-                    v.SubPairs.Add(new SubPair { SubKey = "SubKey", SubValue = "SubValue" });
+                    v.SubPairs.Add(new SubPair { SubKey = "Nowy Podklucz", SubValue = "Nowa Podwartość" });
             }, valueObj => valueObj is ValueItem );
             RemoveSubPairCommand = new RelayCommand<object>(pairObj => {
                 if (pairObj is SubPair pair)

@@ -203,7 +203,9 @@
                                 Foreground="White"
                                 Width="175"
                                 Style="{StaticResource MainButtonTheme}"
-                                Command="{Binding ImportCommand}"/>
+                                Command="{Binding ImportCommand}">
+                            
+                        </Button>
                     </StackPanel>
                     
 
