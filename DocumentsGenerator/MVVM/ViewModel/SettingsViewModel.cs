@@ -66,31 +66,6 @@ namespace DocumentsGenerator.MVVM.ViewModel
 
         public RelayCommand<object> SaveSettingsCommand { get; set; }
 
-
-        public ObservableCollection<string> Fruits { get; } = new ObservableCollection<string> { "Apple", "Banana", "Cherry" };
-        //public string? SelectedFruit { get; set; }
-
-        public Dictionary<string, Dictionary<string, string>> FruitDict { get; set; } = new Dictionary<string, Dictionary<string, string>>
-        {
-            { "FieldName", new Dictionary<string, string>{ { "SubFieldName", "Value" } } }
-        };
-
-        // Dictionary {FieldName: dataModel(name, value)}
-
-        private string? _selectedFruit;
-        public string SelectedFruit
-        {
-            get => _selectedFruit!;
-            set
-            {
-                if (_selectedFruit != value)
-                {
-                    _selectedFruit = value;
-                    OnPropertyChanged(nameof(SelectedFruit));
-                }
-            }
-        }
-
         public ObservableCollection<KeyItem> Keys { get; } = new();
 
         public RelayCommand<object> AddKeyCommand { get; }
@@ -409,7 +384,6 @@ namespace DocumentsGenerator.MVVM.ViewModel
             MainColor = new SolidColorBrush(constants._settingsColor);
             MainColorDark = new SolidColorBrush(constants._settingsColorDark);
             SaveSettingsCommand = new RelayCommand<object>(_ => { SaveSettings(); });
-            SelectedFruit = Fruits.First();
 
             LoadFromJson();
             AddKeyCommand = new RelayCommand<object>(_ =>{

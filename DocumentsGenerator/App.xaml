@@ -9,6 +9,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Themes/MenuButtonTheme.xaml"/>
+                <ResourceDictionary Source="/Themes/CustomComboBoxTheme.xaml"/>
                 <ResourceDictionary Source="/Themes/NavbarButtonTheme.xaml"/>
                 <ResourceDictionary Source="/Themes/DoubleIconButtonTheme.xaml"/>
                 <ResourceDictionary Source="/Themes/DefaultIconButtonTheme.xaml"/> <!--KOLEJNOŚĆ MA ZNACZENIE BO LOADEDFILENAMECARD UŻYWA DEAFULTICONBUTTONTHEME AAAHH I POSZŁY 2H SIĘ JEBAĆ-->
@@ -17,7 +18,7 @@
                 <ResourceDictionary Source="/Themes/DataSheetItemCard.xaml"/>
                 <ResourceDictionary Source="/Themes/CustomTabItem.xaml"/>
                 <ResourceDictionary Source="/Themes/CustomScrollBarTheme.xaml"/>
-                <ResourceDictionary Source="/Themes/CustomComboBoxTheme.xaml"/>
+               
                 <!--<ResourceDictionary Source="/Themes/DependenciesStyles.xaml"/>-->
             </ResourceDictionary.MergedDictionaries>
 

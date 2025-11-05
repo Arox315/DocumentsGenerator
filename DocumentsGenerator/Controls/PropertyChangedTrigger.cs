@@ -26,7 +26,6 @@ namespace DocumentsGenerator.Controls
             base.OnAttached();
             if (Binding != null)
             {
-                // Bind this trigger’s ObservedValue to whatever the user supplied
                 BindingOperations.SetBinding(this, ObservedValueProperty, Binding);
             }
         }
@@ -40,7 +39,6 @@ namespace DocumentsGenerator.Controls
         private static void OnObservedValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var trigger = (PropertyChangedTrigger)d;
-            // Run all actions each time the value changes
             trigger.InvokeActions(e.NewValue);
         }
     }
