@@ -15,7 +15,8 @@
     </UserControl.DataContext>
 
     <TabControl Background="Transparent"
-                BorderBrush="{Binding MainColor}">
+                BorderBrush="{Binding MainColor}"
+                BorderThickness="0 1 0 0">
         <!-- Edit data sheet -->
         <TabItem Header="Edytuj arkusz" 
                  IsSelected="True" 
@@ -289,13 +290,19 @@
                         </Border>
                     </Grid>
 
+                    <CheckBox Content="Wczytaj wszystkie pliki"
+                              Foreground="White"
+                              FontSize="12"
+                              IsChecked="{Binding LoadAllFiles}"
+                              Margin="0 15 0 0"/>
+                    
                     <Button Content="Wczytaj"
                             Foreground="White"
                             FontSize="16"
                             FontWeight="Bold"
                             Background="{Binding MainColor}"
                             Height="40"
-                            Margin="0 68 0 0"
+                            Margin="0 37.5 0 0"
                             Command="{Binding LoadFilesFromFolderCommand}"
                             CommandParameter="{Binding}"
                             Style="{StaticResource MainButtonTheme}"/>

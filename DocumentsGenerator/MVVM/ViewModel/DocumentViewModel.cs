@@ -100,11 +100,30 @@ namespace DocumentsGenerator.MVVM.ViewModel
             {
                 if (_loadFilesWithDefaultKey != value)
                 {
+                    if (_loadAllFiles && !_loadFilesWithDefaultKey) { LoadAllFiles = false; }
+
                     _loadFilesWithDefaultKey = value;
                     OnPropertyChanged(nameof(LoadFilesWithDefaultKey));
                 }
             }
         }
+
+        private bool _loadAllFiles = false;
+        public bool LoadAllFiles
+        {
+            get => _loadAllFiles;
+            set
+            {
+                if (_loadAllFiles != value)
+                {
+                    if (!_loadAllFiles && _loadFilesWithDefaultKey) { LoadFilesWithDefaultKey = false; }
+
+                    _loadAllFiles = value;
+                    OnPropertyChanged(nameof(LoadAllFiles));
+                }
+            }
+        }
+
 
         private int _selectedKeyFilterMode;
         private string? _selectedKeyFilter;
@@ -291,7 +310,18 @@ namespace DocumentsGenerator.MVVM.ViewModel
 
             foreach (string file in files)
             {
-                if (_loadFilesWithDefaultKey)
+                if (_loadAllFiles)
+                {
+                    LoadedFileNames.Add(new LoadedFileNameModel
+                    {
+                        FilePath = file,
+                        FileName = Path.GetFileName(file),
+                        FileKey = ""
+                    });
+                    loadedFilesCount++;
+                }
+
+                if (!_loadAllFiles && _loadFilesWithDefaultKey)
                 {
                     switch (_defaultKeyFilterMode)
                     {
@@ -334,7 +364,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
                     }
                 }
 
-                if (_selectedKeyFilter != null && _selectedKeyFilter != _defaultFilterKeyName)
+                if (!_loadAllFiles && _selectedKeyFilter != null && _selectedKeyFilter != _defaultFilterKeyName)
                 {
                     switch (_selectedKeyFilterMode)
                     {

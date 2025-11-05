@@ -463,7 +463,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             TemplateFileSelectorInitialDirectory = new SettingsModel()
             {
                 Name = nameof(TemplateFileSelectorInitialDirectory),
-                DisplayName = "Domyślny folder do ręcznego wczytania plików",
+                DisplayName = "Początkowy katalog ręcznego wczytywania plików",
                 Value = ConfigManager.GetSetting(nameof(TemplateFileSelectorInitialDirectory))
             };
             Settings.Add(TemplateFileSelectorInitialDirectory);
@@ -472,7 +472,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             TemplateFolderSelectorInitialDirectory = new SettingsModel()
             {
                 Name = nameof(TemplateFolderSelectorInitialDirectory),
-                DisplayName = "Domyślny folder do wczytania plików",
+                DisplayName = "Początkowy katalog wczytywania plików",
                 Value = ConfigManager.GetSetting(nameof(TemplateFolderSelectorInitialDirectory))
             };
             Settings.Add(TemplateFolderSelectorInitialDirectory);
@@ -481,7 +481,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             TemplateSaveFolderSelectInitialDirectory = new SettingsModel()
             {
                 Name = nameof(TemplateSaveFolderSelectInitialDirectory),
-                DisplayName = "Domyślny folder przy wyborze folderu docelowego",
+                DisplayName = "Początkowy katalog wyboru folderu zapisu",
                 Value = ConfigManager.GetSetting(nameof(TemplateSaveFolderSelectInitialDirectory))
             };
             Settings.Add(TemplateSaveFolderSelectInitialDirectory);
@@ -490,7 +490,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             TemplateSaveFolderDirectory = new SettingsModel()
             {
                 Name = nameof(TemplateSaveFolderDirectory),
-                DisplayName = "Domyślny folder do zapisu szablonów",
+                DisplayName = "Domyślny folder zapisu",
                 Value = ConfigManager.GetSetting(nameof(TemplateSaveFolderDirectory))
             };
             Settings.Add(TemplateSaveFolderDirectory);
@@ -522,7 +522,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             DataSheetFileSelectorInitialDirectory = new SettingsModel()
             {
                 Name = nameof(DataSheetFileSelectorInitialDirectory),
-                DisplayName = "Domyślny folder do ręcznego wczytania plików",
+                DisplayName = "Początkowy katalog ręcznego wczytywania plików",
                 Value = ConfigManager.GetSetting(nameof(DataSheetFileSelectorInitialDirectory))
             };
             Settings.Add(DataSheetFileSelectorInitialDirectory);
@@ -531,7 +531,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             DataSheetFolderSelectorInitialDirectory = new SettingsModel()
             {
                 Name = nameof(DataSheetFolderSelectorInitialDirectory),
-                DisplayName = "Domyślny folder do wczytania plików",
+                DisplayName = "Początkowy katalog wczytywania plików",
                 Value = ConfigManager.GetSetting(nameof(DataSheetFolderSelectorInitialDirectory))
             };
             Settings.Add(DataSheetFolderSelectorInitialDirectory);
@@ -540,7 +540,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             DataSheetSaveFolderSelectInitialDirectory = new SettingsModel()
             {
                 Name = nameof(DataSheetSaveFolderSelectInitialDirectory),
-                DisplayName = "Domyślny folder przy wyborze folderu docelowego",
+                DisplayName = "Początkowy katalog wyboru folderu zapisu",
                 Value = ConfigManager.GetSetting(nameof(DataSheetSaveFolderSelectInitialDirectory))
             };
             Settings.Add(DataSheetSaveFolderSelectInitialDirectory);
@@ -549,7 +549,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             DataSheetSaveFolderDirectory = new SettingsModel()
             {
                 Name = nameof(DataSheetSaveFolderDirectory),
-                DisplayName = "Domyślny folder do zapisu arkusza",
+                DisplayName = "Domyślny folder do zapisu",
                 Value = ConfigManager.GetSetting(nameof(DataSheetSaveFolderDirectory))
             };
             Settings.Add(DataSheetSaveFolderDirectory);
@@ -558,7 +558,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             DataSheetEditInitialDirectory = new SettingsModel()
             {
                 Name = nameof(DataSheetEditInitialDirectory),
-                DisplayName = "Domyślny folder przy wyborze arkusza do edycji",
+                DisplayName = "Początkowy katalog wyboru arkusza danych do edycji",
                 Value = ConfigManager.GetSetting(nameof(DataSheetEditInitialDirectory))
             };
             Settings.Add(DataSheetEditInitialDirectory);
@@ -590,7 +590,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             DocumentFileSelectorInitialDirectory = new SettingsModel()
             {
                 Name = nameof(DocumentFileSelectorInitialDirectory),
-                DisplayName = "Domyślny folder do ręcznego wczytania plików",
+                DisplayName = "Początkowy katalog ręcznego wczytywania plików",
                 Value = ConfigManager.GetSetting(nameof(DocumentFileSelectorInitialDirectory))
             };
             Settings.Add(DocumentFileSelectorInitialDirectory);
@@ -599,7 +599,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             DocumentFolderSelectorInitialDirectory = new SettingsModel()
             {
                 Name = nameof(DocumentFolderSelectorInitialDirectory),
-                DisplayName = "Domyślny folder do wczytania plików",
+                DisplayName = "Początkowy katalog wczytywania plików",
                 Value = ConfigManager.GetSetting(nameof(DocumentFolderSelectorInitialDirectory))
             };
             Settings.Add(DocumentFolderSelectorInitialDirectory);
@@ -608,7 +608,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             DocumentSaveFolderSelectInitialDirectory = new SettingsModel()
             {
                 Name = nameof(DocumentSaveFolderSelectInitialDirectory),
-                DisplayName = "Domyślny folder przy wyborze folderu docelowego",
+                DisplayName = "Początkowy katalog wyboru folderu zapisu",
                 Value = ConfigManager.GetSetting(nameof(DocumentSaveFolderSelectInitialDirectory))
             };
             Settings.Add(DocumentSaveFolderSelectInitialDirectory);
@@ -617,7 +617,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             DocumentSaveFolderDirectory = new SettingsModel()
             {
                 Name = nameof(DocumentSaveFolderDirectory),
-                DisplayName = "Domyślny folder do zapisu dokumentów",
+                DisplayName = "Domyślny folder do zapisu",
                 Value = ConfigManager.GetSetting(nameof(DocumentSaveFolderDirectory))
             };
             Settings.Add(DocumentSaveFolderDirectory);
@@ -626,7 +626,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             DocumentLoadDataSheetInitialDirectory = new SettingsModel()
             {
                 Name = nameof(DocumentLoadDataSheetInitialDirectory),
-                DisplayName = "Domyślny folder przy wyborze arkusza danych",
+                DisplayName = "Początkowy katalog wyboru arkusza danych",
                 Value = ConfigManager.GetSetting(nameof(DocumentLoadDataSheetInitialDirectory))
             };
             Settings.Add(DocumentLoadDataSheetInitialDirectory);

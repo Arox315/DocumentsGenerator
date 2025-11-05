@@ -7,6 +7,7 @@
         xmlns:viewModel="clr-namespace:DocumentsGenerator.MVVM.ViewModel"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="980"
+        WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         ResizeMode="NoResize"
         Background="Transparent"

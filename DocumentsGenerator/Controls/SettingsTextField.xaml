@@ -11,11 +11,11 @@
           Height="30"
           MaxHeight="30"
           Margin="0 0 0 10"
-          Width="650">
+          Width="700">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="300"/>
             <ColumnDefinition Width="30"/>
             <ColumnDefinition Width="50"/>
         </Grid.ColumnDefinitions>
