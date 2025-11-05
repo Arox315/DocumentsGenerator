@@ -139,6 +139,8 @@ namespace DocumentsGenerator.MVVM.ViewModel
         public RelayCommand<DataSheetItemModel> DeleteDataRowCommand { get; }
         public RelayCommand<object> MergeDataSheetsCommand { get; }
 
+
+
         private string? _selectedReadFolder;
         private string? _selectedWriteFolder;
         private int _defaultKeyFilterMode;
@@ -146,6 +148,9 @@ namespace DocumentsGenerator.MVVM.ViewModel
         private string _currentDataSheet = "";
 
         protected DataSheetModel dataSheetModel;
+
+        public RelayCommand<DataSheetItemModel> SelectionChangedCommand { get; }
+
         public SheetViewModel() 
         {
             if (DefaultDisplayFilterKeyName.StartsWith('_'))
@@ -171,6 +176,20 @@ namespace DocumentsGenerator.MVVM.ViewModel
                 item => Items.Remove(item),
                 item => item != null);
 
+            SelectionChangedCommand = new RelayCommand<DataSheetItemModel>(i => 
+            {
+                i.Value = i.SelectedValue;
+                foreach (DataSheetItemModel item in Items)
+                {
+                    string? newValue = DependencyManager.GetSubValueFromJson(i.Key!, i.SelectedValue!, item.Key!);
+                    if(newValue != null)
+                    {
+                        item.Value = newValue;
+                        item.FeedbackHelperValue = newValue;
+                    }
+                }
+            });
+
             LoadFileDataCommand = new RelayCommand<object>(_ => {
                 OpenFileDialog ofd = new OpenFileDialog();
                 ofd.Filter = "Arkusze danych | *.xml";
@@ -184,12 +203,19 @@ namespace DocumentsGenerator.MVVM.ViewModel
                     XDocument doc = XDocument.Load(ofd.FileName,LoadOptions.PreserveWhitespace);
                     foreach(var element in doc.Root!.Descendants())
                     {
+                        bool hasDependency = DependencyManager.ContainsKeyInJson(element.Name.LocalName);
+
                         Items.Add(new DataSheetItemModel
                         {
-                            DisplayKey=element.Name.LocalName.Replace("_","__"),
-                            Key=element.Name.LocalName,
-                            Value =element.Value
+                            DisplayKey = element.Name.LocalName.Replace("_", "__"),
+                            Key = element.Name.LocalName,
+                            Value = element.Value,
+                            Values = DependencyManager.GetValuesForKey(element.Name.LocalName),
+                            SelectedValue = element.Value,
+                            TextBoxVisibility = hasDependency ? "Collapsed" : "Visible",
+                            ComboBoxVisibility = hasDependency ? "Visible" : "Collapsed"
                         });
+                      
                     }
                 }
 
@@ -337,6 +363,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             {
                 //Items![Items.IndexOf(item)].Value = string.Empty;
                 item.Value = string.Empty;
+                item.SelectedValue = string.Empty;
             }
         }
 

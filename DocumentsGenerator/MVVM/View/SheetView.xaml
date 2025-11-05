@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:view="clr-namespace:DocumentsGenerator.MVVM.View"
              xmlns:viewModel="clr-namespace:DocumentsGenerator.MVVM.ViewModel"
-             xmlns:local="clr-namespace:DocumentsGenerator.Controls"
+             xmlns:controls="clr-namespace:DocumentsGenerator.Controls"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="525" d:DesignWidth="780">
@@ -14,7 +14,8 @@
         <viewModel:SheetViewModel/>
     </UserControl.DataContext>
 
-    <TabControl Background="Transparent">
+    <TabControl Background="Transparent"
+                BorderBrush="{Binding MainColor}">
         <!-- Edit data sheet -->
         <TabItem Header="Edytuj arkusz" 
                  IsSelected="True" 
@@ -46,7 +47,7 @@
                                    FontSize="12"/>
                     </Border>
 
-                    <local:IconButton IconImage="/Images/file-icon.png"
+                    <controls:IconButton IconImage="/Images/file-icon.png"
                               Width="30"
                               Height="30"
                               IconHeight="25"
@@ -62,7 +63,7 @@
                                   CommandParameter="{Binding}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                    </local:IconButton>
+                    </controls:IconButton>
 
                 </Grid>
 
@@ -129,7 +130,7 @@
                                            FontSize="18"
                                            Margin="10 0 0 0"/>
 
-                                <local:DoubleIconButton x:Name="AddNewFileBtn"
+                                <controls:DoubleIconButton x:Name="AddNewFileBtn"
                                                         Height="50"
                                                         Width="50"
                                                         HorizontalAlignment="Right"
@@ -146,7 +147,7 @@
                                                   CommandParameter="{Binding}" />
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
-                                </local:DoubleIconButton>
+                                </controls:DoubleIconButton>
                             </Grid>
                         </Border>
 
@@ -191,7 +192,7 @@
                                        FontSize="12"/>
                         </Border>
 
-                        <local:IconButton IconImage="/Images/folder-icon.png"
+                        <controls:IconButton IconImage="/Images/folder-icon.png"
                                Width="30"
                                Height="30"
                                IconHeight="25"
@@ -207,7 +208,7 @@
                                        CommandParameter="{Binding}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
-                        </local:IconButton>
+                        </controls:IconButton>
 
                     </Grid>
 
@@ -246,7 +247,7 @@
                                  Text="{Binding CustomFilterKeyName,
                                                 Mode=TwoWay,
                                                 UpdateSourceTrigger=PropertyChanged}"
-                                 local:TextBoxHelper.Placeholder="np.: _arkusz"/>
+                                 controls:TextBoxHelper.Placeholder="np.: _arkusz"/>
                     </Grid>
 
                     <ComboBox x:Name="FileKeyFilter"
@@ -321,7 +322,7 @@
                                        FontSize="12"/>
                         </Border>
 
-                        <local:IconButton IconImage="/Images/folder-icon.png"
+                        <controls:IconButton IconImage="/Images/folder-icon.png"
                                           Width="30"
                                           Height="30"
                                           IconHeight="25"
@@ -337,7 +338,7 @@
                                        CommandParameter="{Binding}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
-                        </local:IconButton>
+                        </controls:IconButton>
 
                     </Grid>
 

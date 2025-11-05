@@ -18,6 +18,7 @@
                 <ResourceDictionary Source="/Themes/CustomTabItem.xaml"/>
                 <ResourceDictionary Source="/Themes/CustomScrollBarTheme.xaml"/>
                 <ResourceDictionary Source="/Themes/CustomComboBoxTheme.xaml"/>
+                <!--<ResourceDictionary Source="/Themes/DependenciesStyles.xaml"/>-->
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type viewModel:HomeViewModel}">

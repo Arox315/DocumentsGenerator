@@ -3,164 +3,379 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DocumentsGenerator.Controls"
+             xmlns:local="clr-namespace:DocumentsGenerator"
+             xmlns:controls="clr-namespace:DocumentsGenerator.Controls"
              xmlns:view="clr-namespace:DocumentsGenerator.MVVM.View"
              xmlns:viewModel="clr-namespace:DocumentsGenerator.MVVM.ViewModel"
+             xmlns:model="clr-namespace:DocumentsGenerator.MVVM.Model"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
     <UserControl.DataContext>
         <viewModel:SettingsViewModel/>
     </UserControl.DataContext>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition Height="75"/>
-        </Grid.RowDefinitions>
+    <TabControl Background="Transparent"
+                BorderBrush="{Binding MainColor}">
+        <TabItem Header="Ustawienia ogólne" 
+                 
+                 Foreground="White"
+                 Background="{Binding MainColor}"
+                 Style="{StaticResource CustomTabItem}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="75"/>
+                </Grid.RowDefinitions>
 
-        <ListView Background="Transparent"
-                  Margin="10"
-                  BorderThickness="0"
-                  >
+                <ListView Background="Transparent"
+                          Margin="10"
+                          BorderThickness="0">
 
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="ListViewItem">
-                                <ContentPresenter />
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListView.ItemContainerStyle>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListViewItem">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
 
-            <!-- template settings -->
-            <ListViewItem HorizontalContentAlignment="Center">
-                <TextBlock Text="Generacja szablonów"
-                           Foreground="White"
-                           FontSize="16"
-                           FontWeight="Medium"
-                           TextAlignment="Center"
-                           Margin="5"/>
-            </ListViewItem>
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding TemplateDefaultFileKeyName.DisplayName}" Value="{Binding TemplateDefaultFileKeyName.Value}" BackgroundColor="{Binding MainColor}" LoadValueBtnVisibility="Collapsed"/>
-            </ListViewItem>
+                    <!-- template settings -->
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <TextBlock Text="Generacja szablonów"
+                                   Foreground="White"
+                                   FontSize="16"
+                                   FontWeight="Medium"
+                                   TextAlignment="Center"
+                                   Margin="5"/>
+                    </ListViewItem>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding TemplateDefaultFileKeyName.DisplayName}" Value="{Binding TemplateDefaultFileKeyName.Value}" BackgroundColor="{Binding MainColor}" LoadValueBtnVisibility="Collapsed"/>
+                    </ListViewItem>
 
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsComboBoxField DisplayKey="{Binding TemplateDefaultFileKeyFilter.DisplayName}" Value="{Binding TemplateDefaultFileKeyFilter.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsComboBoxField DisplayKey="{Binding TemplateDefaultFileKeyFilter.DisplayName}" Value="{Binding TemplateDefaultFileKeyFilter.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
 
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding TemplateFileSelectorInitialDirectory.DisplayName}" Value="{Binding TemplateFileSelectorInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
-            
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding TemplateFolderSelectorInitialDirectory.DisplayName}" Value="{Binding TemplateFolderSelectorInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
-            
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding TemplateSaveFolderSelectInitialDirectory.DisplayName}" Value="{Binding TemplateSaveFolderSelectInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
-            
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding TemplateSaveFolderDirectory.DisplayName}" Value="{Binding TemplateSaveFolderDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding TemplateFileSelectorInitialDirectory.DisplayName}" Value="{Binding TemplateFileSelectorInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
 
-            <!-- data sheet settings -->
-            <ListViewItem HorizontalContentAlignment="Center">
-                <TextBlock Text="Generacja arkuszy"
-                           Foreground="White"
-                           FontSize="16"
-                           FontWeight="Medium"
-                           TextAlignment="Center"
-                           Margin="5"/>
-            </ListViewItem>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding TemplateFolderSelectorInitialDirectory.DisplayName}" Value="{Binding TemplateFolderSelectorInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
 
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding DataSheetDefaultFileKeyName.DisplayName}" Value="{Binding DataSheetDefaultFileKeyName.Value}" BackgroundColor="{Binding MainColor}" LoadValueBtnVisibility="Collapsed"/>
-            </ListViewItem>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding TemplateSaveFolderSelectInitialDirectory.DisplayName}" Value="{Binding TemplateSaveFolderSelectInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
 
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsComboBoxField DisplayKey="{Binding DataSheetDefaultFileKeyFilter.DisplayName}" Value="{Binding DataSheetDefaultFileKeyFilter.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding TemplateSaveFolderDirectory.DisplayName}" Value="{Binding TemplateSaveFolderDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
 
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding DataSheetFileSelectorInitialDirectory.DisplayName}" Value="{Binding DataSheetFileSelectorInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
+                    <!-- data sheet settings -->
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <TextBlock Text="Generacja arkuszy"
+                                   Foreground="White"
+                                   FontSize="16"
+                                   FontWeight="Medium"
+                                   TextAlignment="Center"
+                                   Margin="5"/>
+                    </ListViewItem>
 
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding DataSheetFolderSelectorInitialDirectory.DisplayName}" Value="{Binding DataSheetFolderSelectorInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding DataSheetDefaultFileKeyName.DisplayName}" Value="{Binding DataSheetDefaultFileKeyName.Value}" BackgroundColor="{Binding MainColor}" LoadValueBtnVisibility="Collapsed"/>
+                    </ListViewItem>
 
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding DataSheetSaveFolderSelectInitialDirectory.DisplayName}" Value="{Binding DataSheetSaveFolderSelectInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsComboBoxField DisplayKey="{Binding DataSheetDefaultFileKeyFilter.DisplayName}" Value="{Binding DataSheetDefaultFileKeyFilter.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
 
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding DataSheetSaveFolderDirectory.DisplayName}" Value="{Binding DataSheetSaveFolderDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
-            
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding DataSheetEditInitialDirectory.DisplayName}" Value="{Binding DataSheetEditInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding DataSheetFileSelectorInitialDirectory.DisplayName}" Value="{Binding DataSheetFileSelectorInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
 
-            <!-- ducument settings -->
-            <ListViewItem HorizontalContentAlignment="Center">
-                <TextBlock Text="Generacja dokumentów"
-                           Foreground="White"
-                           FontSize="16"
-                           FontWeight="Medium"
-                           TextAlignment="Center"
-                           Margin="5"/>
-            </ListViewItem>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding DataSheetFolderSelectorInitialDirectory.DisplayName}" Value="{Binding DataSheetFolderSelectorInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
 
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding DocumentDefaultFileKeyName.DisplayName}" Value="{Binding DocumentDefaultFileKeyName.Value}" BackgroundColor="{Binding MainColor}" LoadValueBtnVisibility="Collapsed"/>
-            </ListViewItem>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding DataSheetSaveFolderSelectInitialDirectory.DisplayName}" Value="{Binding DataSheetSaveFolderSelectInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
 
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsComboBoxField DisplayKey="{Binding DocumentDefaultFileKeyFilter.DisplayName}" Value="{Binding DocumentDefaultFileKeyFilter.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding DataSheetSaveFolderDirectory.DisplayName}" Value="{Binding DataSheetSaveFolderDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
 
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding DocumentFileSelectorInitialDirectory.DisplayName}" Value="{Binding DocumentFileSelectorInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding DataSheetEditInitialDirectory.DisplayName}" Value="{Binding DataSheetEditInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
 
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding DocumentFolderSelectorInitialDirectory.DisplayName}" Value="{Binding DocumentFolderSelectorInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
+                    <!-- ducument settings -->
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <TextBlock Text="Generacja dokumentów"
+                                   Foreground="White"
+                                   FontSize="16"
+                                   FontWeight="Medium"
+                                   TextAlignment="Center"
+                                   Margin="5"/>
+                    </ListViewItem>
 
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding DocumentSaveFolderSelectInitialDirectory.DisplayName}" Value="{Binding DocumentSaveFolderSelectInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding DocumentDefaultFileKeyName.DisplayName}" Value="{Binding DocumentDefaultFileKeyName.Value}" BackgroundColor="{Binding MainColor}" LoadValueBtnVisibility="Collapsed"/>
+                    </ListViewItem>
 
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding DocumentSaveFolderDirectory.DisplayName}" Value="{Binding DocumentSaveFolderDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
-            
-            <ListViewItem HorizontalContentAlignment="Center">
-                <local:SettingsTextField DisplayKey="{Binding DocumentLoadDataSheetInitialDirectory.DisplayName}" Value="{Binding DocumentLoadDataSheetInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
-            </ListViewItem>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsComboBoxField DisplayKey="{Binding DocumentDefaultFileKeyFilter.DisplayName}" Value="{Binding DocumentDefaultFileKeyFilter.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
 
-        </ListView>
-        
-        <!-- save btn -->
-        <Button 
-            Width="150" 
-            Height="40" 
-            Grid.Row="1"
-            Content="Zapisz"
-            HorizontalAlignment="Right"
-            Margin="0 0 20 0"
-            Foreground="White"
-            FontSize="16"
-            FontWeight="Bold"
-            Background="{Binding MainColor}"
-            Command="{Binding SaveSettingsCommand}"
-            Style="{StaticResource MainButtonTheme}"/>
-    </Grid>
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding DocumentFileSelectorInitialDirectory.DisplayName}" Value="{Binding DocumentFileSelectorInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
+
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding DocumentFolderSelectorInitialDirectory.DisplayName}" Value="{Binding DocumentFolderSelectorInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
+
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding DocumentSaveFolderSelectInitialDirectory.DisplayName}" Value="{Binding DocumentSaveFolderSelectInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
+
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding DocumentSaveFolderDirectory.DisplayName}" Value="{Binding DocumentSaveFolderDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
+
+                    <ListViewItem HorizontalContentAlignment="Center">
+                        <controls:SettingsTextField DisplayKey="{Binding DocumentLoadDataSheetInitialDirectory.DisplayName}" Value="{Binding DocumentLoadDataSheetInitialDirectory.Value}" BackgroundColor="{Binding MainColor}"/>
+                    </ListViewItem>
+
+                </ListView>
+
+                <!-- save btn -->
+                <Button Width="150" 
+                        Height="40" 
+                        Grid.Row="1"
+                        Content="Zapisz"
+                        HorizontalAlignment="Right"
+                        Margin="0 0 20 0"
+                        Foreground="White"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Background="{Binding MainColor}"
+                        Command="{Binding SaveSettingsCommand}"
+                        Style="{StaticResource MainButtonTheme}"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Zależności"
+                 IsSelected="True" 
+                 Foreground="White"
+                 Background="{Binding MainColor}"
+                  Style="{StaticResource CustomTabItem}">
+            <DockPanel>
+              
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Nowa zależność"
+                                Background="{Binding MainColor}"
+                                Foreground="White"
+                                Width="100"
+                                Style="{StaticResource MainButtonTheme}"
+                                Command="{Binding AddKeyCommand}"/>
+
+                        <Button Content="Importuj z pliku zewnętrznego"
+                                Background="{Binding MainColor}"
+                                Foreground="White"
+                                Width="175"
+                                Style="{StaticResource MainButtonTheme}"
+                                Command="{Binding ImportCommand}"/>
+                    </StackPanel>
+                    
+
+
+                    <!-- List side -->
+                    <Border Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
+                        <TreeView ItemsSource="{Binding Keys}" Background="Transparent" BorderBrush="{Binding MainColor}">
+                            <TreeView.Resources>
+                                <Style TargetType="TreeViewItem">
+                                    <Setter Property="Focusable" Value="False"/>
+                                </Style>
+                                
+                                <!-- Key -->
+                                <HierarchicalDataTemplate DataType="{x:Type local:KeyItem}" ItemsSource="{Binding Values}">
+                                    <StackPanel Orientation="Horizontal" Margin="0,2" >
+                                        
+                                        <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                                Width="80">
+                                            <Label Content="Klucz"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" 
+                                                 Width="200"
+                                                 Background="#4B4789"
+                                                 Foreground="White"
+                                                 VerticalContentAlignment="Center"
+                                                 Padding="4 0 0 0"/>
+                                        <controls:IconButton IconImage="/Images/plus-icon.png"
+                                                             IconHeight="25"
+                                                             IconWidth="25"
+                                                             Width="30"
+                                                             Height="30"
+                                                             Margin="5 0 0 0"
+                                                             Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                                             Command="{Binding DataContext.AddValueCommand, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                                             CommandParameter="{Binding}"
+                                                             Style="{StaticResource DefaultIconButtonTheme}"/>
+                                        <controls:IconButton IconImage="/Images/delete-icon.png"
+                                                             IconHeight="25"
+                                                             IconWidth="25"
+                                                             Width="30"
+                                                             Height="30"
+                                                             Margin="5 0 0 0"
+                                                             Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                                             Command="{Binding DataContext.RemoveKeyCommand, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                                             CommandParameter="{Binding}"
+                                                             Style="{StaticResource DefaultIconButtonTheme}"/>
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+
+                                <!-- Value -->
+                                <HierarchicalDataTemplate DataType="{x:Type local:ValueItem}" ItemsSource="{Binding SubPairs}">
+                                    <StackPanel Orientation="Horizontal" Margin="0,2">
+                                        <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                                Width="80">
+                                            <Label Content="Wartość"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" 
+                                                 Width="200"
+                                                 Background="#4B4789"
+                                                 Foreground="White"
+                                                 VerticalContentAlignment="Center"
+                                                 Padding="4 0 0 0"/>
+                                        <controls:IconButton IconImage="/Images/plus-icon.png"
+                                                             IconHeight="25"
+                                                             IconWidth="25"
+                                                             Width="30"
+                                                             Height="30"
+                                                             Margin="5 0 0 0"
+                                                             Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                                             Command="{Binding DataContext.AddSubPairCommand, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                                             CommandParameter="{Binding}"
+                                                             Style="{StaticResource DefaultIconButtonTheme}"/>
+                                        <controls:IconButton IconImage="/Images/delete-icon.png"
+                                                             IconHeight="25"
+                                                             IconWidth="25"
+                                                             Width="30"
+                                                             Height="30"
+                                                             Margin="5 0 0 0"
+                                                             Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                                             Command="{Binding DataContext.RemoveValueCommand, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                                             CommandParameter="{Binding}"
+                                                             Style="{StaticResource DefaultIconButtonTheme}"/>
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+
+                                <!-- SubPair -->
+                                <DataTemplate DataType="{x:Type local:SubPair}">
+                                    <StackPanel Orientation="Horizontal" Margin="0,2">
+                                        <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                                Width="80">
+                                            <Label Content="Podklucz"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBox Text="{Binding SubKey, UpdateSourceTrigger=PropertyChanged}" 
+                                                 Width="200"
+                                                 Background="#4B4789"
+                                                 Foreground="White"
+                                                 VerticalContentAlignment="Center"
+                                                 Padding="4 0 0 0"/>
+
+                                        <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                                Width="80">
+                                            <Label Content="Podwartość"
+                                                   Foreground="White"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBox Text="{Binding SubValue, UpdateSourceTrigger=PropertyChanged}" 
+                                                 Width="200"
+                                                 Background="#4B4789"
+                                                 Foreground="White"
+                                                 VerticalContentAlignment="Center"
+                                                 Padding="4 0 0 0"/>
+                                        <controls:IconButton IconImage="/Images/delete-icon.png"
+                                                             IconHeight="25"
+                                                             IconWidth="25"
+                                                             Width="30"
+                                                             Height="30"
+                                                             Margin="5 0 0 0"
+                                                             Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                                             Command="{Binding DataContext.RemoveSubPairCommand, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                                             CommandParameter="{Binding}"
+                                                             Style="{StaticResource DefaultIconButtonTheme}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </TreeView.Resources>
+                        </TreeView>
+                    </Border>
+                    
+
+                    <!-- Instruction -->
+                    <ScrollViewer Grid.Column="2" Grid.Row="1" Margin="10,0,0,0" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <TextBlock Text="Instrukcja" FontWeight="Bold" FontSize="14" Margin="0,0,0,6"/>
+                            <TextBlock Text="1) Wybierz 'Nowa zależność' by stworzyć nowy klucz i go nazwać."
+                                       TextWrapping="Wrap" />
+                            <TextBlock Text="2) Dla każdego klucza, wybierz '+' aby dodać wartość i ją nazwać."
+                                       TextWrapping="Wrap" />
+                            <TextBlock Text="3) Dla każdej wartości, wybierz '+' aby dodać parę podklucz/podwartość"
+                                       TextWrapping="Wrap" />
+                            <TextBlock Text="4) Wybierz 'Zapisz' aby zapisać zmiany."
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <Button Content="Zapisz" 
+                            Background="{Binding MainColor}"
+                            Grid.Column="1"
+                            Grid.Row="2"
+                            Foreground="White"
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Height="40"
+                            Margin="25 10 10 0"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource MainButtonTheme}"
+                            Command="{Binding SaveDependenciesCommand}" />
+
+                </Grid>
+            </DockPanel>
+
+        </TabItem>
+
+    </TabControl>
+
+
 </UserControl>

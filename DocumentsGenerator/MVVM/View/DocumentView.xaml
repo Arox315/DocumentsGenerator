@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DocumentsGenerator.Controls"
+             xmlns:controls="clr-namespace:DocumentsGenerator.Controls"
              xmlns:viewModel="clr-namespace:DocumentsGenerator.MVVM.ViewModel"
              xmlns:view="clr-namespace:DocumentsGenerator.MVVM.View"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
@@ -42,7 +42,7 @@
                                    FontSize="18"
                                    Margin="10 0 0 0"/>
 
-                        <local:DoubleIconButton x:Name="AddNewFileBtn"
+                        <controls:DoubleIconButton x:Name="AddNewFileBtn"
                                                 Height="50"
                                                 Width="50"
                                                 HorizontalAlignment="Right"
@@ -59,7 +59,7 @@
                                           CommandParameter="{Binding}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
-                        </local:DoubleIconButton>
+                        </controls:DoubleIconButton>
                     </Grid>
                 </Border>
 
@@ -104,7 +104,7 @@
                                FontSize="12"/>
                 </Border>
 
-                <local:IconButton IconImage="/Images/folder-icon.png"
+                <controls:IconButton IconImage="/Images/folder-icon.png"
                                   Width="30"
                                   Height="30"
                                   IconHeight="25"
@@ -120,7 +120,7 @@
                                CommandParameter="{Binding}" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                </local:IconButton>
+                </controls:IconButton>
 
             </Grid>
 
@@ -159,7 +159,7 @@
                          Text="{Binding CustomFilterKeyName,
                                         Mode=TwoWay,
                                         UpdateSourceTrigger=PropertyChanged}"
-                         local:TextBoxHelper.Placeholder="np.: _szablon"/>
+                         controls:TextBoxHelper.Placeholder="np.: _szablon"/>
             </Grid>
 
             <ComboBox x:Name="FileKeyFilter"
@@ -235,7 +235,7 @@
                                FontSize="12"/>
                 </Border>
 
-                <local:IconButton IconImage="/Images/file-icon.png"
+                <controls:IconButton IconImage="/Images/file-icon.png"
                                   Width="30"
                                   Height="30"
                                   IconHeight="25"
@@ -251,7 +251,7 @@
                                   CommandParameter="{Binding}" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                </local:IconButton>
+                </controls:IconButton>
             </Grid>
 
             <Grid Margin="0 0 0 15">
@@ -270,7 +270,7 @@
                                FontSize="12"/>
                 </Border>
 
-                <local:IconButton IconImage="/Images/folder-icon.png"
+                <controls:IconButton IconImage="/Images/folder-icon.png"
                                   Width="30"
                                   Height="30"
                                   IconHeight="25"
@@ -286,7 +286,7 @@
                               CommandParameter="{Binding}" />
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                </local:IconButton>
+                </controls:IconButton>
 
             </Grid>
 

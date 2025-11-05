@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace DocumentsGenerator.Core
 {
-    internal class RelayCommand<T> : ICommand
+    public class RelayCommand<T> : ICommand
     {
         private readonly Action<T>? _execute;
         private readonly Func<T, bool>? _canExecute;

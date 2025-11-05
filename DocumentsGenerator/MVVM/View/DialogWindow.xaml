@@ -8,8 +8,8 @@
         ResizeMode="NoResize"
         Background="Transparent"
         AllowsTransparency="True"
-        Width="325"
-        Height="180">
+        Width="375"
+        Height="200">
 
     <Window.Resources>
         <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent"/>
@@ -136,9 +136,9 @@
                 <!-- Message -->
 
 
-                <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
-                    <TextBlock Width="220"
-                               VerticalAlignment="Center"
+                <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto"
+                              Margin="10 10 0 10">
+                    <TextBlock VerticalAlignment="Center"
                                Text="{Binding Message}"
                                Foreground="White"
                                TextWrapping="Wrap"

@@ -16,7 +16,7 @@ namespace DocumentsGenerator.Config
             try
             {
                 var appSettings = ConfigurationManager.AppSettings;
-                string result = appSettings[key] ?? "Not Found";
+                string? result = appSettings[key] ?? "Not Found";
                 return result;
                 
             }
