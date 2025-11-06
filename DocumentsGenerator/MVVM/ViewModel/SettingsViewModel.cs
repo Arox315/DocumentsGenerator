@@ -500,7 +500,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             TemplateDefaultFileKeyFilter = new SettingsModel()
             {
                 Name = nameof(TemplateDefaultFileKeyFilter),
-                DisplayName = "Sposób wyszukiwania domyślnego klucza",
+                DisplayName = "Miejsce klucza w nazwie pliku podczas filtracji",
                 Value = (ConfigManager.GetSetting(nameof(TemplateDefaultFileKeyFilter)) != "Not Found") 
                 ? FileKeyFilters[Int32.Parse(ConfigManager.GetSetting(nameof(TemplateDefaultFileKeyFilter)))] : FileKeyFilters[0],
                 Type = "DropDown"
@@ -559,7 +559,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             DataSheetDefaultFileKeyFilter = new SettingsModel()
             {
                 Name = nameof(DataSheetDefaultFileKeyFilter),
-                DisplayName = "Sposób wyszukiwania domyślnego klucza",
+                DisplayName = "Miejsce klucza w nazwie pliku podczas filtracji",
                 Value = (ConfigManager.GetSetting(nameof(DataSheetDefaultFileKeyFilter)) != "Not Found")
                 ? FileKeyFilters[Int32.Parse(ConfigManager.GetSetting(nameof(DataSheetDefaultFileKeyFilter)))] : FileKeyFilters[0],
                 Type = "DropDown"
@@ -627,7 +627,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             DocumentDefaultFileKeyFilter = new SettingsModel()
             {
                 Name = nameof(DocumentDefaultFileKeyFilter),
-                DisplayName = "Sposób wyszukiwania domyślnego klucza",
+                DisplayName = "Miejsce klucza w nazwie pliku podczas filtracji",
                 Value = (ConfigManager.GetSetting(nameof(DocumentDefaultFileKeyFilter)) != "Not Found")
                 ? FileKeyFilters[Int32.Parse(ConfigManager.GetSetting(nameof(DocumentDefaultFileKeyFilter)))] : FileKeyFilters[0],
                 Type = "DropDown"
