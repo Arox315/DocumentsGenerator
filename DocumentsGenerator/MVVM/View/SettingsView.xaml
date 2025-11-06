@@ -20,215 +20,212 @@
                 BorderBrush="{Binding MainColor}"
                 BorderThickness="0 1 0 0">
         <TabItem Header="Zależności"
-          IsSelected="True" 
-          Foreground="White"
-          Background="{Binding MainColor}"
-           Style="{StaticResource CustomTabItem}">
-            <DockPanel>
+                 IsSelected="True" 
+                 Foreground="White"
+                 Background="{Binding MainColor}"
+                 Style="{StaticResource CustomTabItem}">
+            
+            <Grid Margin="15 15 15 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-                <Grid Margin="10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="75"/>
+                </Grid.RowDefinitions>
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="5*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Nowa zależność"
-                                Background="{Binding MainColor}"
-                                Foreground="White"
-                                Width="100"
-                                Style="{StaticResource MainButtonTheme}"
-                                Command="{Binding AddKeyCommand}"/>
-                        <Separator Width="2" Background="Transparent"/>
-                        <Button Content="Importuj z pliku zewnętrznego"
-                                Background="{Binding MainColor}"
-                                Foreground="White"
-                                Width="175"
-                                Style="{StaticResource MainButtonTheme}"
-                                Command="{Binding ImportCommand}">
-
-                        </Button>
-                    </StackPanel>
-
-                    <!-- List side -->
-                    <Border Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
-                        <TreeView ItemsSource="{Binding Keys}" 
-                                  Background="Transparent" 
-                                  BorderBrush="{Binding MainColor}"
-                                  Margin="0 5 0 0"
-                                  Padding="5 10 5 10">
-                            <TreeView.Resources>
-                                <Style TargetType="TreeViewItem">
-                                    <Setter Property="Focusable" Value="False"/>
-                                </Style>
-
-                                <!-- Key -->
-                                <HierarchicalDataTemplate DataType="{x:Type local:KeyItem}" ItemsSource="{Binding Values}">
-                                    <StackPanel Orientation="Horizontal" Margin="0 2 0 2" >
-
-                                        <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
-                                         Width="80">
-                                            <Label Content="Klucz"
-                                                   Foreground="White"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"/>
-                                        </Border>
-                                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" 
-                                                 Width="250"
-                                                 Background="#4B4789"
-                                                 Foreground="White"
-                                                 VerticalContentAlignment="Center"
-                                                 Padding="4 0 0 0"/>
-                                        <controls:IconButton 
-                                            IconImage="/Images/plus-icon.png"
-                                            IconHeight="25"
-                                            IconWidth="25"
-                                            Width="30"
-                                            Height="30"
-                                            Margin="5 0 0 0"
-                                            Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
-                                            Command="{Binding DataContext.AddValueCommand, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
-                                            CommandParameter="{Binding}"
-                                            Style="{StaticResource DefaultIconButtonTheme}"/>
-                                        <controls:IconButton 
-                                            IconImage="/Images/delete-icon.png"
-                                            IconHeight="25"
-                                            IconWidth="25"
-                                            Width="30"
-                                            Height="30"
-                                            Margin="5 0 0 0"
-                                            Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
-                                            Command="{Binding DataContext.RemoveKeyCommand, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
-                                            CommandParameter="{Binding}"
-                                            Style="{StaticResource DefaultIconButtonTheme}"/>
-                                    </StackPanel>
-                                </HierarchicalDataTemplate>
-
-                                <!-- Value -->
-                                <HierarchicalDataTemplate DataType="{x:Type local:ValueItem}" ItemsSource="{Binding SubPairs}">
-                                    <StackPanel Orientation="Horizontal" Margin="0 2 0 2">
-                                        <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
-                                                Width="80">
-                                            <Label Content="Wartość"
-                                                   Foreground="White"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"/>
-                                        </Border>
-                                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" 
-                                                 Width="250"
-                                                 Background="#4B4789"
-                                                 Foreground="White"
-                                                 VerticalContentAlignment="Center"
-                                                 Padding="4 0 0 0"/>
-                                        <controls:IconButton 
-                                            IconImage="/Images/plus-icon.png"
-                                            IconHeight="25"
-                                            IconWidth="25"
-                                            Width="30"
-                                            Height="30"
-                                            Margin="5 0 0 0"
-                                            Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
-                                            Command="{Binding DataContext.AddSubPairCommand, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
-                                            CommandParameter="{Binding}"
-                                            Style="{StaticResource DefaultIconButtonTheme}"/>
-                                        <controls:IconButton 
-                                            IconImage="/Images/delete-icon.png"
-                                            IconHeight="25"
-                                            IconWidth="25"
-                                            Width="30"
-                                            Height="30"
-                                            Margin="5 0 0 0"
-                                            Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
-                                            Command="{Binding DataContext.RemoveValueCommand, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
-                                            CommandParameter="{Binding}"
-                                            Style="{StaticResource DefaultIconButtonTheme}"/>
-                                    </StackPanel>
-                                </HierarchicalDataTemplate>
-
-                                <!-- SubPair -->
-                                <DataTemplate DataType="{x:Type local:SubPair}">
-                                    <StackPanel Orientation="Horizontal" Margin="0 2 0 2">
-                                        <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
-                                                Width="80">
-                                            <Label Content="Podklucz"
-                                                   Foreground="White"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"/>
-                                        </Border>
-                                        <TextBox Text="{Binding SubKey, UpdateSourceTrigger=PropertyChanged}" 
-                                                 Width="250"
-                                                 Background="#4B4789"
-                                                 Foreground="White"
-                                                 VerticalContentAlignment="Center"
-                                                 Padding="4 0 0 0"/>
-
-                                        <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
-                                                Width="80">
-                                            <Label Content="Podwartość"
-                                                   Foreground="White"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"/>
-                                        </Border>
-                                        <TextBox Text="{Binding SubValue, UpdateSourceTrigger=PropertyChanged}" 
-                                                 Width="250"
-                                                 Background="#4B4789"
-                                                 Foreground="White"
-                                                 VerticalContentAlignment="Center"
-                                                 Padding="4 0 0 0"/>
-                                        <controls:IconButton 
-                                            IconImage="/Images/delete-icon.png"
-                                            IconHeight="25"
-                                            IconWidth="25"
-                                            Width="30"
-                                            Height="30"
-                                            Margin="5 0 0 0"
-                                            Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
-                                            Command="{Binding DataContext.RemoveSubPairCommand, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
-                                            CommandParameter="{Binding}"
-                                            Style="{StaticResource DefaultIconButtonTheme}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </TreeView.Resources>
-                        </TreeView>
-                    </Border>
-
-
-                    <!-- Instruction -->
-                    <ScrollViewer Grid.Column="2" Grid.Row="1" Margin="10,0,0,0" VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
-                            <TextBlock Text="Instrukcja" FontWeight="Bold" FontSize="14" Margin="0,0,0,6"/>
-                            <TextBlock Text="1) Wybierz 'Nowa zależność' by stworzyć nowy klucz i go nazwać."
-                                TextWrapping="Wrap" />
-                            <TextBlock Text="2) Dla każdego klucza, wybierz '+' aby dodać wartość i ją nazwać."
-                                TextWrapping="Wrap" />
-                            <TextBlock Text="3) Dla każdej wartości, wybierz '+' aby dodać parę podklucz/podwartość"
-                                TextWrapping="Wrap" />
-                            <TextBlock Text="4) Wybierz 'Zapisz' aby zapisać zmiany."
-                                TextWrapping="Wrap" />
-                        </StackPanel>
-                    </ScrollViewer>
-
-                    <Button Content="Zapisz" 
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Nowa zależność"
                             Background="{Binding MainColor}"
-                            Grid.Column="1"
-                            Grid.Row="2"
                             Foreground="White"
-                            FontSize="16"
-                            FontWeight="Bold"
-                            Height="40"
-                            Width="150"
-                            Margin="25 10 10 0"
-                            VerticalAlignment="Bottom"
+                            Width="100"
                             Style="{StaticResource MainButtonTheme}"
-                            Command="{Binding SaveDependenciesCommand}"/>
-                </Grid>
-            </DockPanel>
+                            Command="{Binding AddKeyCommand}"/>
+                    <Separator Width="2" Background="Transparent"/>
+                    <Button Content="Importuj z pliku zewnętrznego"
+                            Background="{Binding MainColor}"
+                            Foreground="White"
+                            Width="175"
+                            Style="{StaticResource MainButtonTheme}"
+                            Command="{Binding ImportCommand}">
+
+                    </Button>
+                </StackPanel>
+
+                <!-- List side -->
+                <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
+                    <TreeView ItemsSource="{Binding Keys}" 
+                                Background="Transparent" 
+                                BorderBrush="{Binding MainColor}"
+                                Margin="0 5 0 0"
+                                Padding="0 10 5 10">
+                        <TreeView.Resources>
+                            <Style TargetType="TreeViewItem">
+                                <Setter Property="Focusable" Value="False"/>
+                            </Style>
+
+                            <!-- Key -->
+                            <HierarchicalDataTemplate DataType="{x:Type local:KeyItem}" ItemsSource="{Binding Values}">
+                                <StackPanel Orientation="Horizontal" Margin="0 2 0 2" >
+
+                                    <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                            Width="72">
+                                        <Label Content="Klucz"
+                                                Foreground="White"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" 
+                                                Width="250"
+                                                Background="#4B4789"
+                                                Foreground="White"
+                                                VerticalContentAlignment="Center"
+                                                Padding="4 0 0 0"/>
+                                    <controls:IconButton 
+                                        IconImage="/Images/plus-icon.png"
+                                        IconHeight="25"
+                                        IconWidth="25"
+                                        Width="30"
+                                        Height="30"
+                                        Margin="5 0 0 0"
+                                        Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                        Command="{Binding DataContext.AddValueCommand, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource DefaultIconButtonTheme}"/>
+                                    <controls:IconButton 
+                                        IconImage="/Images/delete-icon.png"
+                                        IconHeight="25"
+                                        IconWidth="25"
+                                        Width="30"
+                                        Height="30"
+                                        Margin="5 0 0 0"
+                                        Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                        Command="{Binding DataContext.RemoveKeyCommand, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource DefaultIconButtonTheme}"/>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+
+                            <!-- Value -->
+                            <HierarchicalDataTemplate DataType="{x:Type local:ValueItem}" ItemsSource="{Binding SubPairs}">
+                                <StackPanel Orientation="Horizontal" Margin="0 2 0 2">
+                                    <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                            Width="72">
+                                        <Label Content="Wartość"
+                                                Foreground="White"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" 
+                                                Width="250"
+                                                Background="#4B4789"
+                                                Foreground="White"
+                                                VerticalContentAlignment="Center"
+                                                Padding="4 0 0 0"/>
+                                    <controls:IconButton 
+                                        IconImage="/Images/plus-icon.png"
+                                        IconHeight="25"
+                                        IconWidth="25"
+                                        Width="30"
+                                        Height="30"
+                                        Margin="5 0 0 0"
+                                        Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                        Command="{Binding DataContext.AddSubPairCommand, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource DefaultIconButtonTheme}"/>
+                                    <controls:IconButton 
+                                        IconImage="/Images/delete-icon.png"
+                                        IconHeight="25"
+                                        IconWidth="25"
+                                        Width="30"
+                                        Height="30"
+                                        Margin="5 0 0 0"
+                                        Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                        Command="{Binding DataContext.RemoveValueCommand, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource DefaultIconButtonTheme}"/>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+
+                            <!-- SubPair -->
+                            <DataTemplate DataType="{x:Type local:SubPair}">
+                                <StackPanel Orientation="Horizontal" Margin="0 2 0 2">
+                                    <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                            Width="72">
+                                        <Label Content="Podklucz"
+                                                Foreground="White"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBox Text="{Binding SubKey, UpdateSourceTrigger=PropertyChanged}" 
+                                                Width="250"
+                                                Background="#4B4789"
+                                                Foreground="White"
+                                                VerticalContentAlignment="Center"
+                                                Padding="4 0 0 0"/>
+
+                                    <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                            Width="72">
+                                        <Label Content="Podwartość"
+                                                Foreground="White"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBox Text="{Binding SubValue, UpdateSourceTrigger=PropertyChanged}" 
+                                                Width="250"
+                                                Background="#4B4789"
+                                                Foreground="White"
+                                                VerticalContentAlignment="Center"
+                                                Padding="4 0 0 0"/>
+                                    <controls:IconButton 
+                                        IconImage="/Images/delete-icon.png"
+                                        IconHeight="25"
+                                        IconWidth="25"
+                                        Width="30"
+                                        Height="30"
+                                        Margin="5 0 0 0"
+                                        Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                        Command="{Binding DataContext.RemoveSubPairCommand, RelativeSource={RelativeSource AncestorType=view:SettingsView}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource DefaultIconButtonTheme}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </TreeView.Resources>
+                    </TreeView>
+                </Border>
+
+
+                <!-- Instruction -->
+                <!--<ScrollViewer Grid.Row="2" Margin="0 5 0 5" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Instrukcja" FontWeight="Bold" FontSize="14" Margin="0,0,0,6"/>
+                        <TextBlock Text="1) Wybierz 'Nowa zależność' by stworzyć nowy klucz i go nazwać."
+                            TextWrapping="Wrap" />
+                        <TextBlock Text="2) Dla każdego klucza, wybierz '+' aby dodać wartość i ją nazwać."
+                            TextWrapping="Wrap" />
+                        <TextBlock Text="3) Dla każdej wartości, wybierz '+' aby dodać parę podklucz/podwartość"
+                            TextWrapping="Wrap" />
+                        <TextBlock Text="4) Wybierz 'Zapisz' aby zapisać zmiany."
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </ScrollViewer>-->
+
+                <Button Content="Zapisz" 
+                        Background="{Binding MainColor}"
+                        Grid.Column="1"
+                        Grid.Row="2"
+                        Foreground="White"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Height="40"
+                        Width="150"
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource MainButtonTheme}"
+                        Command="{Binding SaveDependenciesCommand}"/>
+            </Grid>
         </TabItem>
         
         <TabItem Header="Ustawienia ogólne"
@@ -374,7 +371,7 @@
                         Grid.Row="1"
                         Content="Zapisz"
                         HorizontalAlignment="Right"
-                        Margin="0 0 20 0"
+                        Margin="0 0 15 0"
                         Foreground="White"
                         FontSize="16"
                         FontWeight="Bold"

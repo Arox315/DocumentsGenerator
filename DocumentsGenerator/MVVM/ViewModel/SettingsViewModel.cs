@@ -142,7 +142,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
             errors = new();
 
             var seenKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            bool hasAtLeastOneValidChain = false;
+            bool hasAtLeastOneKeyWithoutValue = false;
 
             foreach (var key in Keys)
             {
@@ -157,8 +157,6 @@ namespace DocumentsGenerator.MVVM.ViewModel
                 var cleanedValues = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
                 var seenValues = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-                int validValueCountForKey = 0;
-
                 foreach (var val in key.Values)
                 {
                     if (string.IsNullOrWhiteSpace(val.Name))
@@ -172,50 +170,39 @@ namespace DocumentsGenerator.MVVM.ViewModel
                     var cleanedSub = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                     var seenSubKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-                    int validSubPairsForValue = 0;
-
                     foreach (var pair in val.SubPairs)
                     {
                         if (string.IsNullOrWhiteSpace(pair.SubKey) || string.IsNullOrWhiteSpace(pair.SubValue))
                             continue;
 
                         var sk = pair.SubKey.Trim();
-
                         if (!seenSubKeys.Add(sk))
                         {
                             errors.Add($"Wykryto zduplikowany podklucz: \"{pair.SubKey}\" dla klucza: \"{keyName}\" i wartości: \"{valueName}\"");
                             continue;
                         }
 
-                        cleanedSub[sk] = pair.SubValue;
-                        validSubPairsForValue++;
+                        if (!cleanedSub.ContainsKey(sk))
+                            cleanedSub[sk] = pair.SubValue;
                     }
 
-                    if (validSubPairsForValue == 0)
-                    {
-                        errors.Add($"Wartość: \"{valueName}\" dla klucza: \"{keyName}\" nie posiada żadnej pary podklucz/podwartość.");
-                    }
-                    else
-                    {
-                        cleanedValues[valueName] = cleanedSub;
-                        validValueCountForKey++;
-                        hasAtLeastOneValidChain = true;
-                    }
+                    cleanedValues[valueName] = cleanedSub;
                 }
 
-                if (validValueCountForKey == 0)
-                {
-                    errors.Add($"Klucz: \"{keyName}\" nie posiada żadnej poprawnej wartości.");
-                }
-                else
+                if (cleanedValues.Count > 0)
                 {
                     dependencies[keyName] = cleanedValues;
                 }
+                else
+                {
+                    hasAtLeastOneKeyWithoutValue = true;
+                    errors.Add($"Klucz: \"{keyName}\" nie posiada żadnych wartości.");
+                }
             }
 
-            if (!hasAtLeastOneValidChain || dependencies.Count == 0)
+            if (hasAtLeastOneKeyWithoutValue || dependencies.Count == 0)
             {
-                errors.Add("Dane są niekompletne: potrzebny jest co najmniej jeden zbiór: klucz -> wartość -> para podklucz/podwartość.");
+                errors.Add("Dane są niekompletne: wymagany jest co najmniej jeden klucz z co najmniej jedną wartością. Wartości mogą nie zawierać par podklucz/podwartość.");
             }
 
             return errors.Count == 0;
@@ -330,43 +317,54 @@ namespace DocumentsGenerator.MVVM.ViewModel
                 if (root == null || !root.TryGetValue("Dependencies", out var deps))
                     return false;
 
-                var cleaned = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>();
-                bool hasAtLeastOnePair = false;
+                var cleaned = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>(StringComparer.OrdinalIgnoreCase);
+                bool hasAtLeastOneKeyWithValue = false;
 
-                foreach (var (keyName, valuesDict) in deps)
+                foreach (var (keyNameRaw, valuesDictRaw) in deps)
                 {
-                    if (string.IsNullOrWhiteSpace(keyName) || valuesDict == null) continue;
+                    if (string.IsNullOrWhiteSpace(keyNameRaw) || valuesDictRaw == null)
+                        continue;
 
-                    var cleanedValues = new Dictionary<string, Dictionary<string, string>>();
+                    var keyName = keyNameRaw.Trim();
+                    var cleanedValues = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+                    var seenValues = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-                    foreach (var (valueName, subDict) in valuesDict)
+                    foreach (var (valueNameRaw, subDictRaw) in valuesDictRaw)
                     {
-                        if (string.IsNullOrWhiteSpace(valueName) || subDict == null) continue;
+                        if (string.IsNullOrWhiteSpace(valueNameRaw))
+                            continue;
 
-                        var cleanedSub = new Dictionary<string, string>();
-                        foreach (var (subKey, subVal) in subDict)
+                        var valueName = valueNameRaw.Trim();
+
+                        if (!seenValues.Add(valueName))
+                            continue;
+
+                        var cleanedSub = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                        if (subDictRaw != null)
                         {
-                            if (!string.IsNullOrWhiteSpace(subKey) &&
-                                !string.IsNullOrWhiteSpace(subVal))
+                            var seenSub = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                            foreach (var (subKeyRaw, subValRaw) in subDictRaw)
                             {
-                                cleanedSub[subKey] = subVal;
+                                if (string.IsNullOrWhiteSpace(subKeyRaw) || string.IsNullOrWhiteSpace(subValRaw))
+                                    continue;
+
+                                var sk = subKeyRaw.Trim();
+                                if (seenSub.Add(sk) && !cleanedSub.ContainsKey(sk))
+                                    cleanedSub[sk] = subValRaw;
                             }
                         }
 
-                        if (cleanedSub.Count > 0)
-                        {
-                            cleanedValues[valueName] = cleanedSub;
-                            hasAtLeastOnePair = true;
-                        }
+                        cleanedValues[valueName] = cleanedSub;
                     }
 
                     if (cleanedValues.Count > 0)
                     {
                         cleaned[keyName] = cleanedValues;
+                        hasAtLeastOneKeyWithValue = true;
                     }
                 }
 
-                if (!hasAtLeastOnePair || cleaned.Count == 0)
+                if (!hasAtLeastOneKeyWithValue || cleaned.Count == 0)
                     return false;
 
                 normalizedRoot["Dependencies"] = cleaned;
