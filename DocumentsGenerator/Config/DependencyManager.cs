@@ -98,7 +98,6 @@ namespace DocumentsGenerator.Config
                     PropertyNameCaseInsensitive = true
                 };
 
-                // We only need up to: Dependencies -> Key -> Values
                 var root = JsonSerializer.Deserialize<
                     Dictionary<string, Dictionary<string, Dictionary<string, object>>>>(json, options);
 

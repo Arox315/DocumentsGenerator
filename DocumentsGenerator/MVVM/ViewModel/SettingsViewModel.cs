@@ -112,7 +112,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
                     "Błąd zapisu!", DialogType.Ok, DialogIcon.Error);
                 return;
             }
-            
+
             var root = new Dictionary<string, object>
             {
                 ["Dependencies"] = dependencies
@@ -133,6 +133,170 @@ namespace DocumentsGenerator.MVVM.ViewModel
             catch (Exception ex)
             {
                 DialogWindow.ShowError($"Błąd podczas zapisu pliku.\nBłąd:{ex.Message}", "Błąd zapisu!");
+            }
+        }
+
+        private bool TryValidateAndNormalizeJsonNoDuplicates(string filePath, out Dictionary<string, object> normalizedRoot, out List<string> errors)
+        {
+            normalizedRoot = new();
+            errors = new();
+
+            if (!File.Exists(filePath))
+            {
+                errors.Add("Plik nie istnieje.");
+                return false;
+            }
+
+            try
+            {
+                using var stream = File.OpenRead(filePath);
+                using var doc = JsonDocument.Parse(stream, new JsonDocumentOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true });
+
+                if (!doc.RootElement.TryGetProperty("Dependencies", out var depsEl) || depsEl.ValueKind != JsonValueKind.Object)
+                {
+                    errors.Add("Brak sekcji \"Dependencies\" lub nieprawidłowy typ - oczekiwano obiektu.");
+                    return false;
+                }
+
+                var cleaned = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>(StringComparer.OrdinalIgnoreCase);
+
+                bool hasAtLeastOneKeyWithValue = false;
+
+                var seenKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                foreach (var keyProp in depsEl.EnumerateObject())
+                {
+                    var keyNameRaw = keyProp.Name;
+                    if (string.IsNullOrWhiteSpace(keyNameRaw)) continue;
+                    var keyName = keyNameRaw.Trim();
+
+                    if (!seenKeys.Add(keyName))
+                    {
+                        errors.Add($"Wykryto zduplikowany klucz: \"{keyName}\"");
+                    }
+
+                    if (keyProp.Value.ValueKind != JsonValueKind.Object)
+                    {
+                        errors.Add($"Klucz \"{keyName}\" ma nieprawidłowy typ wartości - oczekiwano obiektu.");
+                        continue;
+                    }
+
+                    var cleanedValues = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+                    var seenValues = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                    foreach (var valueProp in keyProp.Value.EnumerateObject())
+                    {
+                        var valueNameRaw = valueProp.Name;
+                        if (string.IsNullOrWhiteSpace(valueNameRaw)) continue;
+                        var valueName = valueNameRaw.Trim();
+
+                        if (!seenValues.Add(valueName))
+                        {
+                            errors.Add($"Wykryto zduplikowaną wartość: \"{valueName}\" dla klucza: \"{keyName}\"");
+                        }
+
+                        if (valueProp.Value.ValueKind != JsonValueKind.Object)
+                        {
+                            errors.Add($"Wartość: \"{valueName}\" dla klucza: \"{keyName}\" ma nieprawidłowy typ - oczekiwano obiektu.");
+                            continue;
+                        }
+
+                        var cleanedSub = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                        var seenSub = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                        foreach (var subProp in valueProp.Value.EnumerateObject())
+                        {
+                            var subKeyRaw = subProp.Name;
+                            if (string.IsNullOrWhiteSpace(subKeyRaw)) continue;
+                            var subKey = subKeyRaw.Trim();
+
+                            if (!seenSub.Add(subKey))
+                            {
+                                errors.Add($"Wykryto zduplikowany podklucz: \"{subKey}\" dla klucza: \"{keyName}\" i wartości: \"{valueName}\"");
+                                continue;
+                            }
+
+                            if (subProp.Value.ValueKind != JsonValueKind.String)
+                            {
+                                errors.Add($"Podklucz: \"{subKey}\" dla klucza: \"{keyName}\" i wartości: \"{valueName}\" musi mieć tekstową wartość.");
+                                continue;
+                            }
+
+                            cleanedSub[subKey] = subProp.Value.GetString() ?? string.Empty;
+                        }
+
+                        cleanedValues[valueName] = cleanedSub;
+                    }
+
+                    if (cleanedValues.Count > 0)
+                    {
+                        cleaned[keyName] = cleanedValues;
+                        hasAtLeastOneKeyWithValue = true;
+                    }
+                }
+
+                if (!hasAtLeastOneKeyWithValue || cleaned.Count == 0)
+                {
+                    errors.Add("Dane są niekompletne: wymagany jest co najmniej jeden klucz z co najmniej jedną wartością. Wartości mogą nie zawierać par podklucz/podwartość.");
+                }
+
+                if (errors.Count > 0)
+                {
+                    return false;
+                }
+
+                normalizedRoot["Dependencies"] = cleaned;
+                return true;
+            }
+            catch (JsonException jex)
+            {
+                errors.Add($"Nieprawidłowy JSON: {jex.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                errors.Add($"Błąd podczas walidacji: {ex.Message}");
+                return false;
+            }
+        }
+
+        private void ImportFromJson()
+        {
+            var ofd = new Microsoft.Win32.OpenFileDialog
+            {
+                Title = "Importuj zależności...",
+                Filter = "Pliki JSON(*.json)|*.json",
+                CheckFileExists = true
+            };
+
+            if (ofd.ShowDialog() != true) return;
+
+            if (!TryValidateAndNormalizeJsonNoDuplicates(ofd.FileName, out var normalizedRoot, out var errors))
+            {
+                DialogWindow.ShowError("Wybrany plik nie jest prawidłowym plikiem JSON zależności.\n\n" + string.Join("\n", errors), "Błąd importu!");
+                return;
+            }
+
+            var targetPath = GetDefaultDependenciesPath();
+
+            try
+            {
+                var options = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
+                var json = System.Text.Json.JsonSerializer.Serialize(normalizedRoot, options);
+                System.IO.File.WriteAllText(targetPath, json);
+
+                if (!LoadFromJson())
+                {
+                    DialogWindow.Show("Plik zapisano, ale nie udało się go ponownie wczytać.", "Importowanie pliku", DialogType.Ok, DialogIcon.Warning);
+                }
+                else
+                {
+                    DialogWindow.Show("Pomyślnie zaimportowano i wczytano dane.", "Importowanie pliku", DialogType.Ok, DialogIcon.Info);
+                }
+            }
+            catch (Exception ex)
+            {
+                DialogWindow.ShowError($"Błąd podczas zapisu pliku.\nBłąd: {ex.Message}", "Błąd importu!");
             }
         }
 
@@ -262,120 +426,6 @@ namespace DocumentsGenerator.MVVM.ViewModel
         }
 
         private static string GetDefaultDependenciesPath() => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dependencies.json");
-
-        private void ImportFromJson()
-        {
-            var ofd = new OpenFileDialog
-            {
-                Title = "Importuj zależności...",
-                Filter = "Pliki JSON(*.json)|*.json",
-                CheckFileExists = true
-            };
-
-            if (ofd.ShowDialog() != true) return;
-
-            if (!TryValidateJsonFile(ofd.FileName, out var normalizedRoot))
-            {
-                DialogWindow.Show("Wybrany plik nie jest prawidłowym plikiem JSON zależności.", "Niepoprawny plik", DialogType.Ok, DialogIcon.Warning);
-                return;
-            }
-
-            var targetPath = GetDefaultDependenciesPath();
-            try
-            {
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                var json = JsonSerializer.Serialize(normalizedRoot, options);
-                File.WriteAllText(targetPath, json);
-
-                if (!LoadFromJson())
-                {
-                    DialogWindow.Show("Zaimportowany plik został zapisany, ale ponowne wczytanie nie powiodło się.", "Importowanie zależności", DialogType.Ok, DialogIcon.Warning);
-                }
-                else
-                {
-                    DialogWindow.ShowInfo("Zaimportowano i załadowano pomyślnie.", "Importowanie zależności");
-                }
-            }
-            catch (Exception ex)
-            {
-                DialogWindow.ShowError($"Importowanie nie powiodło się.\nBłąd:{ex.Message}", "Błąd!");
-            }
-        }
-
-        private bool TryValidateJsonFile(string filePath, out Dictionary<string, object> normalizedRoot)
-        {
-            normalizedRoot = new();
-
-            try
-            {
-                var json = File.ReadAllText(filePath);
-                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-
-                var root = JsonSerializer.Deserialize<
-                    Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, string>>>>>(json, options);
-
-                if (root == null || !root.TryGetValue("Dependencies", out var deps))
-                    return false;
-
-                var cleaned = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>(StringComparer.OrdinalIgnoreCase);
-                bool hasAtLeastOneKeyWithValue = false;
-
-                foreach (var (keyNameRaw, valuesDictRaw) in deps)
-                {
-                    if (string.IsNullOrWhiteSpace(keyNameRaw) || valuesDictRaw == null)
-                        continue;
-
-                    var keyName = keyNameRaw.Trim();
-                    var cleanedValues = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
-                    var seenValues = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-                    foreach (var (valueNameRaw, subDictRaw) in valuesDictRaw)
-                    {
-                        if (string.IsNullOrWhiteSpace(valueNameRaw))
-                            continue;
-
-                        var valueName = valueNameRaw.Trim();
-
-                        if (!seenValues.Add(valueName))
-                            continue;
-
-                        var cleanedSub = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                        if (subDictRaw != null)
-                        {
-                            var seenSub = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                            foreach (var (subKeyRaw, subValRaw) in subDictRaw)
-                            {
-                                if (string.IsNullOrWhiteSpace(subKeyRaw) || string.IsNullOrWhiteSpace(subValRaw))
-                                    continue;
-
-                                var sk = subKeyRaw.Trim();
-                                if (seenSub.Add(sk) && !cleanedSub.ContainsKey(sk))
-                                    cleanedSub[sk] = subValRaw;
-                            }
-                        }
-
-                        cleanedValues[valueName] = cleanedSub;
-                    }
-
-                    if (cleanedValues.Count > 0)
-                    {
-                        cleaned[keyName] = cleanedValues;
-                        hasAtLeastOneKeyWithValue = true;
-                    }
-                }
-
-                if (!hasAtLeastOneKeyWithValue || cleaned.Count == 0)
-                    return false;
-
-                normalizedRoot["Dependencies"] = cleaned;
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
 
         public SettingsViewModel() 
         {
