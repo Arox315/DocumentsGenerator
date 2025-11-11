@@ -46,7 +46,7 @@ namespace DocumentsGenerator.MVVM.Model
                 string generationDate = DateTime.Now.ToString("dd'-'MM'-'yyyy'T'HH'-'mm'-'ss");
                 string outputFileName = $"{generationDate}_arkusz_danych.xml";
                 string savePath = $@"{outputDictionaryPath}\{outputFileName}";
-                foreach (string element in seenElements) Debug.WriteLine(element);
+                //foreach (string element in seenElements) Debug.WriteLine(element);
                 outputFile.Save(savePath);
             }
             catch (Exception ex) {

@@ -134,12 +134,6 @@ namespace DocumentsGenerator.MVVM.ViewModel
         private string? _selectedWriteFolder;
         private int _defaultKeyFilterMode;
 
-        private void OnSelectedItemChanged()
-        {
-            // Optional: logic that should happen when user changes selection
-            Debug.WriteLine($"Selected item changed to: {SelectedKeyFilter}");
-        }
-
         public RelayCommand<LoadedFileNameModel> DeleteItemCommand { get; }
         public RelayCommand<object> LoadFileNameCommand { get; }
         public RelayCommand<object> LoadFolderNameCommand { get; }

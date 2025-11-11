@@ -12,10 +12,7 @@
     <SolidColorBrush x:Key="Combo.Item.Hover"   Color="#6F6CA1"/>
     <SolidColorBrush x:Key="Combo.Item.Text"    Color="White"/>
 
-    <!-- If you use the subclass -->
-    <!-- <Style x:Key="CustomComboBox" TargetType="{x:Type local:CommitEditableComboBox}"> -->
-
-    <!-- Or for a regular ComboBox -->
+    <!-- Editable ComboBox template -->
     <Style x:Key="CustomComboBox" TargetType="{x:Type ComboBox}">
         <Setter Property="Foreground" Value="{StaticResource Combo.Text}"/>
         <Setter Property="Background" Value="{StaticResource Combo.Bg}"/>
@@ -42,18 +39,18 @@
                                     <ColumnDefinition Width="24"/>
                                 </Grid.ColumnDefinitions>
 
-                                <!-- When NOT editable -->
+                                <!-- Display part (non-editing). DO NOT treat underscores as access keys -->
                                 <ContentPresenter x:Name="ContentSite"
                                                   Margin="{TemplateBinding Padding}"
                                                   VerticalAlignment="Center"
                                                   HorizontalAlignment="Left"
-                                                  RecognizesAccessKey="True"
+                                                  RecognizesAccessKey="False"
                                                   Content="{TemplateBinding SelectionBoxItem}"
                                                   ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                                   ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                                   IsHitTestVisible="False"/>
 
-                                <!-- When IS editable -->
+                                <!-- Editable text box -->
                                 <TextBox x:Name="PART_EditableTextBox"
                                          Margin="{TemplateBinding Padding}"
                                          Background="Transparent"
@@ -64,8 +61,8 @@
                                          VerticalContentAlignment="Center"
                                          Visibility="Collapsed"
                                          Focusable="True"
-                                         Text="{TemplateBinding Text}"
-                                         />
+                                         Text="{Binding Path=Text, RelativeSource={RelativeSource TemplatedParent},
+                                                        Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                                 <!-- Arrow -->
                                 <Path x:Name="ArrowGlyph"
@@ -86,12 +83,11 @@
                                               Focusable="False"
                                               Opacity="0"
                                               ClickMode="Press"
-                                              IsHitTestVisible="True"
                                               IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"/>
                             </Grid>
                         </Border>
 
-                        <!-- Popup (must be named PART_Popup) -->
+                        <!-- Popup (must be PART_Popup) -->
                         <Popup x:Name="PART_Popup"
                                Placement="Bottom"
                                AllowsTransparency="True"
@@ -116,38 +112,27 @@
 
                     <!-- Triggers -->
                     <ControlTemplate.Triggers>
-
-                        <!-- Hover/pressed/focus visuals -->
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Border"
-                                    Property="Background"
-                                    Value="{StaticResource Combo.Bg.Hover}"/>
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource Combo.Bg.Hover}"/>
                         </Trigger>
 
                         <Trigger Property="IsDropDownOpen" Value="True">
-                            <Setter TargetName="Border"
-                                    Property="Background"
-                                    Value="{StaticResource Combo.Bg.Pressed}"/>
-                            <Setter TargetName="Border"
-                                    Property="BorderBrush"
-                                    Value="{StaticResource Combo.Border}"/>
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource Combo.Bg.Pressed}"/>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource Combo.Border}"/>
                         </Trigger>
 
                         <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                            <Setter TargetName="Border"
-                                    Property="BorderBrush"
-                                    Value="#6B61C8"/>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="#6B61C8"/>
                         </Trigger>
 
-                        <!-- Editable mode: show textbox, hide content presenter -->
+                        <!-- Editable mode: show textbox, hide content presenter, let textbox get clicks -->
                         <Trigger Property="IsEditable" Value="True">
                             <Setter TargetName="ContentSite" Property="Visibility" Value="Collapsed"/>
                             <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
-                            <!-- Prevent the overlay toggle button from stealing text clicks -->
                             <Setter TargetName="MainClickCatcher" Property="IsHitTestVisible" Value="False"/>
                         </Trigger>
 
-                        <!-- Re-enable click catcher when dropdown is closed and not focused in the edit box -->
+                        <!-- Re-enable click catcher when dropdown is closed and focus left -->
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsEditable" Value="True"/>
@@ -156,13 +141,12 @@
                             </MultiTrigger.Conditions>
                             <Setter TargetName="MainClickCatcher" Property="IsHitTestVisible" Value="True"/>
                         </MultiTrigger>
-
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
 
-        <!-- Items -->
+        <!-- Item container -->
         <Setter Property="ItemContainerStyle">
             <Setter.Value>
                 <Style TargetType="{x:Type ComboBoxItem}">
@@ -173,22 +157,18 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ComboBoxItem}">
-                                <Border x:Name="ItemBorder"
-                                        Background="{TemplateBinding Background}">
+                                <Border x:Name="ItemBorder" Background="{TemplateBinding Background}">
+                                    <!-- IMPORTANT: Don't treat underscores as mnemonics -->
                                     <ContentPresenter Margin="4,2"
                                                       VerticalAlignment="Center"
-                                                      RecognizesAccessKey="True"/>
+                                                      RecognizesAccessKey="False"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="ItemBorder"
-                                                Property="Background"
-                                                Value="{StaticResource Combo.Item.Hover}"/>
+                                        <Setter TargetName="ItemBorder" Property="Background" Value="{StaticResource Combo.Item.Hover}"/>
                                     </Trigger>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="ItemBorder"
-                                                Property="Background"
-                                                Value="{StaticResource Combo.Item.Hover}"/>
+                                        <Setter TargetName="ItemBorder" Property="Background" Value="{StaticResource Combo.Item.Hover}"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -197,6 +177,5 @@
                 </Style>
             </Setter.Value>
         </Setter>
-
     </Style>
 </ResourceDictionary>

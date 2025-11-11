@@ -18,24 +18,21 @@ namespace DocumentsGenerator.Controls
         public CommitEditableComboBox()
         {
             IsEditable = true;
-            IsTextSearchEnabled = false; // allow free typing without built-in search stepping in
+            IsTextSearchEnabled = false;
             _itemMouseDownHandler = OnItemPreviewMouseDown;
         }
 
         protected override void OnDropDownOpened(EventArgs e)
         {
             base.OnDropDownOpened(e);
-            // Capture clicks anywhere inside ComboBoxItem (even if already handled)
             AddHandler(ComboBoxItem.PreviewMouseLeftButtonDownEvent, _itemMouseDownHandler, handledEventsToo: true);
         }
 
         protected override void OnDropDownClosed(EventArgs e)
         {
-            // Stop listening once closed
             RemoveHandler(ComboBoxItem.PreviewMouseLeftButtonDownEvent, _itemMouseDownHandler);
             base.OnDropDownClosed(e);
 
-            // If user didn’t pick anything and just clicked away, commit the typed text
             if (CommitOnLostFocus)
             {
                 CommitTypedTextIfNeeded();
@@ -44,16 +41,14 @@ namespace DocumentsGenerator.Controls
 
         private void OnItemPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            // Find the ComboBoxItem under the click
             var src = e.OriginalSource as DependencyObject;
             var container = ItemsControl.ContainerFromElement(this, src) as ComboBoxItem;
             if (container == null) return;
 
-            // Select the item immediately and close the dropdown
             var item = ItemContainerGenerator.ItemFromContainer(container);
             SelectedItem = item;
             IsDropDownOpen = false;
-            e.Handled = true; // prevent the default focus churn that breaks selection in editable ComboBox
+            e.Handled = true;
         }
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
@@ -69,7 +64,6 @@ namespace DocumentsGenerator.Controls
         protected override void OnLostKeyboardFocus(KeyboardFocusChangedEventArgs e)
         {
             base.OnLostKeyboardFocus(e);
-            // Don’t commit while popup is open — it interferes with mouse selection
             if (!IsDropDownOpen && CommitOnLostFocus)
             {
                 CommitTypedTextIfNeeded();
@@ -82,12 +76,10 @@ namespace DocumentsGenerator.Controls
             if (string.IsNullOrEmpty(text))
                 return false;
 
-            // If current selection already matches the visible text, nothing to do
             if (SelectedItem != null &&
                 string.Equals(GetItemDisplayText(SelectedItem), text, StringComparison.CurrentCulture))
                 return false;
 
-            // Try to match an existing item by display text
             var existing = Items.Cast<object>()
                 .FirstOrDefault(item => string.Equals(GetItemDisplayText(item), text, StringComparison.CurrentCulture));
 
@@ -97,7 +89,6 @@ namespace DocumentsGenerator.Controls
                 return true;
             }
 
-            // Not in list — add if allowed
             if (AddCustomItemToItemsSource)
             {
                 if (ItemsSource is IList list)
@@ -106,7 +97,7 @@ namespace DocumentsGenerator.Controls
                     Items.Add(text);
             }
 
-            SelectedItem = text; // still select the free-typed value
+            SelectedItem = text;
             return true;
         }
 

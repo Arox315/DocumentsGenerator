@@ -18,6 +18,8 @@
                 <ResourceDictionary Source="/Themes/DataSheetItemCard.xaml"/>
                 <ResourceDictionary Source="/Themes/CustomTabItem.xaml"/>
                 <ResourceDictionary Source="/Themes/CustomScrollBarTheme.xaml"/>
+                <ResourceDictionary Source="/Themes/AllKeysCard.xaml"/>
+                
                
                 <!--<ResourceDictionary Source="/Themes/DependenciesStyles.xaml"/>-->
             </ResourceDictionary.MergedDictionaries>

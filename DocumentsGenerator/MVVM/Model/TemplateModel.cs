@@ -58,6 +58,19 @@ namespace DocumentsGenerator.MVVM.Model
                         var (part, storeItemId) = AddOrReplaceCustomXmlPart(doc, xml);
 
                         ReplaceTagsWithBoundContentControls(doc, storeItemId, tagMap);
+
+                        // create keys list for dependency suggestions
+                        try
+                        {
+                            bool success = DependencyKeysManager.UpdateAllKeysFile(orderedRaw);
+                            if (!success)
+                            {
+                                Debug.WriteLine("No new changes - no new keys");
+                            }
+                        }
+                        catch (Exception e) {
+                            throw new Exception(message: e.Message);
+                        }
                     }
                 }
                 catch (Exception ex) {

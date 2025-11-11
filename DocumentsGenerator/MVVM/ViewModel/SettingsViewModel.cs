@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Linq;
+using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentsGenerator.Config;
 using DocumentsGenerator.Core;
@@ -21,6 +22,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Xml.Linq;
 
 namespace DocumentsGenerator.MVVM.ViewModel
 {
@@ -76,6 +78,14 @@ namespace DocumentsGenerator.MVVM.ViewModel
         public RelayCommand<object> RemoveSubPairCommand { get; }
         public RelayCommand<object> SaveDependenciesCommand { get; }
         public RelayCommand<object> ImportCommand { get; }
+
+
+        public ObservableCollection<AllKeysModel> AllKeys { get; } = new();
+        public RelayCommand<AllKeysModel> ClearValueCommand { get; }
+        public RelayCommand<AllKeysModel> DeleteValueCommand { get; }
+        public RelayCommand<object> SaveAllKeysCommand { get; }
+        public RelayCommand<object> AddNewKeyCommand { get; }
+
 
         public void SaveSettings()
         {
@@ -427,6 +437,52 @@ namespace DocumentsGenerator.MVVM.ViewModel
 
         private static string GetDefaultDependenciesPath() => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dependencies.json");
 
+        private static void PrepopulateSubPairsFromLatest(KeyItem key, ValueItem targetValue, string defaultSubValue = "Nowa Podwartość")
+        {
+            if (key == null || targetValue == null) return;
+
+            for (int i = key.Values.Count - 1; i >= 0; i--)
+            {
+                var src = key.Values[i];
+                if (src.SubPairs != null && src.SubPairs.Count > 0)
+                {
+                    foreach (var sp in src.SubPairs)
+                    {
+                        targetValue.SubPairs.Add(new SubPair
+                        {
+                            SubKey = sp.SubKey,
+                            SubValue = defaultSubValue
+                        });
+                    }
+                    break;
+                }
+            }
+        }
+
+        public ObservableCollection<string> KeySuggestions { get; } = new();
+
+        private static string KeysJsonPath() => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "all_keys.json");
+
+        private void LoadSuggestions()
+        {
+            var keySuggestions = Suggestions.LoadKeySuggestions(KeysJsonPath());
+            KeySuggestions.Clear();
+            AllKeys.Clear();
+            foreach (string suggestion in keySuggestions) 
+            { 
+                KeySuggestions.Add(suggestion);
+                AllKeys.Add(new AllKeysModel() { Value = suggestion });
+            }
+        }
+
+        private void ClearValue(AllKeysModel key)
+        {
+            if (key != null)
+            {
+                key.Value = string.Empty;
+            }
+        }
+
         public SettingsViewModel() 
         {
             MainColor = new SolidColorBrush(constants._settingsColor);
@@ -437,14 +493,21 @@ namespace DocumentsGenerator.MVVM.ViewModel
             AddKeyCommand = new RelayCommand<object>(_ =>{
                 Keys.Add(new KeyItem { Name = "Nowy Klucz" });
             });
+
             RemoveKeyCommand = new RelayCommand<object>(keyObj => {
                 if (keyObj is KeyItem key) Keys.Remove(key);
                 Debug.WriteLine("Removed key");
             }, keyObj => keyObj is KeyItem );
+
             AddValueCommand = new RelayCommand<object>(keyObj => {
                 if (keyObj is KeyItem k)
-                    k.Values.Add(new ValueItem { Name = "Nowa Wartość" });
-            }, keyObj => keyObj is KeyItem );
+                {
+                    var newValue = new ValueItem { Name = "Nowa Wartość" };
+                    PrepopulateSubPairsFromLatest(k, newValue, "Nowa Podwartość");
+                    k.Values.Add(newValue);
+                }
+            }, keyObj => keyObj is KeyItem);
+
             RemoveValueCommand = new RelayCommand<object>(valueObj => {
                 if (valueObj is ValueItem value)
                 {
@@ -458,10 +521,12 @@ namespace DocumentsGenerator.MVVM.ViewModel
                     }
                 }
             }, valueObj => valueObj is ValueItem );
+
             AddSubPairCommand = new RelayCommand<object>(valueObj => {
                 if (valueObj is ValueItem v)
                     v.SubPairs.Add(new SubPair { SubKey = "Nowy Podklucz", SubValue = "Nowa Podwartość" });
             }, valueObj => valueObj is ValueItem );
+
             RemoveSubPairCommand = new RelayCommand<object>(pairObj => {
                 if (pairObj is SubPair pair)
                 {
@@ -480,8 +545,45 @@ namespace DocumentsGenerator.MVVM.ViewModel
                     }
                 }
             }, pairObj => pairObj is SubPair );
+
             SaveDependenciesCommand = new RelayCommand<object>(_ => SaveToJson());
+
             ImportCommand = new RelayCommand<object>(_ => ImportFromJson());
+
+
+            ClearValueCommand = new RelayCommand<AllKeysModel>(key =>
+            {
+                ClearValue(key);
+            });
+
+            DeleteValueCommand = new RelayCommand<AllKeysModel>(
+                key => AllKeys.Remove(key),
+                key => key != null);
+
+            AddNewKeyCommand = new RelayCommand<object>(_ => {
+                AllKeys.Insert(0, new AllKeysModel() { Value = "" });
+            });
+
+            SaveAllKeysCommand = new RelayCommand<object>(_=> {
+                try
+                {
+                    bool success = DependencyKeysManager.UpdateAllKeysFile(AllKeys);
+                    if (success) 
+                    {
+                        DialogWindow.ShowInfo("Pomyślnie zapisano zmiany.", "Zapis pliku");
+                    }
+                    else
+                    {
+                        DialogWindow.ShowInfo("Zapisywanie zakończone. Brak nowych zmian – brak nowych kluczy.", "Zapis pliku");
+                    }
+                    
+                    LoadSuggestions();
+                }
+                catch (Exception ex)
+                {
+                    DialogWindow.ShowError($"Błąd podczas zapisu!\nBłąd: {ex}", "Błąd!");
+                }
+            });
 
             // Template settings
 
@@ -678,6 +780,8 @@ namespace DocumentsGenerator.MVVM.ViewModel
                 Value = ConfigManager.GetSetting(nameof(DocumentLoadDataSheetInitialDirectory))
             };
             Settings.Add(DocumentLoadDataSheetInitialDirectory);
+
+            LoadSuggestions();
         } 
     }
 }

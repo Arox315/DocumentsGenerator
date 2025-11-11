@@ -1,0 +1,149 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
+using DocumentsGenerator.MVVM.Model;
+
+namespace DocumentsGenerator.Config
+{
+    public static class DependencyKeysManager
+    {
+        public static readonly string allKeysPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "all_keys.json");
+
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            WriteIndented = true,
+            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+        };
+
+        public static bool UpdateAllKeysFile(IEnumerable<string> newKeys)
+        {
+            try
+            {
+                if (newKeys == null)
+                    return false;
+
+                var existingKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                if (File.Exists(allKeysPath))
+                {
+                    try
+                    {
+                        var json = File.ReadAllText(allKeysPath);
+                        using var doc = JsonDocument.Parse(json);
+                        if (doc.RootElement.TryGetProperty("Keys", out var arr) && arr.ValueKind == JsonValueKind.Array)
+                        {
+                            foreach (var el in arr.EnumerateArray())
+                            {
+                                
+                                if (el.ValueKind == JsonValueKind.String)
+                                {
+                                    var s = el.GetString();
+                                    Debug.WriteLine(s);
+                                    if (!string.IsNullOrWhiteSpace(s))
+                                        existingKeys.Add(s.Trim().Replace(" ", "_"));
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        existingKeys.Clear();
+                    }
+                }
+
+                bool added = false;
+                foreach (var key in newKeys.Where(k => !string.IsNullOrWhiteSpace(k)))
+                {
+                    if (existingKeys.Add(key.Trim().Replace(" ", "_")))
+                        added = true;
+                }
+
+                if (!added && File.Exists(allKeysPath))
+                    return false;
+
+                // alpahabetical sort
+                var sortedKeys = existingKeys.OrderBy(k => k, StringComparer.OrdinalIgnoreCase).ToList();
+
+                var obj = new Dictionary<string, object>
+                {
+                    ["Keys"] = sortedKeys
+                };
+
+                var jsonOut = JsonSerializer.Serialize(obj, _jsonOptions);
+                File.WriteAllText(allKeysPath, jsonOut);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        public static bool UpdateAllKeysFile(IEnumerable<AllKeysModel> newKeys)
+        {
+            if (newKeys is null) return false;
+
+            var empty = newKeys.FirstOrDefault(k => k == null || string.IsNullOrWhiteSpace(k.Value));
+            if (empty != null)
+                throw new ArgumentException("all_keys.json update failed: one or more items have empty Value.", nameof(newKeys));
+
+            var unique = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var item in newKeys)
+            {
+                var sanitized = SanitizeKey(item.Value!);
+                if (sanitized.Length == 0)
+                    throw new ArgumentException("all_keys.json update failed: a Value normalized to empty after sanitization.", nameof(newKeys));
+
+                unique.Add(sanitized);
+            }
+
+            if (unique.Count == 0) return false;
+
+            var sorted = unique.OrderBy(k => k, StringComparer.OrdinalIgnoreCase).ToList();
+
+            var payload = new Dictionary<string, object> { ["Keys"] = sorted };
+
+            var json = JsonSerializer.Serialize(payload, _jsonOptions);
+            File.WriteAllText(allKeysPath, json);
+
+            return true;
+        }
+
+        private static string SanitizeKey(string raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return string.Empty;
+
+            var s = raw.Normalize(NormalizationForm.FormKC).Trim();
+
+            var sb = new StringBuilder(s.Length);
+            bool lastUnderscore = false;
+
+            foreach (var ch in s)
+            {
+                if (char.IsWhiteSpace(ch))
+                {
+                    if (!lastUnderscore)
+                    {
+                        sb.Append('_');
+                        lastUnderscore = true;
+                    }
+                }
+                else
+                {
+                    sb.Append(ch);
+                    lastUnderscore = (ch == '_');
+                }
+            }
+
+            return sb.ToString().Trim('_');
+        }
+    }
+}
