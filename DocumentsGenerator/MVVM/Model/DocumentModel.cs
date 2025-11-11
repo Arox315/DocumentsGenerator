@@ -25,7 +25,6 @@ namespace DocumentsGenerator.MVVM.Model
             using var wordDoc = WordprocessingDocument.Open(docPath, true);
             var main = wordDoc.MainDocumentPart!;
 
-            // 1) Overwrite the existing Custom XML part (same GUID)
             var dataPart = main.CustomXmlParts.FirstOrDefault(p =>
             {
                 try { using var s = p.GetStream(); return XDocument.Load(s).Root?.Name.NamespaceName == DataNs; }
@@ -36,12 +35,10 @@ namespace DocumentsGenerator.MVVM.Model
             using (var dst = dataPart!.GetStream(FileMode.Create, FileAccess.Write))
                 src.CopyTo(dst);
 
-            // Reload XML we just wrote
             XDocument dataDoc;
             using (var s = dataPart.GetStream(FileMode.Open, FileAccess.Read))
                 dataDoc = XDocument.Load(s);
 
-            // 2) For every mapped SdtRun, pull the value and set text directly (keep rPr)
             void ProcessScope(OpenXmlElement scope)
             {
                 foreach (var sdt in scope.Descendants<SdtRun>())
@@ -55,20 +52,16 @@ namespace DocumentsGenerator.MVVM.Model
                     var noPred = lastStep.Split('[')[0];
                     var local = noPred.Contains(':') ? noPred[(noPred.IndexOf(':') + 1)..] : noPred;
 
-                    // local == SAFE XML NAME
                     var val = dataDoc.Root?.Element(XName.Get(local, DataNs))?.Value ?? "";
                     val ??= "";
 
-                    // Ensure there is at least one run in content
                     var content = sdt.SdtContentRun ?? sdt.AppendChild(new SdtContentRun());
                     var run = content.Elements<Run>().FirstOrDefault();
                     if (run == null)
                     {
-                        // Create a new run, but DO NOT set rPr here; keep style outside unchanged
                         run = content.AppendChild(new Run());
                     }
 
-                    // If no rPr on this run, try to apply default from sdtEndPr (if present)
                     if (run.RunProperties == null || !run.RunProperties.Any())
                     {
                         var endProperty = sdt.GetFirstChild<SdtEndCharProperties>();
@@ -77,7 +70,6 @@ namespace DocumentsGenerator.MVVM.Model
                             run.RunProperties = (RunProperties)endRunProperty.CloneNode(true);
                     }
 
-                    // Set text (preserve spaces)
                     var text = run.Elements<Text>().FirstOrDefault();
                     if (text == null)
                     {
@@ -87,7 +79,6 @@ namespace DocumentsGenerator.MVVM.Model
                 }
             }
 
-            // Apply to main body, headers, footers (add others if you use them)
             if (main.Document?.Body != null) ProcessScope(main.Document.Body);
             foreach (var headerPart in main.HeaderParts) if (headerPart.Header != null) ProcessScope(headerPart.Header);
             foreach (var footerPart in main.FooterParts) if (footerPart.Footer != null) ProcessScope(footerPart.Footer);
@@ -101,7 +92,11 @@ namespace DocumentsGenerator.MVVM.Model
                 string outputDoc = $@"{saveDirectoryPath}\{file.FileName!.Replace(file.FileKey!, "")}";
                 try
                 {
-                    File.Copy(file.FilePath!, outputDoc, true);
+                    if (file.FilePath != outputDoc)
+                    {
+                        File.Copy(file.FilePath!, outputDoc, true);
+                        
+                    }
                     ReplaceCustomXml(outputDoc, dataSheetPath);
                 }
                 catch (IOException ex)

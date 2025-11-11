@@ -1,28 +1,13 @@
-﻿using DocumentFormat.OpenXml.Linq;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
-using DocumentsGenerator.Config;
+﻿using DocumentsGenerator.Config;
 using DocumentsGenerator.Core;
 using DocumentsGenerator.MVVM.Model;
 using DocumentsGenerator.MVVM.View;
-using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Xml.Linq;
+
 
 namespace DocumentsGenerator.MVVM.ViewModel
 {
@@ -568,7 +553,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
                 try
                 {
                     bool success = DependencyKeysManager.UpdateAllKeysFile(AllKeys);
-                    if (success) 
+                    if (success)
                     {
                         DialogWindow.ShowInfo("Pomyślnie zapisano zmiany.", "Zapis pliku");
                     }
@@ -576,13 +561,25 @@ namespace DocumentsGenerator.MVVM.ViewModel
                     {
                         DialogWindow.ShowInfo("Zapisywanie zakończone. Brak nowych zmian – brak nowych kluczy.", "Zapis pliku");
                     }
-                    
+
                     LoadSuggestions();
                 }
-                catch (Exception ex)
+                catch (JsonSanitizationException ex)
                 {
-                    DialogWindow.ShowError($"Błąd podczas zapisu!\nBłąd: {ex}", "Błąd!");
+                    DialogWindow.ShowError($"Błąd podczas zapisu! - Wykryto pustą wartość po sanityzacji.\n Błąd: {ex.Message}", "Błąd zapisu!");
                 }
+                catch (JsonValueIsEmptyException ex)
+                {
+                    DialogWindow.ShowError($"Błąd podczas zapisu! - Wykryto pustą wartość.\n Błąd: {ex.Message}", "Błąd zapisu!");
+                }
+                catch (JsonValueIsDuplicateException ex)
+                {
+                    DialogWindow.ShowError($"Błąd podczas zapisu! - Wykryto zduplikowaną wartość: {ex.Value}.\n Błąd: {ex.Message}", "Błąd zapisu!");
+                }
+                catch (Exception ex) {
+                    DialogWindow.ShowError($"Błąd podczas zapisu!\n Błąd: {ex.Message}", "Błąd zapisu!");
+                }
+
             });
 
             // Template settings

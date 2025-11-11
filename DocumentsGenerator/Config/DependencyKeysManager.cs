@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using DocumentsGenerator.MVVM.Model;
+using DocumentsGenerator.Core;
 
 namespace DocumentsGenerator.Config
 {
@@ -93,14 +94,23 @@ namespace DocumentsGenerator.Config
 
             var empty = newKeys.FirstOrDefault(k => k == null || string.IsNullOrWhiteSpace(k.Value));
             if (empty != null)
-                throw new ArgumentException("all_keys.json update failed: one or more items have empty Value.", nameof(newKeys));
+            {
+                throw new JsonValueIsEmptyException("all_keys.json update failed: one or more items have empty Value.");
+            }
 
             var unique = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var item in newKeys)
             {
                 var sanitized = SanitizeKey(item.Value!);
                 if (sanitized.Length == 0)
-                    throw new ArgumentException("all_keys.json update failed: a Value normalized to empty after sanitization.", nameof(newKeys));
+                { 
+                    throw new JsonSanitizationException("all_keys.json update failed: a Value normalized to empty after sanitization."); 
+                }
+
+                if (unique.Contains(sanitized))
+                {
+                    throw new JsonValueIsDuplicateException($"all_keys.json update failed: Detected a duplicate value: {sanitized}.",sanitized);
+                }
 
                 unique.Add(sanitized);
             }

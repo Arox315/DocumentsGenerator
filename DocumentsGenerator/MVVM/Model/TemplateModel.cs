@@ -45,8 +45,12 @@ namespace DocumentsGenerator.MVVM.Model
                     string outputPath = templateSubfolderName + templateFileName;
                     string xmlPath = sheetSubfolderName + dataSheetFileName;
 
-                    File.Copy(file.FilePath!, outputPath, overwrite: true);
-
+                    
+                    if (file.FilePath != outputPath)
+                    {
+                        File.Copy(file.FilePath!, outputPath, overwrite: true);
+                    }
+                    
                     using (var doc = WordprocessingDocument.Open(outputPath, true))
                     {
                         var orderedRaw = CollectTagsInDocumentOrder(doc);

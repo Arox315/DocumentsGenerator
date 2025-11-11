@@ -291,7 +291,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
 
                 if (isError) 
                 {
-                    DialogWindow.Show($"Generowanie zakończone z błędami. Dokumenty zostały wygenerowane w:\n{_outFolder}", "Generowanie zakończone", DialogType.Ok, DialogIcon.Warning);
+                    DialogWindow.Show("Generowanie zakończone z błędami.", "Generowanie zakończone", DialogType.Ok, DialogIcon.Warning);
                 }
                 else
                 {
