@@ -27,7 +27,7 @@
                  Background="{Binding MainColor}"
                  Style="{StaticResource CustomTabItem}">
             
-            <Grid Margin="15 15 15 0">
+            <Grid Margin="5 15 5 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="*" />
@@ -63,7 +63,7 @@
                               Background="Transparent"
                               BorderBrush="{Binding MainColor}"
                               Margin="0 5 0 0"
-                              Padding="0 10 5 10">
+                              Padding="0 10 0 10">
                         <TreeView.Resources>
                             <Style TargetType="TreeViewItem">
                                 <Setter Property="Focusable" Value="False"/>
@@ -224,6 +224,7 @@
                         Background="{Binding MainColor}"
                         Grid.Column="1"
                         Grid.Row="2"
+                        Margin="0 0 10 0"
                         Foreground="White"
                         FontSize="16"
                         FontWeight="Bold"
@@ -393,21 +394,29 @@
                  Background="{Binding MainColor}"
                  Style="{StaticResource CustomTabItem}">
 
-            <Grid Margin="0 5 0 0">
+            <Grid Margin="5 5 5 0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="75"/>
                 </Grid.RowDefinitions>
 
-                <Button Content="Dodaj nowy klucz"
-                        HorizontalAlignment="Left"
-                        Background="{Binding MainColor}"
-                        Foreground="White"
-                        Width="175"
-                        Style="{StaticResource MainButtonTheme}"
-                        Command="{Binding AddNewKeyCommand}">
-                </Button>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Dodaj nowy klucz"
+                            HorizontalAlignment="Left"
+                            Background="{Binding MainColor}"
+                            Foreground="White"
+                            Width="175"
+                            Style="{StaticResource MainButtonTheme}"
+                            Command="{Binding AddNewKeyCommand}"/>
+                    <Separator Width="2" Background="Transparent"/>
+                    <Button Content="Importuj z pliku zewnętrznego"
+                            Background="{Binding MainColor}"
+                            Foreground="White"
+                            Width="175"
+                            Style="{StaticResource MainButtonTheme}"
+                            Command="{Binding ImportKeysCommand}"/>
+                </StackPanel>
 
                 <ListView ItemsSource="{Binding AllKeys}"
                           Grid.Row="1"
@@ -426,7 +435,7 @@
                         FontSize="16"
                         FontWeight="Bold"
                         HorizontalAlignment="Right"
-                        Margin="0 0 15 0"
+                        Margin="0 0 10 0"
                         Command="{Binding SaveAllKeysCommand}"
                         CommandParameter="{Binding}"
                         Style="{StaticResource MainButtonTheme}"/>

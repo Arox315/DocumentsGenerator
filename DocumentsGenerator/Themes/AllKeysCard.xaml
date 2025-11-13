@@ -17,8 +17,8 @@
 
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="40"/>
                                 <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="40"/>
                             </Grid.ColumnDefinitions>
 
        
@@ -33,7 +33,7 @@
                                     Visibility="{Binding TextBoxVisibility}"/>
 
 
-                            <controls:IconButton IconImage="/Images/close-icon.png"
+                            <controls:IconButton IconImage="/Images/clear-icon.png"
                                                 Height="30"
                                                 Width="30"
                                                 Grid.Column="1"

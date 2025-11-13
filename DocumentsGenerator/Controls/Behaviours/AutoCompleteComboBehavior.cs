@@ -18,37 +18,40 @@ namespace DocumentsGenerator.Controls.Behaviours
     {
         public static readonly DependencyProperty IsEnabledProperty =
             DependencyProperty.RegisterAttached(
-                "IsEnabled", typeof(bool), typeof(AutoCompleteComboBehavior),
+                "IsEnabled", 
+                typeof(bool), 
+                typeof(AutoCompleteComboBehavior),
                 new PropertyMetadata(false, OnIsEnabledChanged));
 
-        public static void SetIsEnabled(DependencyObject obj, bool value) =>
-            obj.SetValue(IsEnabledProperty, value);
-        public static bool GetIsEnabled(DependencyObject obj) =>
-            (bool)obj.GetValue(IsEnabledProperty);
+        public static void SetIsEnabled(DependencyObject obj, bool value) => obj.SetValue(IsEnabledProperty, value);
+        public static bool GetIsEnabled(DependencyObject obj) => (bool)obj.GetValue(IsEnabledProperty);
 
-        public static readonly DependencyProperty MinCharsProperty =
+        public static readonly DependencyProperty MinCharsProperty = 
             DependencyProperty.RegisterAttached(
-                "MinChars", typeof(int), typeof(AutoCompleteComboBehavior),
+                "MinChars", 
+                typeof(int), 
+                typeof(AutoCompleteComboBehavior),
                 new PropertyMetadata(1));
-        public static void SetMinChars(DependencyObject obj, int value) =>
-            obj.SetValue(MinCharsProperty, value);
-        public static int GetMinChars(DependencyObject obj) =>
-            (int)obj.GetValue(MinCharsProperty);
+        public static void SetMinChars(DependencyObject obj, int value) => obj.SetValue(MinCharsProperty, value);
+        public static int GetMinChars(DependencyObject obj) => (int)obj.GetValue(MinCharsProperty);
 
         public static readonly DependencyProperty MatchModeProperty =
             DependencyProperty.RegisterAttached(
-                "MatchMode", typeof(MatchMode), typeof(AutoCompleteComboBehavior),
+                "MatchMode", 
+                typeof(MatchMode), 
+                typeof(AutoCompleteComboBehavior),
                 new PropertyMetadata(MatchMode.StartsWith));
-        public static void SetMatchMode(DependencyObject obj, MatchMode value) =>
-            obj.SetValue(MatchModeProperty, value);
-        public static MatchMode GetMatchMode(DependencyObject obj) =>
-            (MatchMode)obj.GetValue(MatchModeProperty);
+        public static void SetMatchMode(DependencyObject obj, MatchMode value) => obj.SetValue(MatchModeProperty, value);
+        public static MatchMode GetMatchMode(DependencyObject obj) => (MatchMode)obj.GetValue(MatchModeProperty);
 
         public enum MatchMode { StartsWith, Contains }
 
-        public static readonly DependencyProperty MaxSuggestionsProperty = DependencyProperty.RegisterAttached(
-            "MaxSuggestions", typeof(int), typeof(AutoCompleteComboBehavior),
-            new PropertyMetadata(15));
+        public static readonly DependencyProperty MaxSuggestionsProperty =
+            DependencyProperty.RegisterAttached(
+                "MaxSuggestions",
+                typeof(int),
+                typeof(AutoCompleteComboBehavior),
+                new PropertyMetadata(35));
 
         public static void SetMaxSuggestions(DependencyObject obj, int value) => obj.SetValue(MaxSuggestionsProperty, value);
         public static int GetMaxSuggestions(DependencyObject obj) => (int)obj.GetValue(MaxSuggestionsProperty);

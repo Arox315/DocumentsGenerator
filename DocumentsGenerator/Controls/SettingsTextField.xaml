@@ -38,7 +38,7 @@
                      TextWrapping="WrapWithOverflow"
                      Padding="4 0 34 0"/>
         </Border>
-        <local:IconButton IconImage="/Images/delete-icon.png"
+        <local:IconButton IconImage="/Images/clear-icon.png"
                           Height="30"
                           Width="30"
                           Grid.Column="2"

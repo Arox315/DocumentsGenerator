@@ -89,7 +89,7 @@
 
                             </Grid>
                             
-                            <controls:IconButton IconImage="/Images/delete-icon.png"
+                            <controls:IconButton IconImage="/Images/clear-icon.png"
                                               Height="30"
                                               Width="30"
                                               Grid.Column="2"

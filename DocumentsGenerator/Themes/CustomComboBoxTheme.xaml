@@ -39,7 +39,6 @@
                                     <ColumnDefinition Width="24"/>
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Display part (non-editing). DO NOT treat underscores as access keys -->
                                 <ContentPresenter x:Name="ContentSite"
                                                   Margin="{TemplateBinding Padding}"
                                                   VerticalAlignment="Center"
@@ -87,13 +86,14 @@
                             </Grid>
                         </Border>
 
-                        <!-- Popup (must be PART_Popup) -->
+                        <!-- Popup -->
                         <Popup x:Name="PART_Popup"
                                Placement="Bottom"
                                AllowsTransparency="True"
                                Focusable="False"
                                IsOpen="{TemplateBinding IsDropDownOpen}"
                                PopupAnimation="Fade"
+                               MaxHeight="600"
                                StaysOpen="False">
                             <Border x:Name="DropDownBorder"
                                     Background="{StaticResource Combo.Drop.Bg}"
@@ -125,14 +125,12 @@
                             <Setter TargetName="Border" Property="BorderBrush" Value="#6B61C8"/>
                         </Trigger>
 
-                        <!-- Editable mode: show textbox, hide content presenter, let textbox get clicks -->
                         <Trigger Property="IsEditable" Value="True">
                             <Setter TargetName="ContentSite" Property="Visibility" Value="Collapsed"/>
                             <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
                             <Setter TargetName="MainClickCatcher" Property="IsHitTestVisible" Value="False"/>
                         </Trigger>
 
-                        <!-- Re-enable click catcher when dropdown is closed and focus left -->
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsEditable" Value="True"/>
@@ -158,7 +156,6 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ComboBoxItem}">
                                 <Border x:Name="ItemBorder" Background="{TemplateBinding Background}">
-                                    <!-- IMPORTANT: Don't treat underscores as mnemonics -->
                                     <ContentPresenter Margin="4,2"
                                                       VerticalAlignment="Center"
                                                       RecognizesAccessKey="False"/>

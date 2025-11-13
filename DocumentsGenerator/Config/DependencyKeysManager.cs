@@ -127,6 +127,83 @@ namespace DocumentsGenerator.Config
             return true;
         }
 
+        public static bool ImportAllKeysFile(string importFilePath, out List<string> errors)
+        {
+            errors = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(importFilePath) || !File.Exists(importFilePath))
+            {
+                errors.Add("Plik nie istnieje lub ścieżka jest pusta.");
+                return false;
+            }
+
+            try
+            {
+                using var stream = File.OpenRead(importFilePath);
+                using var doc = JsonDocument.Parse(stream, new JsonDocumentOptions
+                {
+                    AllowTrailingCommas = true,
+                    CommentHandling = JsonCommentHandling.Skip
+                });
+
+                if (!doc.RootElement.TryGetProperty("Keys", out var keysEl) || keysEl.ValueKind != JsonValueKind.Array)
+                {
+                    errors.Add("Nieprawidłowy format: oczekiwano obiektu z tablicą \"Keys\".");
+                    return false;
+                }
+
+                var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                int index = 0;
+                foreach (var el in keysEl.EnumerateArray())
+                {
+                    index++;
+                    if (el.ValueKind != JsonValueKind.String)
+                    {
+                        errors.Add($"Element Keys[{index}] nie jest tekstem.");
+                        continue;
+                    }
+
+                    var raw = el.GetString();
+                    var sanitized = SanitizeKey(raw!);
+
+                    if (string.IsNullOrEmpty(sanitized))
+                    {
+                        errors.Add($"Element Keys[{index}] jest pusty po normalizacji.");
+                        continue;
+                    }
+
+                    set.Add(sanitized);
+                }
+
+                if (errors.Count > 0)
+                    return false;
+
+                if (set.Count == 0)
+                {
+                    errors.Add("Tablica \"Keys\" jest pusta po weryfikacji.");
+                    return false;
+                }
+
+                var sorted = set.OrderBy(k => k, StringComparer.OrdinalIgnoreCase).ToList();
+                var payload = new Dictionary<string, object> { ["Keys"] = sorted };
+
+                var jsonOut = JsonSerializer.Serialize(payload, _jsonOptions);
+                File.WriteAllText(allKeysPath, jsonOut);
+
+                return true;
+            }
+            catch (JsonException jx)
+            {
+                errors.Add($"Nieprawidłowy JSON: {jx.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                errors.Add($"Błąd podczas importu: {ex.Message}");
+                return false;
+            }
+        }
+
         private static string SanitizeKey(string raw)
         {
             if (string.IsNullOrWhiteSpace(raw)) return string.Empty;
