@@ -277,27 +277,27 @@ namespace DocumentsGenerator.MVVM.ViewModel
             });
 
             RemoveKeyCommand = new RelayCommand<object>(keyObj => {
-                if (keyObj is KeyItem key) Keys.Remove(key);
+                if (keyObj is KeyItem keyItem) Keys.Remove(keyItem);
                 Debug.WriteLine("Removed key");
             }, keyObj => keyObj is KeyItem );
 
             AddValueCommand = new RelayCommand<object>(keyObj => {
-                if (keyObj is KeyItem k)
+                if (keyObj is KeyItem keyItem)
                 {
                     var newValue = new ValueItem { Name = "Nowa Wartość" };
-                    DependencyManager.PrepopulateSubPairsFromLatest(k, newValue, "Nowa Podwartość");
-                    k.Values.Add(newValue);
+                    DependencyManager.PrepopulateSubPairsFromLatest(keyItem, newValue, "Nowa Podwartość");
+                    keyItem.Values.Add(newValue);
                 }
             }, keyObj => keyObj is KeyItem);
 
             RemoveValueCommand = new RelayCommand<object>(valueObj => {
-                if (valueObj is ValueItem value)
+                if (valueObj is ValueItem valueItem)
                 {
                     foreach (var key in Keys)
                     {
-                        if (key.Values.Contains(value))
+                        if (key.Values.Contains(valueItem))
                         {
-                            key.Values.Remove(value);
+                            key.Values.Remove(valueItem);
                             break;
                         }
                     }
@@ -305,8 +305,8 @@ namespace DocumentsGenerator.MVVM.ViewModel
             }, valueObj => valueObj is ValueItem );
 
             AddSubPairCommand = new RelayCommand<object>(valueObj => {
-                if (valueObj is ValueItem v)
-                    v.SubPairs.Add(new SubPair { SubKey = "Nowy Podklucz", SubValue = "Nowa Podwartość" });
+                if (valueObj is ValueItem valueItem)
+                    valueItem.SubPairs.Add(new SubPair { SubKey = "Nowy Podklucz", SubValue = "Nowa Podwartość" });
             }, valueObj => valueObj is ValueItem );
 
             RemoveSubPairCommand = new RelayCommand<object>(pairObj => {

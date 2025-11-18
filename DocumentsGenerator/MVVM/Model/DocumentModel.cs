@@ -25,10 +25,17 @@ namespace DocumentsGenerator.MVVM.Model
             using var wordDoc = WordprocessingDocument.Open(docPath, true);
             var main = wordDoc.MainDocumentPart!;
 
-            var dataPart = main.CustomXmlParts.FirstOrDefault(p =>
+            var dataPart = main.CustomXmlParts.FirstOrDefault(part =>
             {
-                try { using var s = p.GetStream(); return XDocument.Load(s).Root?.Name.NamespaceName == DataNs; }
-                catch { return false; }
+                try 
+                { 
+                    using var stream = part.GetStream(); 
+                    return XDocument.Load(stream).Root?.Name.NamespaceName == DataNs; 
+                }
+                catch 
+                { 
+                    return false; 
+                }
             });
 
             using (var src = File.OpenRead(newXmlPath))

@@ -17,14 +17,14 @@ namespace DocumentsGenerator.MVVM.Model
         public void MergeDataSheets(string outputDictionaryPath, ref bool isError, XNamespace? ns = null)
         {
             // HashSet to keep track of seen elements
-            HashSet<string> seenElements = new HashSet<string>();
+            HashSet<string> seenElements = [];
 
             // Create output file in given namespace, defaults to template-data
             if (ns == null)
             {
                 ns = "template-data";
             }
-            XDocument outputFile = new XDocument(new XElement(ns + "root"));
+            XDocument outputFile = new(new XElement(ns + "root"));
 
             try
             {
@@ -53,7 +53,6 @@ namespace DocumentsGenerator.MVVM.Model
                 isError = true;
                 DialogWindow.ShowError($"Błąd podczas scalania arkuszy danych.\nBłąd: {ex}", "Błąd!");
             }
-            
         }
         public DataSheetModel() { }
     }

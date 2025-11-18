@@ -166,12 +166,12 @@ namespace DocumentsGenerator.MVVM.Model
             var ordered = new List<string>();
             var seen = new HashSet<string>(StringComparer.Ordinal);
 
-            foreach (var para in doc.MainDocumentPart!.Document.Body!.Descendants<Paragraph>())
+            foreach (var paragraph in doc.MainDocumentPart!.Document.Body!.Descendants<Paragraph>())
             {
-                var text = string.Concat(para.Descendants<Text>().Select(t => t.Text));
-                foreach (Match m in TagRegex.Matches(text))
+                var text = string.Concat(paragraph.Descendants<Text>().Select(t => t.Text));
+                foreach (Match match in TagRegex.Matches(text))
                 {
-                    var raw = m.Groups[1].Value.Trim();
+                    var raw = match.Groups[1].Value.Trim();
                     if (raw.Length == 0) continue;
                     if (seen.Add(raw)) ordered.Add(raw);
                 }
@@ -186,8 +186,8 @@ namespace DocumentsGenerator.MVVM.Model
             {
                 try
                 {
-                    var x = XDocument.Load(existing.GetStream(FileMode.Open, FileAccess.Read));
-                    if (x.Root?.Name.NamespaceName == DataNs)
+                    var xDoc = XDocument.Load(existing.GetStream(FileMode.Open, FileAccess.Read));
+                    if (xDoc.Root?.Name.NamespaceName == DataNs)
                         if (existing.CustomXmlPropertiesPart != null)
                             existing.DeletePart(existing.CustomXmlPropertiesPart);
                 }
@@ -195,8 +195,8 @@ namespace DocumentsGenerator.MVVM.Model
             }
 
             var part = doc.MainDocumentPart!.AddCustomXmlPart(CustomXmlPartType.CustomXml);
-            using (var s = part.GetStream(FileMode.Create, FileAccess.Write))
-                xml.Save(s);
+            using (var stream = part.GetStream(FileMode.Create, FileAccess.Write))
+                xml.Save(stream);
 
             var props = part.AddNewPart<CustomXmlPropertiesPart>();
             var guid = "{" + Guid.NewGuid().ToString().ToUpper() + "}";
@@ -209,10 +209,10 @@ namespace DocumentsGenerator.MVVM.Model
             return (part, guid);
         }
 
-        private static bool IsInsideContentControl(OpenXmlElement e)
+        private static bool IsInsideContentControl(OpenXmlElement element)
         {
-            for (var cur = e.Parent; cur != null; cur = cur.Parent)
-                if (cur is SdtRun || cur is SdtBlock || cur is SdtCell)
+            for (var currentElement = element.Parent; currentElement != null; currentElement = currentElement.Parent)
+                if (currentElement is SdtRun || currentElement is SdtBlock || currentElement is SdtCell)
                     return true;
             return false;
         }
@@ -223,9 +223,9 @@ namespace DocumentsGenerator.MVVM.Model
             var body = doc.MainDocumentPart!.Document.Body!;
             var paragraphs = body.Descendants<Paragraph>().ToList();
 
-            foreach (var para in paragraphs)
+            foreach (var paragraph in paragraphs)
             {
-                var runs = para.Elements<Run>().ToList();
+                var runs = paragraph.Elements<Run>().ToList();
                 if (!runs.Any()) continue;
 
                 var map = BuildRunMap(runs, out string paraText);
@@ -236,10 +236,10 @@ namespace DocumentsGenerator.MVVM.Model
                 // Replace from end to start to keep indices valid
                 for (int i = matches.Count - 1; i >= 0; i--)
                 {
-                    var m = matches[i];
-                    var tagName = m.Groups[1].Value;
-                    int start = m.Index;
-                    int length = m.Length;
+                    var match = matches[i];
+                    var tagName = match.Groups[1].Value;
+                    int start = match.Index;
+                    int length = match.Length;
 
                     // Find the exact run span that covers [start, start+length)
                     var (firstIdx, lastIdx, startOffsetInFirst, endOffsetInLast) = LocateRunSpan(map, start, length);
@@ -250,7 +250,7 @@ namespace DocumentsGenerator.MVVM.Model
                         var split = SplitRunExact(map[lastIdx].Run, 0, endOffsetInLast);
                         if (split == null) continue;
                         
-                        runs = para.Elements<Run>().ToList();
+                        runs = paragraph.Elements<Run>().ToList();
                         map = BuildRunMap(runs, out paraText);
                     }
 
@@ -260,7 +260,7 @@ namespace DocumentsGenerator.MVVM.Model
                         var split = SplitRunExact(map[firstIdx].Run, startOffsetInFirst, map[firstIdx].Text.Length - startOffsetInFirst);
                         if (split == null) continue;
                        
-                        runs = para.Elements<Run>().ToList();
+                        runs = paragraph.Elements<Run>().ToList();
                         map = BuildRunMap(runs, out paraText);
                     }
 
@@ -314,7 +314,7 @@ namespace DocumentsGenerator.MVVM.Model
 
                     foreach (var r in exactRuns) r.Remove();
 
-                    runs = para.Elements<Run>().ToList();
+                    runs = paragraph.Elements<Run>().ToList();
                     map = BuildRunMap(runs, out paraText);
                 }
             }
@@ -351,19 +351,19 @@ namespace DocumentsGenerator.MVVM.Model
         {
             var map = new List<RunSlice>();
             int pos = 0;
-            foreach (var r in runs)
+            foreach (var run in runs)
             {
-                var tNodes = r.Elements<Text>().ToList();
+                var tNodes = run.Elements<Text>().ToList();
                 if (!tNodes.Any())
                 {
-                    map.Add(new RunSlice { Run = r, Text = "", Start = pos, End = pos });
+                    map.Add(new RunSlice { Run = run, Text = "", Start = pos, End = pos });
                     continue;
                 }
-                var t = string.Concat(tNodes.Select(tn => tn.Text));
-                map.Add(new RunSlice { Run = r, Text = t, Start = pos, End = pos + t.Length });
-                pos += t.Length;
+                var text = string.Concat(tNodes.Select(tNode => tNode.Text));
+                map.Add(new RunSlice { Run = run, Text = text, Start = pos, End = pos + text.Length });
+                pos += text.Length;
             }
-            paragraphText = string.Concat(map.Select(s => s.Text));
+            paragraphText = string.Concat(map.Select(runSlice => runSlice.Text));
             return map;
         }
 
@@ -375,16 +375,16 @@ namespace DocumentsGenerator.MVVM.Model
 
             for (int i = 0; i < map.Count; i++)
             {
-                var s = map[i];
-                if (firstIdx == -1 && start >= s.Start && start <= s.End)
+                var runSlice = map[i];
+                if (firstIdx == -1 && start >= runSlice.Start && start <= runSlice.End)
                 {
                     firstIdx = i;
-                    startOff = start - s.Start;
+                    startOff = start - runSlice.Start;
                 }
-                if (end >= s.Start && end <= s.End)
+                if (end >= runSlice.Start && end <= runSlice.End)
                 {
                     lastIdx = i;
-                    endOff = end - s.Start;
+                    endOff = end - runSlice.Start;
                     break;
                 }
             }
@@ -411,10 +411,10 @@ namespace DocumentsGenerator.MVVM.Model
 
             Run CloneStyledRun(string s)
             {
-                var r = (Run)originalRun.CloneNode(true);
-                r.RemoveAllChildren<Text>();
-                r.Append(new Text(s) { Space = SpaceProcessingModeValues.Preserve });
-                return r;
+                var run = (Run)originalRun.CloneNode(true);
+                run.RemoveAllChildren<Text>();
+                run.Append(new Text(s) { Space = SpaceProcessingModeValues.Preserve });
+                return run;
             }
 
             Run? leftRun = string.IsNullOrEmpty(leftStr) ? null : CloneStyledRun(leftStr);
@@ -435,8 +435,8 @@ namespace DocumentsGenerator.MVVM.Model
         private static List<RunSlice> FindExactRunsForSpan(List<RunSlice> map, int start, int length)
         {
             int end = start + length;
-            return map.Where(s => !(s.End <= start || s.Start >= end))
-                      .OrderBy(s => s.Start)
+            return map.Where(runSlice => !(runSlice.End <= start || runSlice.Start >= end))
+                      .OrderBy(runSlice => runSlice.Start)
                       .ToList();
         }
 

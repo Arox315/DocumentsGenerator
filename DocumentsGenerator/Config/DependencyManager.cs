@@ -125,8 +125,8 @@ namespace DocumentsGenerator.Config
 
         public static bool TryValidateAndNormalizeJsonNoDuplicates(string filePath, out Dictionary<string, object> normalizedRoot, out List<string> errors)
         {
-            normalizedRoot = new();
-            errors = new();
+            normalizedRoot = [];
+            errors = [];
 
             if (!File.Exists(filePath))
             {
@@ -139,7 +139,7 @@ namespace DocumentsGenerator.Config
                 using var stream = File.OpenRead(filePath);
                 using var doc = JsonDocument.Parse(stream, new JsonDocumentOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true });
 
-                if (!doc.RootElement.TryGetProperty("Dependencies", out var depsEl) || depsEl.ValueKind != JsonValueKind.Object)
+                if (!doc.RootElement.TryGetProperty("Dependencies", out var dependeciesElement) || dependeciesElement.ValueKind != JsonValueKind.Object)
                 {
                     errors.Add("Brak sekcji \"Dependencies\" lub nieprawidłowy typ - oczekiwano obiektu.");
                     return false;
@@ -151,7 +151,7 @@ namespace DocumentsGenerator.Config
 
                 var seenKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-                foreach (var keyProp in depsEl.EnumerateObject())
+                foreach (var keyProp in dependeciesElement.EnumerateObject())
                 {
                     var keyNameRaw = keyProp.Name;
                     if (string.IsNullOrWhiteSpace(keyNameRaw)) continue;
@@ -250,7 +250,7 @@ namespace DocumentsGenerator.Config
         public static bool TryBuildDependenciesValidated(ObservableCollection<KeyItem> Keys, out Dictionary<string, Dictionary<string, Dictionary<string, string>>> dependencies, out List<string> errors)
         {
             dependencies = new(StringComparer.OrdinalIgnoreCase);
-            errors = new();
+            errors = [];
 
             var seenKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             bool hasAtLeastOneKeyWithoutValue = false;
@@ -268,12 +268,12 @@ namespace DocumentsGenerator.Config
                 var cleanedValues = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
                 var seenValues = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-                foreach (var val in key.Values)
+                foreach (var value in key.Values)
                 {
-                    if (string.IsNullOrWhiteSpace(val.Name))
+                    if (string.IsNullOrWhiteSpace(value.Name))
                         continue;
 
-                    var valueName = val.Name.Trim();
+                    var valueName = value.Name.Trim();
 
                     if (!seenValues.Add(valueName))
                         errors.Add($"Wykryto zduplikowaną wartość: \"{valueName}\" dla klucza: \"{keyName}\"");
@@ -281,20 +281,20 @@ namespace DocumentsGenerator.Config
                     var cleanedSub = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                     var seenSubKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-                    foreach (var pair in val.SubPairs)
+                    foreach (var pair in value.SubPairs)
                     {
                         if (string.IsNullOrWhiteSpace(pair.SubKey) || string.IsNullOrWhiteSpace(pair.SubValue))
                             continue;
 
-                        var sk = pair.SubKey.Trim();
-                        if (!seenSubKeys.Add(sk))
+                        var subKey = pair.SubKey.Trim();
+                        if (!seenSubKeys.Add(subKey))
                         {
                             errors.Add($"Wykryto zduplikowany podklucz: \"{pair.SubKey}\" dla klucza: \"{keyName}\" i wartości: \"{valueName}\"");
                             continue;
                         }
 
-                        if (!cleanedSub.ContainsKey(sk))
-                            cleanedSub[sk] = pair.SubValue;
+                        if (!cleanedSub.ContainsKey(subKey))
+                            cleanedSub[subKey] = pair.SubValue;
                     }
 
                     cleanedValues[valueName] = cleanedSub;
@@ -328,11 +328,11 @@ namespace DocumentsGenerator.Config
                 var src = key.Values[i];
                 if (src.SubPairs != null && src.SubPairs.Count > 0)
                 {
-                    foreach (var sp in src.SubPairs)
+                    foreach (var subPair in src.SubPairs)
                     {
                         targetValue.SubPairs.Add(new SubPair
                         {
-                            SubKey = sp.SubKey,
+                            SubKey = subPair.SubKey,
                             SubValue = defaultSubValue
                         });
                     }

@@ -24,13 +24,13 @@ namespace DocumentsGenerator.Core
                 using var doc = JsonDocument.Parse(File.ReadAllText(filePath));
                 if (doc.RootElement.TryGetProperty(arrayName, out var arr) && arr.ValueKind == JsonValueKind.Array)
                 {
-                    foreach (var el in arr.EnumerateArray())
+                    foreach (var element in arr.EnumerateArray())
                     {
-                        if (el.ValueKind == JsonValueKind.String)
+                        if (element.ValueKind == JsonValueKind.String)
                         {
-                            var s = el.GetString();
-                            if (!string.IsNullOrWhiteSpace(s))
-                                result.Add(s.Trim());
+                            var suggestion = element.GetString();
+                            if (!string.IsNullOrWhiteSpace(suggestion))
+                                result.Add(suggestion.Trim());
                         }
                     }
                 }

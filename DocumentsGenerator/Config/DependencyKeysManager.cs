@@ -39,15 +39,14 @@ namespace DocumentsGenerator.Config
                         using var doc = JsonDocument.Parse(json);
                         if (doc.RootElement.TryGetProperty("Keys", out var arr) && arr.ValueKind == JsonValueKind.Array)
                         {
-                            foreach (var el in arr.EnumerateArray())
+                            foreach (var element in arr.EnumerateArray())
                             {
                                 
-                                if (el.ValueKind == JsonValueKind.String)
+                                if (element.ValueKind == JsonValueKind.String)
                                 {
-                                    var s = el.GetString();
-                                    Debug.WriteLine(s);
-                                    if (!string.IsNullOrWhiteSpace(s))
-                                        existingKeys.Add(s.Trim().Replace(" ", "_"));
+                                    var keyName = element.GetString();
+                                    if (!string.IsNullOrWhiteSpace(keyName))
+                                        existingKeys.Add(keyName.Trim().Replace(" ", "_"));
                                 }
                             }
                         }
@@ -58,25 +57,25 @@ namespace DocumentsGenerator.Config
                     }
                 }
 
-                bool added = false;
-                foreach (var key in newKeys.Where(k => !string.IsNullOrWhiteSpace(k)))
+                bool isAdded = false;
+                foreach (var keyName in newKeys.Where(key => !string.IsNullOrWhiteSpace(key)))
                 {
-                    if (existingKeys.Add(key.Trim().Replace(" ", "_")))
-                        added = true;
+                    if (existingKeys.Add(keyName.Trim().Replace(" ", "_")))
+                        isAdded = true;
                 }
 
-                if (!added && File.Exists(allKeysPath))
+                if (!isAdded && File.Exists(allKeysPath))
                     return false;
 
                 // alpahabetical sort
-                var sortedKeys = existingKeys.OrderBy(k => k, StringComparer.OrdinalIgnoreCase).ToList();
+                var sortedKeys = existingKeys.OrderBy(key => key, StringComparer.OrdinalIgnoreCase).ToList();
 
-                var obj = new Dictionary<string, object>
+                var jsonObj = new Dictionary<string, object>
                 {
                     ["Keys"] = sortedKeys
                 };
 
-                var jsonOut = JsonSerializer.Serialize(obj, _jsonOptions);
+                var jsonOut = JsonSerializer.Serialize(jsonObj, _jsonOptions);
                 File.WriteAllText(allKeysPath, jsonOut);
 
                 return true;
@@ -92,7 +91,7 @@ namespace DocumentsGenerator.Config
         {
             if (newKeys is null) return false;
 
-            var empty = newKeys.FirstOrDefault(k => k == null || string.IsNullOrWhiteSpace(k.Value));
+            var empty = newKeys.FirstOrDefault(key => key == null || string.IsNullOrWhiteSpace(key.Value));
             if (empty != null)
             {
                 throw new JsonValueIsEmptyException("all_keys.json update failed: one or more items have empty Value.");
@@ -117,7 +116,7 @@ namespace DocumentsGenerator.Config
 
             if (unique.Count == 0) return false;
 
-            var sorted = unique.OrderBy(k => k, StringComparer.OrdinalIgnoreCase).ToList();
+            var sorted = unique.OrderBy(key => key, StringComparer.OrdinalIgnoreCase).ToList();
 
             var payload = new Dictionary<string, object> { ["Keys"] = sorted };
 
@@ -146,7 +145,7 @@ namespace DocumentsGenerator.Config
                     CommentHandling = JsonCommentHandling.Skip
                 });
 
-                if (!doc.RootElement.TryGetProperty("Keys", out var keysEl) || keysEl.ValueKind != JsonValueKind.Array)
+                if (!doc.RootElement.TryGetProperty("Keys", out var keysElement) || keysElement.ValueKind != JsonValueKind.Array)
                 {
                     errors.Add("Nieprawidłowy format: oczekiwano obiektu z tablicą \"Keys\".");
                     return false;
@@ -154,16 +153,16 @@ namespace DocumentsGenerator.Config
 
                 var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 int index = 0;
-                foreach (var el in keysEl.EnumerateArray())
+                foreach (var element in keysElement.EnumerateArray())
                 {
                     index++;
-                    if (el.ValueKind != JsonValueKind.String)
+                    if (element.ValueKind != JsonValueKind.String)
                     {
                         errors.Add($"Element Keys[{index}] nie jest tekstem.");
                         continue;
                     }
 
-                    var raw = el.GetString();
+                    var raw = element.GetString();
                     var sanitized = SanitizeKey(raw!);
 
                     if (string.IsNullOrEmpty(sanitized))
@@ -184,7 +183,7 @@ namespace DocumentsGenerator.Config
                     return false;
                 }
 
-                var sorted = set.OrderBy(k => k, StringComparer.OrdinalIgnoreCase).ToList();
+                var sorted = set.OrderBy(key => key, StringComparer.OrdinalIgnoreCase).ToList();
                 var payload = new Dictionary<string, object> { ["Keys"] = sorted };
 
                 var jsonOut = JsonSerializer.Serialize(payload, _jsonOptions);
@@ -208,29 +207,29 @@ namespace DocumentsGenerator.Config
         {
             if (string.IsNullOrWhiteSpace(raw)) return string.Empty;
 
-            var s = raw.Normalize(NormalizationForm.FormKC).Trim();
+            var keyName = raw.Normalize(NormalizationForm.FormKC).Trim();
 
-            var sb = new StringBuilder(s.Length);
+            var stringBuilder = new StringBuilder(keyName.Length);
             bool lastUnderscore = false;
 
-            foreach (var ch in s)
+            foreach (var chr in keyName)
             {
-                if (char.IsWhiteSpace(ch))
+                if (char.IsWhiteSpace(chr))
                 {
                     if (!lastUnderscore)
                     {
-                        sb.Append('_');
+                        stringBuilder.Append('_');
                         lastUnderscore = true;
                     }
                 }
                 else
                 {
-                    sb.Append(ch);
-                    lastUnderscore = (ch == '_');
+                    stringBuilder.Append(chr);
+                    lastUnderscore = (chr == '_');
                 }
             }
 
-            return sb.ToString().Trim('_');
+            return stringBuilder.ToString().Trim('_');
         }
     }
 }
