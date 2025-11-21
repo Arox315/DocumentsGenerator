@@ -311,7 +311,8 @@ namespace DocumentsGenerator.Config
                 }
             }
 
-            if (hasAtLeastOneKeyWithoutValue || dependencies.Count == 0)
+            //if (hasAtLeastOneKeyWithoutValue || dependencies.Count == 0)
+            if (hasAtLeastOneKeyWithoutValue)
             {
                 errors.Add("Dane są niekompletne: wymagany jest co najmniej jeden klucz z co najmniej jedną wartością. Wartości mogą nie zawierać par podklucz/podwartość.");
             }

@@ -114,7 +114,7 @@ namespace DocumentsGenerator.Config
                 unique.Add(sanitized);
             }
 
-            if (unique.Count == 0) return false;
+            //if (unique.Count == 0) return false;
 
             var sorted = unique.OrderBy(key => key, StringComparer.OrdinalIgnoreCase).ToList();
 
