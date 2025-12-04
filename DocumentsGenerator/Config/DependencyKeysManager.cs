@@ -207,7 +207,7 @@ namespace DocumentsGenerator.Config
         {
             if (string.IsNullOrWhiteSpace(raw)) return string.Empty;
 
-            var keyName = raw.Normalize(NormalizationForm.FormKC).Trim();
+            var keyName = raw.Normalize(NormalizationForm.FormKC).Trim().ToUpper();
 
             var stringBuilder = new StringBuilder(keyName.Length);
             bool lastUnderscore = false;

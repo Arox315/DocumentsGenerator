@@ -171,7 +171,7 @@ namespace DocumentsGenerator.MVVM.Model
                 var text = string.Concat(paragraph.Descendants<Text>().Select(t => t.Text));
                 foreach (Match match in TagRegex.Matches(text))
                 {
-                    var raw = match.Groups[1].Value.Trim();
+                    var raw = match.Groups[1].Value.Trim().ToUpper();
                     if (raw.Length == 0) continue;
                     if (seen.Add(raw)) ordered.Add(raw);
                 }
