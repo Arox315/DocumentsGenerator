@@ -37,7 +37,8 @@ namespace DocumentsGenerator.MVVM.Model
                 try
                 {
                     string fileName = Path.GetFileNameWithoutExtension(file.FilePath!);
-                    fileName = fileName.Replace(file.FileKey!, "");
+                    if(file.FileKey != "")
+                        fileName = fileName.Replace(file.FileKey!, "");
 
                     string templateFileName = GetTemplateFileNameWithKey(fileName);
                     string dataSheetFileName = GetDataSheetFileNameWithKey(fileName);

@@ -96,7 +96,12 @@ namespace DocumentsGenerator.MVVM.Model
         public void GenerateDocuments(string saveDirectoryPath, string dataSheetPath, ref bool isError)
         {
             foreach(var file in LoadedFileNames!) {
-                string outputDoc = $@"{saveDirectoryPath}\{file.FileName!.Replace(file.FileKey!, "")}";
+                string outputDoc;
+                if (file.FileKey == "")
+                    outputDoc = $@"{saveDirectoryPath}\{file.FileName!}";
+                else
+                    outputDoc = $@"{saveDirectoryPath}\{file.FileName!.Replace(file.FileKey!, "")}";
+
                 try
                 {
                     if (file.FilePath != outputDoc)

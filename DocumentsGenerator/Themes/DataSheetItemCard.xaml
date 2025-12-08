@@ -20,16 +20,16 @@
                                     <DoubleAnimationUsingKeyFrames
                                                 Storyboard.TargetName="Overlay"
                                                 Storyboard.TargetProperty="Opacity">
-                                        <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
-                                        <EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="1"/>
-                                        <EasingDoubleKeyFrame KeyTime="0:0:1.6" Value="0"/>
+                                        <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1"/>
+                                        <EasingDoubleKeyFrame KeyTime="0:0:3.5" Value="1"/>
+                                        <EasingDoubleKeyFrame KeyTime="0:0:4" Value="0"/>
                                     </DoubleAnimationUsingKeyFrames>
 
                                     <ColorAnimationUsingKeyFrames Storyboard.TargetName="TextBox" 
                                                                   Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)">
-                                        <LinearColorKeyFrame KeyTime="0:0:0.3" Value="#AC8E4C"/>
-                                        <LinearColorKeyFrame KeyTime="0:0:1.3" Value="#AC8E4C"/>
-                                        <LinearColorKeyFrame KeyTime="0:0:1.6" Value="#4B4789"/>
+                                        <LinearColorKeyFrame KeyTime="0:0:0.5" Value="#AC8E4C"/>
+                                        <LinearColorKeyFrame KeyTime="0:0:3.5" Value="#AC8E4C"/>
+                                        <LinearColorKeyFrame KeyTime="0:0:4" Value="#4B4789"/>
                                     </ColorAnimationUsingKeyFrames>
                                     
                                     <!-- Block clicks only while visible -->
@@ -37,7 +37,7 @@
                                                 Storyboard.TargetName="Overlay"
                                                 Storyboard.TargetProperty="IsHitTestVisible">
                                         <DiscreteBooleanKeyFrame KeyTime="0:0:0"   Value="True"/>
-                                        <DiscreteBooleanKeyFrame KeyTime="0:0:1.6" Value="False"/>
+                                        <DiscreteBooleanKeyFrame KeyTime="0:0:4" Value="False"/>
                                     </BooleanAnimationUsingKeyFrames>
                                 </Storyboard>
                             </Grid.Resources>

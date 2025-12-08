@@ -64,6 +64,7 @@ namespace DocumentsGenerator.MVVM.Model
                 if (_selectedValue != value) 
                 {
                     _selectedValue = value;
+                    Value = value;
                     OnPropertyChanged(nameof(SelectedValue)); 
                 } 
             }
