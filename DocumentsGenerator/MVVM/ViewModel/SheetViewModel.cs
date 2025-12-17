@@ -156,6 +156,8 @@ namespace DocumentsGenerator.MVVM.ViewModel
         public RelayCommand<DataSheetItemModel> DeleteDataRowCommand { get; }
         public RelayCommand<object> MergeDataSheetsCommand { get; }
 
+        public RelayCommand<DataSheetItemModel> ShowInfoCommand { get; }
+
 
 
         private string? _selectedReadFolder;
@@ -192,6 +194,10 @@ namespace DocumentsGenerator.MVVM.ViewModel
             DeleteDataRowCommand = new RelayCommand<DataSheetItemModel>(
                 item => Items.Remove(item),
                 item => item != null);
+            ShowInfoCommand = new RelayCommand<DataSheetItemModel>(item =>
+            {
+                DialogWindow.ShowInfo($"Data ostatniej modyfikacji pola {item.Key}:\n{item.ModificationDate}","Data modyfikacji");
+            });
 
             SelectionChangedCommand = new RelayCommand<DataSheetItemModel>(i => 
             {
@@ -230,7 +236,8 @@ namespace DocumentsGenerator.MVVM.ViewModel
                             Values = DependencyManager.GetValuesForKey(element.Name.LocalName),
                             SelectedValue = element.Value,
                             TextBoxVisibility = hasDependency ? "Collapsed" : "Visible",
-                            ComboBoxVisibility = hasDependency ? "Visible" : "Collapsed"
+                            ComboBoxVisibility = hasDependency ? "Visible" : "Collapsed",
+                            ModificationDate = element.Attribute("modification-date") != null ? element.Attribute("modification-date")!.Value : "Brak danych"
                         });
                       
                     }
@@ -245,6 +252,8 @@ namespace DocumentsGenerator.MVVM.ViewModel
                     return;
                 }
 
+                string modDate = DateTime.Now.ToString("f");
+
                 try
                 {
                     XDocument doc = XDocument.Load(_currentDataSheet);
@@ -253,6 +262,17 @@ namespace DocumentsGenerator.MVVM.ViewModel
                         var element = doc.Root!.Element("{template-data}" + item.Key!);
                         if (element != null)
                         {
+                            if (element.Attribute("modification-date") == null)
+                            {
+                                element.SetAttributeValue("modification-date", modDate);
+                                item.ModificationDate = modDate;
+                            }
+
+                            if (element.Value != item.Value) {
+                                element.SetAttributeValue("modification-date", modDate);
+                                item.ModificationDate = modDate;
+                            }
+
                             element.SetValue(item.Value!);
                         }
                     }

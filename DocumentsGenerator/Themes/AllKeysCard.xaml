@@ -29,8 +29,7 @@
                                     VerticalContentAlignment="Center"
                                     FontSize="12"
                                     TextWrapping="WrapWithOverflow"
-                                    Padding="4 0 34 0"
-                                    Visibility="{Binding TextBoxVisibility}"/>
+                                    Padding="4 0 34 0"/>
 
 
                             <controls:IconButton IconImage="/Images/clear-icon.png"

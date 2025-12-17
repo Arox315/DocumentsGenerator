@@ -26,7 +26,9 @@ namespace DocumentsGenerator.MVVM.Model
         public void GenerateTemplates(string inFolder, string outFolder, ref bool isError)
         {
             Debug.WriteLine("Generowanie dokumentów...");
-            string generationDate = DateTime.Now.ToString("dd'-'MM'-'yyyy'T'HH'-'mm'-'ss");
+            DateTime now = DateTime.Now;
+            string generationDate = now.ToString("dd'-'MM'-'yyyy'T'HH'-'mm'-'ss");
+            string modificationDate = now.ToString("f");
             string templateSubfolderName = outFolder + $@"\szablony_{generationDate}\";
             string sheetSubfolderName = outFolder + $@"\arkusze_{generationDate}\";
 
@@ -57,7 +59,7 @@ namespace DocumentsGenerator.MVVM.Model
                         var orderedRaw = CollectTagsInDocumentOrder(doc);
                         var tagMap = BuildTagMap(orderedRaw);
 
-                        var xml = BuildDataXmlInOrder(orderedRaw, tagMap);
+                        var xml = BuildDataXmlInOrder(orderedRaw, tagMap, modificationDate);
                         xml.Save(xmlPath);
 
                         var (part, storeItemId) = AddOrReplaceCustomXmlPart(doc, xml);
@@ -149,14 +151,17 @@ namespace DocumentsGenerator.MVVM.Model
             return map;
         }
 
-        private static XDocument BuildDataXmlInOrder(
-        IList<string> orderedRawTags,
-        Dictionary<string, string> tagMap)
+        private static XDocument BuildDataXmlInOrder(IList<string> orderedRawTags, Dictionary<string, string> tagMap, string date)
         {
             XNamespace ns = DataNs;
+
             var root = new XElement(ns + "root",
                 orderedRawTags.Select(raw =>
-                    new XElement(ns + tagMap[raw], "{" + raw + "}")
+                    new XElement(
+                        ns + tagMap[raw],
+                        new XAttribute("modification-date", date),
+                        "{" + raw + "}"
+                    )
                 )
             );
             return new XDocument(new XDeclaration("1.0", "utf-8", "yes"), root);

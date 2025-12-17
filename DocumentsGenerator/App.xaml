@@ -8,6 +8,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Themes/CustomToolTipTheme.xaml"/>
                 <ResourceDictionary Source="/Themes/MenuButtonTheme.xaml"/>
                 <ResourceDictionary Source="/Themes/CustomComboBoxTheme.xaml"/>
                 <ResourceDictionary Source="/Themes/NavbarButtonTheme.xaml"/>
@@ -20,7 +21,8 @@
                 <ResourceDictionary Source="/Themes/CustomScrollBarTheme.xaml"/>
                 <ResourceDictionary Source="/Themes/AllKeysCard.xaml"/>
                 
-               
+
+
                 <!--<ResourceDictionary Source="/Themes/DependenciesStyles.xaml"/>-->
             </ResourceDictionary.MergedDictionaries>
 

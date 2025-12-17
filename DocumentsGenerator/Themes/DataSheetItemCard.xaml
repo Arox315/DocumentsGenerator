@@ -10,10 +10,10 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ListViewItem">
                         <Grid Background="Transparent"
-                                    Height="30"
-                                    MaxHeight="30"
-                                    Margin="0 0 0 10"
-                                    Width="600">
+                              Height="30"
+                              MaxHeight="30"
+                              Margin="0 0 0 10"
+                              Width="600">
 
                             <Grid.Resources>
                                 <Storyboard x:Key="OverlayPulse">
@@ -46,6 +46,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="300"/>
                                 <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="35"/>
                             </Grid.ColumnDefinitions>
 
                             <Border Background="{Binding DataContext.MainColor, RelativeSource={RelativeSource AncestorType=ListView}}">
@@ -106,6 +107,38 @@
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </controls:IconButton>
+
+                            <controls:IconButton IconImage="/Images/info-2-icon.png"
+                                                 Height="30"
+                                                 Width="30"
+                                                 Grid.Column="3"
+                                                 IconHeight="25"
+                                                 IconWidth="25"
+                                                 Background="#88AC4C"
+                                                 HorizontalAlignment="Center"
+                                                 ToolTipService.InitialShowDelay="100"
+                                                 Style="{StaticResource DefaultIconButtonTheme}">
+                                <controls:IconButton.ToolTip>
+                                    <ToolTip Placement="Center"
+                                             VerticalOffset="-40"
+                                             Style="{StaticResource CustomToolTipStyle}">
+                                        <StackPanel>
+                                            <TextBlock Text="Data ostatniej modyfikacji" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding ModificationDate}"/>
+                                        </StackPanel>
+                                    </ToolTip>
+                                </controls:IconButton.ToolTip>
+                                
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <i:CallMethodAction MethodName="Execute" />
+                                        <i:InvokeCommandAction 
+                                            Command="{Binding DataContext.ShowInfoCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                            CommandParameter="{Binding}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </controls:IconButton>
+                            
 
                             <i:Interaction.Triggers>
                                 <controls:PropertyChangedTrigger Binding="{Binding FeedbackHelperValue}">

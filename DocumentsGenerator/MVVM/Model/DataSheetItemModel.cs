@@ -17,6 +17,7 @@ namespace DocumentsGenerator.MVVM.Model
         private string? _textBoxVisibility;
         private string? _comboBoxVisibility;
         private string? _feedbackHelperValue;
+        private string? _modificationDate;
 
         public string? Key
         {
@@ -52,6 +53,12 @@ namespace DocumentsGenerator.MVVM.Model
         {
             get => _feedbackHelperValue;
             set { if (_feedbackHelperValue != value) {_feedbackHelperValue = value; OnPropertyChanged(nameof(FeedbackHelperValue)); }}
+        }
+
+        public string? ModificationDate
+        {
+            get => _modificationDate;
+            set { if (_modificationDate != value) { _modificationDate = value; OnPropertyChanged(); } }
         }
 
         public ObservableCollection<string>? Values { get; set; }

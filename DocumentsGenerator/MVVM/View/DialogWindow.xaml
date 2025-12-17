@@ -137,7 +137,7 @@
 
 
                 <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto"
-                              Margin="10 10 0 10">
+                              Margin="10 10 5 10">
                     <TextBlock VerticalAlignment="Center"
                                Text="{Binding Message}"
                                Foreground="White"

@@ -1,4 +1,5 @@
-﻿using DocumentsGenerator.MVVM.View;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using DocumentsGenerator.MVVM.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,6 +19,9 @@ namespace DocumentsGenerator.MVVM.Model
         {
             // HashSet to keep track of seen elements
             HashSet<string> seenElements = [];
+
+            DateTime now = DateTime.Now;
+            string modDate = now.ToString("f");
 
             // Create output file in given namespace, defaults to template-data
             if (ns == null)
@@ -39,11 +43,16 @@ namespace DocumentsGenerator.MVVM.Model
                         // Add element to output file if its unique
                         if (seenElements.Add(element.Name.ToString()))
                         {
+                            // Add modification-date attribute to an element if it doesn't have it
+                            if (element.Attribute("modification-date") == null)
+                            {
+                                element.SetAttributeValue("modification-date", modDate);
+                            }
                             outputFile.Root!.Add(element);
                         }
                     }
                 }
-                string generationDate = DateTime.Now.ToString("dd'-'MM'-'yyyy'T'HH'-'mm'-'ss");
+                string generationDate = now.ToString("dd'-'MM'-'yyyy'T'HH'-'mm'-'ss");
                 string outputFileName = $"{generationDate}_arkusz_danych.xml";
                 string savePath = $@"{outputDictionaryPath}\{outputFileName}";
                 //foreach (string element in seenElements) Debug.WriteLine(element);

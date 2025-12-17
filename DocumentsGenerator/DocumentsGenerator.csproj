@@ -18,6 +18,7 @@
     <None Remove="Images\error-icon.png" />
     <None Remove="Images\file-icon.png" />
     <None Remove="Images\folder-icon.png" />
+    <None Remove="Images\info-2-icon.png" />
     <None Remove="Images\info-icon.png" />
     <None Remove="Images\main-view-icon.png" />
     <None Remove="Images\maximise-icon.png" />
@@ -57,6 +58,7 @@
     <Resource Include="Images\error-icon.png" />
     <Resource Include="Images\file-icon.png" />
     <Resource Include="Images\folder-icon.png" />
+    <Resource Include="Images\info-2-icon.png" />
     <Resource Include="Images\info-icon.png" />
     <Resource Include="Images\main-view-icon.png" />
     <Resource Include="Images\maximise-icon.png" />
