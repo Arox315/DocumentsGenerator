@@ -68,6 +68,12 @@ namespace DocumentsGenerator.MVVM.Model
                             {
                                 element.SetAttributeValue("modification-date", modDate);
                             }
+                            if (element.Attribute("modification-author") == null)
+                            {
+                                string author = $"{Environment.MachineName} - {Environment.UserName}";
+                                element.SetAttributeValue("modification-author", author);
+                            }
+
                             outputFile.Root!.Add(element);
                         }
                     }

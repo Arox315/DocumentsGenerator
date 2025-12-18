@@ -196,7 +196,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
                 item => item != null);
             ShowInfoCommand = new RelayCommand<DataSheetItemModel>(item =>
             {
-                DialogWindow.ShowInfo($"Data ostatniej modyfikacji pola {item.Key}:\n{item.ModificationDate}","Data modyfikacji");
+                DialogWindow.ShowInfo($"Data ostatniej modyfikacji pola {item.Key}:\n{item.ModificationDate}\n\nPrzez:\n{item.ModificationAuthor}","Data modyfikacji");
             });
 
             SelectionChangedCommand = new RelayCommand<DataSheetItemModel>(i => 
@@ -239,7 +239,8 @@ namespace DocumentsGenerator.MVVM.ViewModel
                                 SelectedValue = element.Value,
                                 TextBoxVisibility = hasDependency ? "Collapsed" : "Visible",
                                 ComboBoxVisibility = hasDependency ? "Visible" : "Collapsed",
-                                ModificationDate = element.Attribute("modification-date") != null ? element.Attribute("modification-date")!.Value : "Brak danych"
+                                ModificationDate = element.Attribute("modification-date") != null ? element.Attribute("modification-date")!.Value : "Brak danych",
+                                ModificationAuthor = element.Attribute("modification-author") != null ? element.Attribute("modification-author")!.Value : "Brak danych"
                             });
                         }
                     }
@@ -273,8 +274,11 @@ namespace DocumentsGenerator.MVVM.ViewModel
                             }
 
                             if (element.Value != item.Value) {
+                                string author = $"{Environment.MachineName} - {Environment.UserName}";
+                                element.SetAttributeValue("modification-author", author);
                                 element.SetAttributeValue("modification-date", modDate);
                                 item.ModificationDate = modDate;
+                                item.ModificationAuthor = author;
                             }
 
                             element.SetValue(item.Value!);

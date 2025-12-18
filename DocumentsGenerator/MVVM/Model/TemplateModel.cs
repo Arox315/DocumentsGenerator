@@ -171,12 +171,13 @@ namespace DocumentsGenerator.MVVM.Model
         private static XDocument BuildDataXmlInOrder(IList<string> orderedRawTags, Dictionary<string, string> tagMap, string date)
         {
             XNamespace ns = DataNs;
-
+            string author = $"{Environment.MachineName} - {Environment.UserName}";
             var root = new XElement(ns + "root",
                 orderedRawTags.Select(raw =>
                     new XElement(
                         ns + tagMap[raw],
                         new XAttribute("modification-date", date),
+                        new XAttribute("modification-author", author),
                         "{" + raw + "}"
                     )
                 )
