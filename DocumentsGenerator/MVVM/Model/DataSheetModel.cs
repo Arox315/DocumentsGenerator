@@ -15,8 +15,28 @@ namespace DocumentsGenerator.MVVM.Model
     class DataSheetModel
     {
         public ObservableCollection<LoadedFileNameModel>? LoadedFileNames { get; set; }
-        public void MergeDataSheets(string outputDictionaryPath, ref bool isError, XNamespace? ns = null)
+        public void MergeDataSheets(string outputDictionaryPath, XNamespace? ns = null)
         {
+            try
+            {
+                Directory.GetFiles(outputDictionaryPath);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                DialogWindow.ShowError($"Wybrany folder docelowy: {outputDictionaryPath} nie istnieje.", "Folder nie istnieje");
+                return;
+            }
+            catch (IOException)
+            {
+                DialogWindow.ShowError($"Wybrany folder docelowy: {outputDictionaryPath} jest nieosiągalny.", "Folder nieosiągalny");
+                return;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                DialogWindow.ShowError($"Brak uprawnień do otworzenia wybranego folderu docelowego: {outputDictionaryPath}", "Odmowa dostępu");
+                return;
+            }
+
             // HashSet to keep track of seen elements
             HashSet<string> seenElements = [];
 
@@ -55,13 +75,14 @@ namespace DocumentsGenerator.MVVM.Model
                 string generationDate = now.ToString("dd'-'MM'-'yyyy'T'HH'-'mm'-'ss");
                 string outputFileName = $"{generationDate}_arkusz_danych.xml";
                 string savePath = $@"{outputDictionaryPath}\{outputFileName}";
-                //foreach (string element in seenElements) Debug.WriteLine(element);
                 outputFile.Save(savePath);
             }
             catch (Exception ex) {
-                isError = true;
-                DialogWindow.ShowError($"Błąd podczas scalania arkuszy danych.\nBłąd: {ex}", "Błąd!");
+                DialogWindow.ShowError($"Błąd podczas scalania arkuszy danych.\nBłąd: {ex.Message}", "Błąd!");
+                return;
             }
+
+            DialogWindow.ShowInfo($"Generowanie zakończone pomyślnie. Arkusz został wygenerowany w:\n{outputDictionaryPath}", "Generowanie zakończone");
         }
         public DataSheetModel() { }
     }

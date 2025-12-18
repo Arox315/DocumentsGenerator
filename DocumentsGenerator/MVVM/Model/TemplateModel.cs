@@ -23,7 +23,7 @@ namespace DocumentsGenerator.MVVM.Model
 
         private const string DataNs = "template-data";
 
-        public void GenerateTemplates(string inFolder, string outFolder, ref bool isError)
+        public void GenerateTemplates(string outFolder)
         {
             Debug.WriteLine("Generowanie dokumentów...");
             DateTime now = DateTime.Now;
@@ -32,6 +32,27 @@ namespace DocumentsGenerator.MVVM.Model
             string templateSubfolderName = outFolder + $@"\szablony_{generationDate}\";
             string sheetSubfolderName = outFolder + $@"\arkusze_{generationDate}\";
 
+            List<string> errors = new();
+
+            try
+            {
+                Directory.GetFiles(outFolder);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                DialogWindow.ShowError($"Wybrany folder docelowy: {outFolder} nie istnieje.", "Folder nie istnieje");
+                return;
+            }
+            catch (IOException)
+            {
+                DialogWindow.ShowError($"Wybrany folder docelowy: {outFolder} jest nieosiągalny.", "Folder nieosiągalny");
+                return;
+            }
+            catch (UnauthorizedAccessException) {
+                DialogWindow.ShowError($"Brak uprawnień do otworzenia wybranego folderu docelowego: {outFolder}", "Odmowa dostępu");
+                return;
+            }
+            
             Directory.CreateDirectory(templateSubfolderName);
             Directory.CreateDirectory(sheetSubfolderName);
 
@@ -67,24 +88,12 @@ namespace DocumentsGenerator.MVVM.Model
                         ReplaceTagsWithBoundContentControls(doc, storeItemId, tagMap);
 
                         // create keys list for dependency suggestions
-                        try
-                        {
-                            bool success = DependencyKeysManager.UpdateAllKeysFile(orderedRaw);
-                            if (!success)
-                            {
-                                Debug.WriteLine("No new changes - no new keys");
-                            }
-                        }
-                        catch (Exception e) {
-                            throw new Exception(message: e.Message);
-                        }
+                        bool success = DependencyKeysManager.UpdateAllKeysFile(orderedRaw);
                     }
                 }
                 catch (Exception ex) {
-                    isError = true;
-                    DialogWindow.ShowError($"Błąd podczas generacji szablonu: {file.FileName}\n Błąd: {ex}", "Błąd!");
+                    errors.Add($"Błąd podczas generacji szablonu: {file.FileName}\n Błąd: {ex}");
                 }
-                
             }
 
             // Generate merged Data Sheet, if more than 1 template generated
@@ -103,8 +112,16 @@ namespace DocumentsGenerator.MVVM.Model
                         FileKey = ""
                     });
                 }
-                dataSheetModel.MergeDataSheets(outFolder, ref isError);
+                dataSheetModel.MergeDataSheets(outFolder);
             }
+
+            if (errors.Count > 0) {
+                DialogWindow.ShowError($"Generowanie szablonów nie powidło się z powodu błędów:\n\n{string.Join("\n", errors)}", "Błąd genrowania szablonów");
+            }
+            else
+            {
+                DialogWindow.ShowInfo($"Generowanie zakończone pomyślnie. Szablony zostały wygenerowane w:\n{outFolder}", "Generowanie zakończone");
+            } 
         }
 
         public TemplateModel() {}

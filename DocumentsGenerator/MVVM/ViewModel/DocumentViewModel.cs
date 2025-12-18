@@ -177,43 +177,55 @@ namespace DocumentsGenerator.MVVM.ViewModel
             DeleteItemCommand = new RelayCommand<LoadedFileNameModel>(
               item => LoadedFileNames.Remove(item),
               item => item != null);
-            LoadFileNameCommand = new RelayCommand<object>(_ =>
-            {
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Filter = "Szablony | *.docx";
-                ofd.InitialDirectory = ConfigManager.GetSetting("DocumentFileSelectorInitialDirectory");
-                ofd.Title = "Wybierz szablon(y)...";
-                ofd.Multiselect = true;
-                bool? success = ofd.ShowDialog();
-                if (success == true)
+            LoadFileNameCommand = new RelayCommand<object>(_ => {
+                try
                 {
-                    string[] paths = ofd.FileNames;
-                    string[] fileNames = ofd.SafeFileNames;
-                    for (int i = 0; i < paths.Length; i++)
+                    OpenFileDialog ofd = new OpenFileDialog();
+                    ofd.Filter = "Szablony | *.docx";
+                    ofd.InitialDirectory = ConfigManager.GetSetting("DocumentFileSelectorInitialDirectory");
+                    ofd.Title = "Wybierz szablon(y)...";
+                    ofd.Multiselect = true;
+                    bool? success = ofd.ShowDialog();
+                    if (success == true)
                     {
-                        LoadedFileNames.Add(new LoadedFileNameModel
+                        string[] paths = ofd.FileNames;
+                        string[] fileNames = ofd.SafeFileNames;
+                        for (int i = 0; i < paths.Length; i++)
                         {
-                            FilePath = paths[i],
-                            FileName = fileNames[i],
-                            FileKey = _defaultFilterKeyName
-                        });
+                            LoadedFileNames.Add(new LoadedFileNameModel
+                            {
+                                FilePath = paths[i],
+                                FileName = fileNames[i],
+                                FileKey = _defaultFilterKeyName
+                            });
+                        }
                     }
+                }
+                catch(Exception ex)
+                {
+                    DialogWindow.ShowError($"Wystąpił błąd podczas wczytywania danych.\nBłąd: {ex.Message}", "Błąd wczytywania danych");
                 }
             });
             LoadFolderNameCommand = new RelayCommand<object>(_ => {
-                OpenFolderDialog ofd = new OpenFolderDialog();
-                ofd.InitialDirectory = ConfigManager.GetSetting("DocumentFolderSelectorInitialDirectory");
-                ofd.Title = "Wybierz folder...";
-
-                bool? success = ofd.ShowDialog();
-                if (success == true)
+                try
                 {
-                    string path = ofd.FolderName;
-                    string folderName = ofd.SafeFolderName;
-                    FolderSelectHelperText = path;
-                    _selectedReadFolder = path;
-                }
+                    OpenFolderDialog ofd = new OpenFolderDialog();
+                    ofd.InitialDirectory = ConfigManager.GetSetting("DocumentFolderSelectorInitialDirectory");
+                    ofd.Title = "Wybierz folder...";
 
+                    bool? success = ofd.ShowDialog();
+                    if (success == true)
+                    {
+                        string path = ofd.FolderName;
+                        string folderName = ofd.SafeFolderName;
+                        FolderSelectHelperText = path;
+                        _selectedReadFolder = path;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DialogWindow.ShowError($"Wystąpił błąd podczas wyboru folderu.\nBłąd: {ex.Message}", "Błąd wyboru folderu");
+                }
             });
             LoadFilesFromFolderCommand = new RelayCommand<object>(_ => {
 
@@ -228,20 +240,36 @@ namespace DocumentsGenerator.MVVM.ViewModel
 
             });
             SetSaveFolderCommand = new RelayCommand<object>(_ => {
-                OpenFolderDialog ofd = new OpenFolderDialog();
-                ofd.InitialDirectory = ConfigManager.GetSetting("DocumentSaveFolderSelectInitialDirectory");
-                ofd.Title = "Wybierz folder...";
-
-                bool? success = ofd.ShowDialog();
-                if (success == true)
+                try
                 {
-                    string path = ofd.FolderName;
-                    string folderName = ofd.SafeFolderName;
-                    SaveFolderSelectHelperText = path;
-                    _selectedWriteFolder = path;
+                    OpenFolderDialog ofd = new OpenFolderDialog();
+                    ofd.InitialDirectory = ConfigManager.GetSetting("DocumentSaveFolderSelectInitialDirectory");
+                    ofd.Title = "Wybierz folder...";
+
+                    bool? success = ofd.ShowDialog();
+                    if (success == true)
+                    {
+                        string path = ofd.FolderName;
+                        string folderName = ofd.SafeFolderName;
+                        SaveFolderSelectHelperText = path;
+                        _selectedWriteFolder = path;
+                    }
                 }
+                catch (Exception ex)
+                {
+                    DialogWindow.ShowError($"Wystąpił błąd podczas wyboru folderu.\nBłąd: {ex.Message}", "Błąd wyboru folderu");
+                }
+                
             });
             LoadDataSheetCommand = new RelayCommand<object>(_ => {
+                try
+                {
+
+                }
+                catch (Exception ex)
+                {
+                    DialogWindow.ShowError($"Wystąpił błąd podczas wyboru arkusza.\nBłąd: {ex.Message}", "Błąd wyboru arkusza");
+                }
                 OpenFileDialog ofd = new OpenFileDialog();
                 ofd.Filter = "Arkusze danych | *.xml";
                 ofd.InitialDirectory = ConfigManager.GetSetting("DocumentLoadDataSheetInitialDirectory");
@@ -254,8 +282,6 @@ namespace DocumentsGenerator.MVVM.ViewModel
                 }
             });
             GenerateDocumentsCommand = new RelayCommand<object>(_ => {
-
-                bool isError = false;
                 if (LoadedFileNames.Count == 0)
                 {
                     DialogWindow.ShowError("Nie wybrano żadnych szablonów!", "Błąd!");
@@ -287,132 +313,130 @@ namespace DocumentsGenerator.MVVM.ViewModel
 
                 string _outFolder = _selectedWriteFolder ?? ConfigManager.GetSetting("DocumentSaveFolderDirectory");
                 documentModel.LoadedFileNames = LoadedFileNames;
-                documentModel.GenerateDocuments(_outFolder, _currentDataSheet!, ref isError);
-
-                if (isError) 
-                {
-                    DialogWindow.Show("Generowanie zakończone z błędami.", "Generowanie zakończone", DialogType.Ok, DialogIcon.Warning);
-                }
-                else
-                {
-                    DialogWindow.ShowInfo($"Generowanie zakończone pomyślnie. Dokumenty zostały wygenerowane w:\n{_outFolder}", "Generowanie zakończone");
-                }
-   
+                documentModel.GenerateDocuments(_outFolder, _currentDataSheet!);
             });
         }
 
         private void LoadFilesFromFolder()
         {
-            LoadedFileNames!.Clear();
-            _defaultKeyFilterMode = Int32.Parse(ConfigManager.GetSetting("DocumentDefaultFileKeyFilter"));
-            string[]? files = Directory.GetFiles(_selectedReadFolder!, "*.docx");
-            int loadedFilesCount = 0;
-
-            foreach (string file in files)
+            try
             {
-                if (_loadAllFiles)
-                {
-                    LoadedFileNames.Add(new LoadedFileNameModel
-                    {
-                        FilePath = file,
-                        FileName = Path.GetFileName(file),
-                        FileKey = ""
-                    });
-                    loadedFilesCount++;
-                }
+                LoadedFileNames!.Clear();
+                _defaultKeyFilterMode = Int32.Parse(ConfigManager.GetSetting("DocumentDefaultFileKeyFilter"));
+                string[]? files = Directory.GetFiles(_selectedReadFolder!, "*.docx");
+                int loadedFilesCount = 0;
 
-                if (!_loadAllFiles && _loadFilesWithDefaultKey)
+                foreach (string file in files)
                 {
-                    switch (_defaultKeyFilterMode)
+                    if (_loadAllFiles)
                     {
-                        case 0:
-                            if (Path.GetFileNameWithoutExtension(file).Contains(_defaultFilterKeyName))
-                            {
-                                LoadedFileNames.Add(new LoadedFileNameModel
+                        LoadedFileNames.Add(new LoadedFileNameModel
+                        {
+                            FilePath = file,
+                            FileName = Path.GetFileName(file),
+                            FileKey = ""
+                        });
+                        loadedFilesCount++;
+                    }
+
+                    if (!_loadAllFiles && _loadFilesWithDefaultKey)
+                    {
+                        switch (_defaultKeyFilterMode)
+                        {
+                            case 0:
+                                if (Path.GetFileNameWithoutExtension(file).Contains(_defaultFilterKeyName))
                                 {
-                                    FilePath = file,
-                                    FileName = Path.GetFileName(file),
-                                    FileKey = _defaultFilterKeyName
-                                });
-                                loadedFilesCount++;
-                            }
-                            break;
-                        case 1:
-                            if (Path.GetFileNameWithoutExtension(file).StartsWith(_defaultFilterKeyName))
-                            {
-                                LoadedFileNames.Add(new LoadedFileNameModel
+                                    LoadedFileNames.Add(new LoadedFileNameModel
+                                    {
+                                        FilePath = file,
+                                        FileName = Path.GetFileName(file),
+                                        FileKey = _defaultFilterKeyName
+                                    });
+                                    loadedFilesCount++;
+                                }
+                                break;
+                            case 1:
+                                if (Path.GetFileNameWithoutExtension(file).StartsWith(_defaultFilterKeyName))
                                 {
-                                    FilePath = file,
-                                    FileName = Path.GetFileName(file),
-                                    FileKey = _defaultFilterKeyName
-                                });
-                                loadedFilesCount++;
-                            }
-                            break;
-                        case 2:
-                            if (Path.GetFileNameWithoutExtension(file).EndsWith(_defaultFilterKeyName))
-                            {
-                                LoadedFileNames.Add(new LoadedFileNameModel
+                                    LoadedFileNames.Add(new LoadedFileNameModel
+                                    {
+                                        FilePath = file,
+                                        FileName = Path.GetFileName(file),
+                                        FileKey = _defaultFilterKeyName
+                                    });
+                                    loadedFilesCount++;
+                                }
+                                break;
+                            case 2:
+                                if (Path.GetFileNameWithoutExtension(file).EndsWith(_defaultFilterKeyName))
                                 {
-                                    FilePath = file,
-                                    FileName = Path.GetFileName(file),
-                                    FileKey = _defaultFilterKeyName
-                                });
-                                loadedFilesCount++;
-                            }
-                            break;
+                                    LoadedFileNames.Add(new LoadedFileNameModel
+                                    {
+                                        FilePath = file,
+                                        FileName = Path.GetFileName(file),
+                                        FileKey = _defaultFilterKeyName
+                                    });
+                                    loadedFilesCount++;
+                                }
+                                break;
+                        }
+                    }
+
+                    if (!_loadAllFiles && _selectedKeyFilter != null && _selectedKeyFilter != _defaultFilterKeyName)
+                    {
+                        switch (_selectedKeyFilterMode)
+                        {
+                            case 0:
+                                if (Path.GetFileNameWithoutExtension(file).Contains(_selectedKeyFilter))
+                                {
+                                    LoadedFileNames.Add(new LoadedFileNameModel
+                                    {
+                                        FilePath = file,
+                                        FileName = Path.GetFileName(file),
+                                        FileKey = _selectedKeyFilter
+                                    });
+                                    loadedFilesCount++;
+                                }
+                                break;
+                            case 1:
+                                if (Path.GetFileNameWithoutExtension(file).StartsWith(_selectedKeyFilter))
+                                {
+                                    LoadedFileNames.Add(new LoadedFileNameModel
+                                    {
+                                        FilePath = file,
+                                        FileName = Path.GetFileName(file),
+                                        FileKey = _selectedKeyFilter
+                                    });
+                                    loadedFilesCount++;
+                                }
+                                break;
+                            case 2:
+                                if (Path.GetFileNameWithoutExtension(file).EndsWith(_selectedKeyFilter))
+                                {
+                                    LoadedFileNames.Add(new LoadedFileNameModel
+                                    {
+                                        FilePath = file,
+                                        FileName = Path.GetFileName(file),
+                                        FileKey = _selectedKeyFilter
+                                    });
+                                    loadedFilesCount++;
+                                }
+                                break;
+                        }
                     }
                 }
 
-                if (!_loadAllFiles && _selectedKeyFilter != null && _selectedKeyFilter != _defaultFilterKeyName)
+                if (loadedFilesCount == 0)
                 {
-                    switch (_selectedKeyFilterMode)
-                    {
-                        case 0:
-                            if (Path.GetFileNameWithoutExtension(file).Contains(_selectedKeyFilter))
-                            {
-                                LoadedFileNames.Add(new LoadedFileNameModel
-                                {
-                                    FilePath = file,
-                                    FileName = Path.GetFileName(file),
-                                    FileKey = _selectedKeyFilter
-                                });
-                                loadedFilesCount++;
-                            }
-                            break;
-                        case 1:
-                            if (Path.GetFileNameWithoutExtension(file).StartsWith(_selectedKeyFilter))
-                            {
-                                LoadedFileNames.Add(new LoadedFileNameModel
-                                {
-                                    FilePath = file,
-                                    FileName = Path.GetFileName(file),
-                                    FileKey = _selectedKeyFilter
-                                });
-                                loadedFilesCount++;
-                            }
-                            break;
-                        case 2:
-                            if (Path.GetFileNameWithoutExtension(file).EndsWith(_selectedKeyFilter))
-                            {
-                                LoadedFileNames.Add(new LoadedFileNameModel
-                                {
-                                    FilePath = file,
-                                    FileName = Path.GetFileName(file),
-                                    FileKey = _selectedKeyFilter
-                                });
-                                loadedFilesCount++;
-                            }
-                            break;
-                    }
+                    DialogWindow.Show("Nie wczytano plików - Brak plików spełniających kryteria", "Brak plików", DialogType.Ok, DialogIcon.Warning);
                 }
             }
-
-            if (loadedFilesCount == 0)
+            catch (Exception ex) 
             {
-                DialogWindow.Show("Nie wczytano plików - Brak plików spełniających kryteria", "Brak plików", DialogType.Ok, DialogIcon.Warning);
+                DialogWindow.ShowError($"Błąd podczas wczytywania plików.\nBłąd: {ex.Message}", "Błąd wczytywania plików");
+                LoadedFileNames!.Clear();
             }
-
+            
             FolderSelectHelperText = "Wczytaj pliki z folderu";
             _selectedReadFolder = null;
         }

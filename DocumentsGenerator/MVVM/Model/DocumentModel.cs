@@ -93,9 +93,31 @@ namespace DocumentsGenerator.MVVM.Model
             main.Document?.Save();
         }
 
-        public void GenerateDocuments(string saveDirectoryPath, string dataSheetPath, ref bool isError)
+        public void GenerateDocuments(string saveDirectoryPath, string dataSheetPath)
         {
-            foreach(var file in LoadedFileNames!) {
+            try
+            {
+                Directory.GetFiles(saveDirectoryPath);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                DialogWindow.ShowError($"Wybrany folder docelowy: {saveDirectoryPath} nie istnieje.", "Folder nie istnieje");
+                return;
+            }
+            catch (IOException)
+            {
+                DialogWindow.ShowError($"Wybrany folder docelowy: {saveDirectoryPath} jest nieosiągalny.", "Folder nieosiągalny");
+                return;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                DialogWindow.ShowError($"Brak uprawnień do otworzenia wybranego folderu docelowego: {saveDirectoryPath}", "Odmowa dostępu");
+                return;
+            }
+
+            List<string> errors = [];
+
+            foreach (var file in LoadedFileNames!) {
                 string outputDoc;
                 if (file.FileKey == "")
                     outputDoc = $@"{saveDirectoryPath}\{file.FileName!}";
@@ -113,9 +135,17 @@ namespace DocumentsGenerator.MVVM.Model
                 }
                 catch (IOException ex)
                 {
-                    isError = true;
-                    DialogWindow.ShowError($"Błąd podczas generowania dokumentu: {file.FileName}\n Błąd: {ex.Message}", "Błąd!");
+                    errors.Add($"Błąd podczas generowania dokumentu: {file.FileName}\n Błąd: {ex.Message}");
                 } 
+            }
+
+            if (errors.Count > 0)
+            {
+                DialogWindow.ShowError($"Generowanie dokumentów nie powidło się z powodu błędów:\n\n{string.Join("\n", errors)}", "Błąd genrowania dokumentów");
+            }
+            else
+            {
+                DialogWindow.ShowInfo($"Generowanie zakończone pomyślnie. Dokumenty zostały wygenerowane w:\n{saveDirectoryPath}", "Generowanie zakończone");
             }
         }
 

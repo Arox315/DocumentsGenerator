@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,7 +20,6 @@ namespace DocumentsGenerator
         public MainWindow()
         {
             InitializeComponent();
-            
         }
 
         private void DragBar_MouseDown(object sender, MouseButtonEventArgs e)
