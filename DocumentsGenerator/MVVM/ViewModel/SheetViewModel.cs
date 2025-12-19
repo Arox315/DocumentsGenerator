@@ -258,6 +258,7 @@ namespace DocumentsGenerator.MVVM.ViewModel
                 }
 
                 string modDate = DateTime.Now.ToString("f");
+                string author = $"{Environment.MachineName} - {Environment.UserName}";
 
                 try
                 {
@@ -273,11 +274,17 @@ namespace DocumentsGenerator.MVVM.ViewModel
                                 item.ModificationDate = modDate;
                             }
 
-                            if (element.Value != item.Value) {
-                                string author = $"{Environment.MachineName} - {Environment.UserName}";
+                            if (element.Attribute("modification-author") == null)
+                            {
                                 element.SetAttributeValue("modification-author", author);
+                                item.ModificationAuthor = author;
+                            }
+
+                            if (element.Value != item.Value) {
                                 element.SetAttributeValue("modification-date", modDate);
                                 item.ModificationDate = modDate;
+
+                                element.SetAttributeValue("modification-author", author);
                                 item.ModificationAuthor = author;
                             }
 

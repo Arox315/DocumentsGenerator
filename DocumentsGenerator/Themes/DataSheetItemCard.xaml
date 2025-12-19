@@ -125,7 +125,7 @@
                                         <StackPanel>
                                             <TextBlock Text="Data ostatniej modyfikacji" FontWeight="Bold"/>
                                             <TextBlock Text="{Binding ModificationDate}"/>
-                                            <TextBlock Text="Przez:" FontWeight="Bold" Margin="0 2 0 0"/>
+                                            <TextBlock Text="Przez" FontWeight="Bold" Margin="0 2 0 0"/>
                                             <TextBlock Text="{Binding ModificationAuthor}"/>
                                         </StackPanel>
                                     </ToolTip>
