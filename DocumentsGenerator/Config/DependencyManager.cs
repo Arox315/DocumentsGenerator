@@ -11,7 +11,7 @@ namespace DocumentsGenerator.Config
 {
     public static class DependencyManager
     {
-        public static string GetDefaultDependenciesPath() => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dependencies.json");
+        public static string GetDefaultDependenciesPath() => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigManager.GetSetting("DependeciesFileName"));
 
         public static string? GetSubValueFromJson(string key, string value, string subKey)
         {
@@ -53,7 +53,7 @@ namespace DocumentsGenerator.Config
 
         public static bool ContainsKeyInJson(string keyToFind)
         {
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigManager.GetSetting("DependeciesFileName"));
+            string filePath = GetDefaultDependenciesPath();
             if (!File.Exists(filePath) || string.IsNullOrWhiteSpace(keyToFind))
                 return false;
 
@@ -87,7 +87,7 @@ namespace DocumentsGenerator.Config
         {
             var result = new ObservableCollection<string>();
 
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigManager.GetSetting("DependeciesFileName"));
+            string filePath = GetDefaultDependenciesPath();
             if (!File.Exists(filePath) || string.IsNullOrWhiteSpace(key))
                 return result;
 
